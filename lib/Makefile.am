@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 2007-10-11 20:21:11 edwards Exp $
+# $Id: Makefile.am,v 1.2 2007-10-24 01:13:47 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -17,11 +17,11 @@ lib_LIBRARIES = libqdp-lapack.a
 #
 libqdp_lapack_a_SOURCES =
 
-if BUILD_STUBS
+if BUILD_DUMMY_LAPACK
 libqdp_lapack_a_SOURCES += lapack_stub.cc
 endif
 
-if BUILD_CLAPACK
-libqdp_lapack_a_SOURCES += clapack.cc
+if BUILD_FORTRAN_LAPACK
+libqdp_lapack_a_SOURCES += fortran_lapack.cc
 endif
 
