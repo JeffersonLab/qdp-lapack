@@ -1,6 +1,8 @@
 AC_INIT(qdp-lapack, 1.0.0, kostas@jlab.org)
 AC_CONFIG_AUX_DIR(config)
 
+AC_MSG_NOTICE([Configuring qdp-lapack])
+
 dnl check for compiler
 AC_PROG_CC
 AC_PROG_CXX
