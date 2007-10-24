@@ -3,7 +3,8 @@
 //#include <veclib/clapack.h>
 
 // May need other includes for other OS 
-#include "chromabase.h"
+#include "qdp.h"
+
 extern "C" {
 int zheev_(char *,char *,
 	    int *, DComplex *, int *, Double *, DComplex *, 
