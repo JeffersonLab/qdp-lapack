@@ -1,10 +1,10 @@
 /* include/qdp-lapack_config_internal.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Use QMT Threads library */
-#undef DSLASH_USE_QMT_THREADS
+/* Use dummy bindings */
+#undef DUMMY_LAPACK_BINDING
 
-/* Define Pentium 4 CPU */
-#undef P4
+/* Use Lapack Fortran bindings */
+#undef FORTRAN_LAPACK_BINDING
 
 /* Name of package */
 #undef PACKAGE
@@ -23,21 +23,6 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-
-/* Define SSE */
-#undef SSE
-
-/* Define SSE2 */
-#undef SSE2
-
-/* Define 32 bit precision */
-#undef SSE_PRECISION
-
-/* Define Parallel build */
-#undef SSE_QMP_PARALLEL
-
-/* Use SZIN layouts */
-#undef SZIN
 
 /* Version number of package */
 #undef VERSION

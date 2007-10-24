@@ -273,7 +273,7 @@ PACKAGE_VERSION='1.0.0'
 PACKAGE_STRING='qdp-lapack 1.0.0'
 PACKAGE_BUGREPORT='kostas@jlab.org'
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE QDPXX_CONFIG SSEXX_AUX_CFLAGS SSEXX_AUX_LDFLAGS SSEXX_AUX_LIBS QMP_CONFIG PREC_VPATH PAR_VPATH PACKER_VPATH BUILD_QDP_PACKERS_TRUE BUILD_QDP_PACKERS_FALSE QMT_CFLAGS QMT_LDFLAGS QMT_LIBS BUILD_QMT_TRUE BUILD_QMT_FALSE LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT CXX CXXFLAGS ac_ct_CXX RANLIB ac_ct_RANLIB INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION BUILD_DUMMY_LAPACK_TRUE BUILD_DUMMY_LAPACK_FALSE BUILD_FORTRAN_LAPACK_TRUE BUILD_FORTRAN_LAPACK_FALSE LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -817,24 +817,13 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
-  --enable-parallel-arch=<arch>
-                          Build Assembler for parallel architecture <arch>
-  --enable-precision=<precision>
-                          Build Assembler for <precision> precision. Possible
-                          values are single and double (default is single)
-  --enable-cpu=CPU        Build assembler for particular CPU. (Allowed values
-                          are pentium3 and pentium4 ). Pentium 4 is the
-                          default
-  --enable-debug          Switch off frame pointer omission and other nasties
-                          that make debugging impossible
+  --enable-lapack=<type>  Use the type of lapack bindings specified by <type>.
+                          Currently, this can be lapack
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-qmp=DIR          Build Assembler on top of QMP, where QMP is
-                          installed in DIR.
-  --with-qmt=<DIR>        Enable use of QMT Threads library installed in DIR
-  --with-qdp=DIR          Build Assembler with QDP++, where QDP++ is installed
+  --with-qdp=DIR          Build package with QDP++, where QDP++ is installed
                           in DIR.
 
 Some influential environment variables:
@@ -3387,57 +3376,10 @@ fi
           ac_config_headers="$ac_config_headers include/qdp-lapack_config_internal.h"
 
 
-# Check whether --enable-parallel-arch or --disable-parallel-arch was given.
-if test "${enable_parallel_arch+set}" = set; then
-  enableval="$enable_parallel_arch"
-   PARALLEL_ARCH="${enableval}"
-
-fi;
-
-
-# Check whether --enable-precision or --disable-precision was given.
-if test "${enable_precision+set}" = set; then
-  enableval="$enable_precision"
-  PRECISION="${enableval}"
-
-fi;
-
-
-# Check whether --with-qmp or --without-qmp was given.
-if test "${with_qmp+set}" = set; then
-  withval="$with_qmp"
-  QMP_HOME="${with_qmp}"
-
-fi;
-
-# Check whether --enable-cpu or --disable-cpu was given.
-if test "${enable_cpu+set}" = set; then
-  enableval="$enable_cpu"
-   HOST_CPU="${enable_cpu}"
-else
-   { echo "$as_me:$LINENO: WARNING: Setting CPU to Pentium 4" >&5
-echo "$as_me: WARNING: Setting CPU to Pentium 4" >&6;}
-     HOST_CPU="pentium4"
-
-fi;
-
-# Check whether --enable-debug or --disable-debug was given.
-if test "${enable_debug+set}" = set; then
-  enableval="$enable_debug"
-  DEBUGGING="${enable_debug}"
-else
-  DEBUGGING="no"
-
-fi;
-
-
-# Check whether --with-qmt or --without-qmt was given.
-if test "${with_qmt+set}" = set; then
-  withval="$with_qmt"
-   qmt_enabled="yes"
-     QMT_HOME=${with_qmt}
-else
-   qmt_enabled="no"
+# Check whether --enable-lapack or --disable-lapack was given.
+if test "${enable_lapack+set}" = set; then
+  enableval="$enable_lapack"
+  LAPACK_BINDING="${enableval}"
 
 fi;
 
@@ -3445,19 +3387,16 @@ fi;
 # Check whether --with-qdp or --without-qdp was given.
 if test "${with_qdp+set}" = set; then
   withval="$with_qdp"
-   QDPXX_HOME="${with_qdp}"
-    QDPXX_GIVEN="yes"
+  QDPXX_HOME="${with_qdp}"
+   QDPXX_GIVEN="yes"
 
 else
-   QDPXX_GIVEN="no"
+  QDPXX_GIVEN="no"
 
 fi;
 
-
-if test "X${QDPXX_GIVEN}X" = "XyesX"; then
-          if test "X${QDPXX_HOME}X" = "XX" ;
-     then
-	# Extract the first word of "qdp++-config", so it can be a program name with args.
+if test "X${QDPXX_HOME}X" = "XX" ; then
+  # Extract the first word of "qdp++-config", so it can be a program name with args.
 set dummy qdp++-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -3496,8 +3435,8 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-     else
-	# Extract the first word of "qdp++-config", so it can be a program name with args.
+else
+  # Extract the first word of "qdp++-config", so it can be a program name with args.
 set dummy qdp++-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -3537,368 +3476,122 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-     fi
+fi
 
-     if test "X${QDPXX_CONFIG}X" = "XX" ; then
-	{ { echo "$as_me:$LINENO: error: QDP++ configuration program qdp++-config not found." >&5
+if test "X${QDPXX_CONFIG}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: QDP++ configuration program qdp++-config not found." >&5
 echo "$as_me: error: QDP++ configuration program qdp++-config not found." >&2;}
    { (exit 1); exit 1; }; }
-     fi
+fi
 
-     { echo "$as_me:$LINENO: Found QDP++ configuration program ${QDPXX_CONFIG}" >&5
+{ echo "$as_me:$LINENO: Found QDP++ configuration program ${QDPXX_CONFIG}" >&5
 echo "$as_me: Found QDP++ configuration program ${QDPXX_CONFIG}" >&6;}
-     echo "$as_me:$LINENO: checking if QDP++ uses checkerboarded layout" >&5
-echo $ECHO_N "checking if QDP++ uses checkerboarded layout... $ECHO_C" >&6
-     layout=`${QDPXX_CONFIG} --layout`
-     if test "X${layout}X" == "Xcb2X"; then
-	echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-     else
-        echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-	{ { echo "$as_me:$LINENO: error: This Dslash Operator only works for checkerboarded QDP++. Sorry" >&5
-echo "$as_me: error: This Dslash Operator only works for checkerboarded QDP++. Sorry" >&2;}
+CXX="`${QDPXX_CONFIG} --cxx`"
+
+{ echo "$as_me:$LINENO: QDP++ compiler: ${CXX}" >&5
+echo "$as_me: QDP++ compiler: ${CXX}" >&6;}
+QDPXX_CXXFLAGS="`${QDPXX_CONFIG} --cxxflags`"
+
+{ echo "$as_me:$LINENO: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&5
+echo "$as_me: QDP++ compile flags: ${QDPXX_CXXFLAGS}" >&6;}
+QDPXX_LDFLAGS="`${QDPXX_CONFIG} --ldflags`"
+
+{ echo "$as_me:$LINENO: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&5
+echo "$as_me: QDP++ linking flags: ${QDPXX_LDFLAGS}" >&6;}
+QDPXX_LIBS="`${QDPXX_CONFIG} --libs`"
+
+{ echo "$as_me:$LINENO: QDP++ libraries flags: ${QDPXX_LIBS}" >&5
+echo "$as_me: QDP++ libraries flags: ${QDPXX_LIBS}" >&6;}
+QDPXX_ND="`${QDPXX_CONFIG} --Nd`"
+
+if test "X${QDPXX_ND}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: Cannot determine QDP++ spacetime dimension" >&5
+echo "$as_me: error: Cannot determine QDP++ spacetime dimension" >&2;}
    { (exit 1); exit 1; }; }
-     fi
-
-     CC=${CC}
-
-     { echo "$as_me:$LINENO: QDP++ C compiler: ${CC}" >&5
-echo "$as_me: QDP++ C compiler: ${CC}" >&6;}
-
-     CXX="`${QDPXX_CONFIG} --cxx`"
-
-     { echo "$as_me:$LINENO: QDP++ C++ compiler: ${CXX}" >&5
-echo "$as_me: QDP++ C++ compiler: ${CXX}" >&6;}
-
-     SSEXX_AUX_CFLAGS="`${QDPXX_CONFIG} --cxxflags`"
-
-     { echo "$as_me:$LINENO: QDP++ compile flags: ${SSEXX_AUX_CFLAGS}" >&5
-echo "$as_me: QDP++ compile flags: ${SSEXX_AUX_CFLAGS}" >&6;}
-
-     SSEXX_AUX_LDFLAGS="`${QDPXX_CONFIG} --ldflags`"
-
-     { echo "$as_me:$LINENO: QDP++ linking flags: ${SSEXX_AUX_LDFLAGS}" >&5
-echo "$as_me: QDP++ linking flags: ${SSEXX_AUX_LDFLAGS}" >&6;}
-
-     SSEXX_AUX_LIBS="`${QDPXX_CONFIG} --libs`"
-
-     { echo "$as_me:$LINENO: QDP++ libraries flags: ${SSEXX_AUX_LIBS}" >&5
-echo "$as_me: QDP++ libraries flags: ${SSEXX_AUX_LIBS}" >&6;}
-
-     QDPXX_ND="`${QDPXX_CONFIG} --Nd`"
-     { echo "$as_me:$LINENO: QDP++ spacetime dimension: ${QDPXX_ND}" >&5
+else
+  { echo "$as_me:$LINENO: QDP++ spacetime dimension: ${QDPXX_ND}" >&5
 echo "$as_me: QDP++ spacetime dimension: ${QDPXX_ND}" >&6;}
+fi
+QDPXX_NC="`${QDPXX_CONFIG} --Nc`"
 
-     QDPXX_NC="`${QDPXX_CONFIG} --Nc`"
-     { echo "$as_me:$LINENO: QDP++ number of colors: ${QDPXX_NC}" >&5
+{ echo "$as_me:$LINENO: QDP++ number of colors: ${QDPXX_NC}" >&5
 echo "$as_me: QDP++ number of colors: ${QDPXX_NC}" >&6;}
+QDPXX_NS="`${QDPXX_CONFIG} --Ns`"
 
-     QDPXX_NS="`${QDPXX_CONFIG} --Ns`"
-     { echo "$as_me:$LINENO: QDP++ number of spin components: ${QDPXX_NS}" >&5
-echo "$as_me: QDP++ number of spin components: ${QDPXX_NS}" >&6;}
-
-     PARALLEL_ARCH="`${QDPXX_CONFIG} --parallel-arch`"
-     { echo "$as_me:$LINENO: QDP++ has parallel arch: ${PARALLEL_ARCH}  " >&5
-echo "$as_me: QDP++ has parallel arch: ${PARALLEL_ARCH}  " >&6;}
-
-     PRECISION="`${QDPXX_CONFIG} --precision`"
-     { echo "$as_me:$LINENO: QDP++ has precision: ${PRECISION}  " >&5
-echo "$as_me: QDP++ has precision: ${PRECISION}  " >&6;}
-
-               PAC_QDPXX_LINK_CXX_FUNC(
-	${SSEXX_AUX_CFLAGS},
-	${SSEXX_AUX_LDFLAGS},
-	${SSEXX_AUX_LIBS},
-	,
-	,
-	qdpxx_link_ok=yes,
-	qdpxx_link_ok=no
-     )
-
-     echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
-echo $ECHO_N "checking if we can compile/link a simple QDP++ program... $ECHO_C" >&6
-     if test "X${qdpxx_link_ok}X" = "XyesX" ; then
-	echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-     else
-	echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-	{ { echo "$as_me:$LINENO: error: Cannot compile/link a program with QDP++.
-    Use --with-qdp++=<dir> to select a working version." >&5
-echo "$as_me: error: Cannot compile/link a program with QDP++.
-    Use --with-qdp++=<dir> to select a working version." >&2;}
+if test "X${QDPXX_NS}X" = "XX" ; then
+  { { echo "$as_me:$LINENO: error: Cannot determine number of spin components in QDP++" >&5
+echo "$as_me: error: Cannot determine number of spin components in QDP++" >&2;}
    { (exit 1); exit 1; }; }
-    fi
-
-
-
-            else
-                    case "${PARALLEL_ARCH}" in
-	  scalar)
-		{ echo "$as_me:$LINENO:  Scalar Build! Not checking for QMP " >&5
-echo "$as_me:  Scalar Build! Not checking for QMP " >&6;}
-
-
-
-		;;
-	  scalarvec)
-		{ echo "$as_me:$LINENO:  Scalar with Vector extensions Build! Not checking for QMP " >&5
-echo "$as_me:  Scalar with Vector extensions Build! Not checking for QMP " >&6;}
-
-
-
-		;;
-	  parscalar|parscalarvec)
-		{ echo "$as_me:$LINENO:  Parscalar build! Checking for QMP " >&5
-echo "$as_me:  Parscalar build! Checking for QMP " >&6;}
-
-				if test "X${QMP_HOME}X" = "XX" ; then
-		   # Extract the first word of "qmp-config", so it can be a program name with args.
-set dummy qmp-config; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_QMP_CONFIG+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  case $QMP_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_QMP_CONFIG="$QMP_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_QMP_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-  ;;
-esac
-fi
-QMP_CONFIG=$ac_cv_path_QMP_CONFIG
-
-if test -n "$QMP_CONFIG"; then
-  echo "$as_me:$LINENO: result: $QMP_CONFIG" >&5
-echo "${ECHO_T}$QMP_CONFIG" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
+  { echo "$as_me:$LINENO: QDP++ number of spin components: ${QDPXX_NS}" >&5
+echo "$as_me: QDP++ number of spin components: ${QDPXX_NS}" >&6;}
 fi
 
-		else
-		   # Extract the first word of "qmp-config", so it can be a program name with args.
-set dummy qmp-config; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_path_QMP_CONFIG+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  case $QMP_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_QMP_CONFIG="$QMP_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-as_dummy="${QMP_HOME}/bin:${PATH}"
-for as_dir in $as_dummy
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_QMP_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
+QDPXX_PARALLEL_ARCH="`${QDPXX_CONFIG} --parallel-arch`"
 
-  ;;
-esac
-fi
-QMP_CONFIG=$ac_cv_path_QMP_CONFIG
+{ echo "$as_me:$LINENO: QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}" >&5
+echo "$as_me: QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}" >&6;}
 
-if test -n "$QMP_CONFIG"; then
-  echo "$as_me:$LINENO: result: $QMP_CONFIG" >&5
-echo "${ECHO_T}$QMP_CONFIG" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
+QDPXX_PRECISION="`${QDPXX_CONFIG} --precision`"
 
-		fi
+{ echo "$as_me:$LINENO: QDP++ precision: ${QDPXX_PRECISION}" >&5
+echo "$as_me: QDP++ precision: ${QDPXX_PRECISION}" >&6;}
 
-				if test "X${QMP_CONFIG}X" != "XX" ; then
-		   { echo "$as_me:$LINENO: Found QMP configuration program ${QMP_CONFIG}" >&5
-echo "$as_me: Found QMP configuration program ${QMP_CONFIG}" >&6;}
-		   SSEXX_AUX_CFLAGS="`${QMP_CONFIG} --cflags`"
+echo "$as_me:$LINENO: checking if we can compile/link a simple QDP++ program" >&5
+echo $ECHO_N "checking if we can compile/link a simple QDP++ program... $ECHO_C" >&6
 
-		   { echo "$as_me:$LINENO: QMP compile flags: ${SSEXX_AUX_CFLAGS}" >&5
-echo "$as_me: QMP compile flags: ${SSEXX_AUX_CFLAGS}" >&6;}
 
-		   SSEXX_AUX_LDFLAGS="`${QMP_CONFIG} --ldflags`"
+    pac_QDPXX_CXXFLAGS="${QDPXX_CXXFLAGS}"
+    pac_QDPXX_LDFLAGS="${QDPXX_LDFLAGS}"
+    pac_QDPXX_LIBS="${QDPXX_LIBS}"
 
-		   { echo "$as_me:$LINENO: QMP linking flags: ${SSEXX_AUX_LDFLAGS}" >&5
-echo "$as_me: QMP linking flags: ${SSEXX_AUX_LDFLAGS}" >&6;}
 
-		   SSEXX_AUX_LIBS="`${QMP_CONFIG} --libs`"
-
-		   { echo "$as_me:$LINENO: QMP libraries flags: ${SSEXX_AUX_LIBS}" >&5
-echo "$as_me: QMP libraries flags: ${SSEXX_AUX_LIBS}" >&6;}
-		else
-		   { echo "$as_me:$LINENO: WARNING: QMP configuration program qmp-config not found." >&5
-echo "$as_me: WARNING: QMP configuration program qmp-config not found." >&2;}
-		   { echo "$as_me:$LINENO: WARNING: Set environment variables QMP_CFLAGS QMP_LDFAGS QMP_LIBS before configure" >&5
-echo "$as_me: WARNING: Set environment variables QMP_CFLAGS QMP_LDFAGS QMP_LIBS before configure" >&2;}
-		fi
-
-				ac_ext=cc
+    ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-if test -n "$ac_tool_prefix"; then
-  for ac_prog in $CCC g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC
-  do
-    # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
-set dummy $ac_tool_prefix$ac_prog; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_prog_CXX+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$CXX"; then
-  ac_cv_prog_CXX="$CXX" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
 
-fi
-fi
-CXX=$ac_cv_prog_CXX
-if test -n "$CXX"; then
-  echo "$as_me:$LINENO: result: $CXX" >&5
-echo "${ECHO_T}$CXX" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-    test -n "$CXX" && break
-  done
-fi
-if test -z "$CXX"; then
-  ac_ct_CXX=$CXX
-  for ac_prog in $CCC g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-echo "$as_me:$LINENO: checking for $ac_word" >&5
-echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
-if test "${ac_cv_prog_ac_ct_CXX+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  if test -n "$ac_ct_CXX"; then
-  ac_cv_prog_ac_ct_CXX="$ac_ct_CXX" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
-  if $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_ac_ct_CXX="$ac_prog"
-    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-done
-
-fi
-fi
-ac_ct_CXX=$ac_cv_prog_ac_ct_CXX
-if test -n "$ac_ct_CXX"; then
-  echo "$as_me:$LINENO: result: $ac_ct_CXX" >&5
-echo "${ECHO_T}$ac_ct_CXX" >&6
-else
-  echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-
-  test -n "$ac_ct_CXX" && break
-done
-test -n "$ac_ct_CXX" || ac_ct_CXX="g++"
-
-  CXX=$ac_ct_CXX
-fi
-
-
-# Provide some information about the compiler.
-echo "$as_me:$LINENO:" \
-     "checking for C++ compiler version" >&5
-ac_compiler=`set X $ac_compile; echo $2`
-{ (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
-  (eval $ac_compiler --version </dev/null >&5) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }
-{ (eval echo "$as_me:$LINENO: \"$ac_compiler -v </dev/null >&5\"") >&5
-  (eval $ac_compiler -v </dev/null >&5) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }
-{ (eval echo "$as_me:$LINENO: \"$ac_compiler -V </dev/null >&5\"") >&5
-  (eval $ac_compiler -V </dev/null >&5) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }
-
-echo "$as_me:$LINENO: checking whether we are using the GNU C++ compiler" >&5
-echo $ECHO_N "checking whether we are using the GNU C++ compiler... $ECHO_C" >&6
-if test "${ac_cv_cxx_compiler_gnu+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
+    pac_saved_CXXFLAGS="$CXXFLAGS"
+    pac_saved_LDFLAGS="$LDFLAGS"
+    pac_saved_LIBS="$LIBS"
+    CXXFLAGS="$CXXFLAGS $pac_QDPXX_CXXFLAGS"
+    LDFLAGS="$LDFLAGS $pac_QDPXX_LDFLAGS"
+    LIBS="$LIBS $pac_QDPXX_LIBS"
+    cat >conftest.$ac_ext <<_ACEOF
 /* confdefs.h.  */
 _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
+        #include <qdp.h>
+        using namespace QDP;
+
 int
 main ()
 {
-#ifndef __GNUC__
-       choke me
-#endif
+
+        int argc ; char **argv ;
+        // Turn on the machine
+        QDP_initialize(&argc, &argv) ;
+        // Create the layout
+        const int foo[] = {2,2,2,2} ;
+        multi1d<int> nrow(Nd) ;
+        nrow = foo ; // Use only Nd elements
+        Layout::setLattSize(nrow) ;
+        Layout::create() ;
+         ;
+         ;
+        QDP_finalize() ;
 
   ;
   return 0;
 }
 _ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>conftest.er1
   ac_status=$?
   grep -v '^ *+' conftest.er1 >conftest.err
   rm -f conftest.er1
@@ -3912,472 +3605,96 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
+	 { ac_try='test -s conftest$ac_exeext'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_compiler_gnu=yes
+  pac_qdpxx_working=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_compiler_gnu=no
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
+pac_qdpxx_working=no
 
 fi
-echo "$as_me:$LINENO: result: $ac_cv_cxx_compiler_gnu" >&5
-echo "${ECHO_T}$ac_cv_cxx_compiler_gnu" >&6
-GXX=`test $ac_compiler_gnu = yes && echo yes`
-ac_test_CXXFLAGS=${CXXFLAGS+set}
-ac_save_CXXFLAGS=$CXXFLAGS
-CXXFLAGS="-g"
-echo "$as_me:$LINENO: checking whether $CXX accepts -g" >&5
-echo $ECHO_N "checking whether $CXX accepts -g... $ECHO_C" >&6
-if test "${ac_cv_prog_cxx_g+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_prog_cxx_g=yes
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-ac_cv_prog_cxx_g=no
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-echo "$as_me:$LINENO: result: $ac_cv_prog_cxx_g" >&5
-echo "${ECHO_T}$ac_cv_prog_cxx_g" >&6
-if test "$ac_test_CXXFLAGS" = set; then
-  CXXFLAGS=$ac_save_CXXFLAGS
-elif test $ac_cv_prog_cxx_g = yes; then
-  if test "$GXX" = yes; then
-    CXXFLAGS="-g -O2"
-  else
-    CXXFLAGS="-g"
-  fi
-else
-  if test "$GXX" = yes; then
-    CXXFLAGS="-O2"
-  else
-    CXXFLAGS=
-  fi
-fi
-for ac_declaration in \
-   '' \
-   'extern "C" void std::exit (int) throw (); using std::exit;' \
-   'extern "C" void std::exit (int); using std::exit;' \
-   'extern "C" void exit (int) throw ();' \
-   'extern "C" void exit (int);' \
-   'void exit (int);'
-do
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_declaration
-#include <stdlib.h>
-int
-main ()
-{
-exit (42);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  :
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-continue
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-  cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-$ac_declaration
-int
-main ()
-{
-exit (42);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; } &&
-	 { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  break
-else
-  echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-fi
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-done
-rm -f conftest*
-if test -n "$ac_declaration"; then
-  echo '#ifdef __cplusplus' >>confdefs.h
-  echo $ac_declaration      >>confdefs.h
-  echo '#endif'             >>confdefs.h
-fi
-
-ac_ext=c
+rm -f conftest.err conftest.$ac_objext \
+      conftest$ac_exeext conftest.$ac_ext
+    CXXFLAGS="$pac_saved_CXXFLAGS"
+    LDFLAGS="$pac_saved_LDFLAGS"
+    LIBS="$pac_saved_LIBS"
+    ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-		PAC_QMP_LINK_CC_FUNC(
-			${SSEXX_AUX_CFLAGS},
-			${SSEXX_AUX_LDFLAGS},
-			${SSEXX_AUX_LIBS},
-			,
-			,
-			qmp_link_ok=yes,
-			qmp_link_ok=no
-		)
+    if test "X${pac_qdpxx_working}X"="XyesX";
+    then
+       qdpxx_link_ok=yes
+    else
+       qdpxx_link_ok=no
 
-		echo "$as_me:$LINENO: checking if we can compile/link of a simple QMP C program" >&5
-echo $ECHO_N "checking if we can compile/link of a simple QMP C program... $ECHO_C" >&6
-		if test "X${qmp_link_ok}X" = "XyesX" ; then
-		   echo "$as_me:$LINENO: result: yes" >&5
+    fi
+
+
+if test "X${qdpxx_link_ok}X" = "XyesX";
+then
+  echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-		else
-		   echo "$as_me:$LINENO: result: no" >&5
+else
+  echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
-		   { { echo "$as_me:$LINENO: error: Cannot compile/link a basic QMP C program! Check QMP_CFLAGS, QMP_LDFLAGS, QMP_LIBS." >&5
-echo "$as_me: error: Cannot compile/link a basic QMP C program! Check QMP_CFLAGS, QMP_LDFLAGS, QMP_LIBS." >&2;}
+  { { echo "$as_me:$LINENO: error: Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version." >&5
+echo "$as_me: error: Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version." >&2;}
    { (exit 1); exit 1; }; }
-		fi
-		;;
-	*)
-		{ { echo "$as_me:$LINENO: error:  Unknown value for --enable-parallel-arch " >&5
-echo "$as_me: error:  Unknown value for --enable-parallel-arch " >&2;}
-   { (exit 1); exit 1; }; }
-		;;
-	esac
 fi
 
 
 
-case "${HOST_CPU}" in
-pentium3|pentiumIII|p3)
-
-		case "${PRECISION}" in
-	single|32)
-		{ echo "$as_me:$LINENO: Configuring for Pentium 3 in  Single Precision" >&5
-echo "$as_me: Configuring for Pentium 3 in  Single Precision" >&6;}
+case "${LAPACK_BINDING}" in
+lapack)
+	{ echo "$as_me:$LINENO: Configuring to use Lapack Fortran bindings" >&5
+echo "$as_me: Configuring to use Lapack Fortran bindings" >&6;}
 
 cat >>confdefs.h <<\_ACEOF
-#define SSE_PRECISION 32
+#define FORTRAN_LAPACK_BINDING
 _ACEOF
 
-		PREC_VPATH=32bit
-
-
-cat >>confdefs.h <<\_ACEOF
-#define SSE
-_ACEOF
-
-		;;
-	double|64)
-		{ { echo "$as_me:$LINENO: error: Cannot build Double Precision SSE Dslash for Pentium 3" >&5
-echo "$as_me: error: Cannot build Double Precision SSE Dslash for Pentium 3" >&2;}
-   { (exit 1); exit 1; }; }
-		;;
-	*)
-		{ { echo "$as_me:$LINENO: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&5
-echo "$as_me: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&2;}
-   { (exit 1); exit 1; }; }
-		;;
-	esac
-	;;
-pentium4|pentiumIV|p4|pentiumM|pM)
-
-cat >>confdefs.h <<\_ACEOF
-#define P4
-_ACEOF
-
-
-cat >>confdefs.h <<\_ACEOF
-#define SSE2
-_ACEOF
-
-	case "${PRECISION}" in
-	double|64)
-		{ echo "$as_me:$LINENO: Configuring for Pentium 4 in Double Precision" >&5
-echo "$as_me: Configuring for Pentium 4 in Double Precision" >&6;}
-
-cat >>confdefs.h <<\_ACEOF
-#define SSE_PRECISION 64
-_ACEOF
-
-		PREC_VPATH=64bit
-
-		;;
-        single|32)
-		{ echo "$as_me:$LINENO: Configuring for Pentium 4 in Single Precision" >&5
-echo "$as_me: Configuring for Pentium 4 in Single Precision" >&6;}
-
-cat >>confdefs.h <<\_ACEOF
-#define SSE_PRECISION 32
-_ACEOF
-
-		PREC_VPATH=32bit
-
-		;;
-        *)
-	        { { echo "$as_me:$LINENO: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&5
-echo "$as_me: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&2;}
-   { (exit 1); exit 1; }; }
-	        ;;
-        esac
+        LAPACK_STUBS="no"
 	;;
 *)
-	{ { echo "$as_me:$LINENO: error: Unknown CPU specified. Check --enable-cpu" >&5
-echo "$as_me: error: Unknown CPU specified. Check --enable-cpu" >&2;}
-   { (exit 1); exit 1; }; }
-	;;
-esac
-
-
-case "${PARALLEL_ARCH}" in
-    parscalar)
-       	PAR_VPATH=parscalar
-
+	{ echo "$as_me:$LINENO: Configuring to use dummy stubs. If you want a real binding, use the --enable-lapack option" >&5
+echo "$as_me: Configuring to use dummy stubs. If you want a real binding, use the --enable-lapack option" >&6;}
 
 cat >>confdefs.h <<\_ACEOF
-#define SSE_QMP_PARALLEL
+#define DUMMY_LAPACK_BINDING
 _ACEOF
 
-	{ echo "$as_me:$LINENO: Parscalar Build  " >&5
-echo "$as_me: Parscalar Build  " >&6;}
-	case "${PRECISION}" in
-	double|64)
-		{ echo "$as_me:$LINENO: Using No Funnystuff Packer " >&5
-echo "$as_me: Using No Funnystuff Packer " >&6;}
-		PACKER_VPATH=nopad
-
-		;;
-        single|32)
-		{ echo "$as_me:$LINENO: Using Funnystuff Packer" >&5
-echo "$as_me: Using Funnystuff Packer" >&6;}
-		PACKER_VPATH=p4_pad
-
-		;;
-        *)
-	        { { echo "$as_me:$LINENO: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&5
-echo "$as_me: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&2;}
-   { (exit 1); exit 1; }; }
-	        ;;
-        esac
-   	;;
-
-     scalar)
-    	PAR_VPATH=scalar
-
-	{ echo "$as_me:$LINENO: Scalar Build  " >&5
-echo "$as_me: Scalar Build  " >&6;}
-	case "${PRECISION}" in
-	double|64)
-		{ echo "$as_me:$LINENO: Using No Funnystuff Packer " >&5
-echo "$as_me: Using No Funnystuff Packer " >&6;}
-		PACKER_VPATH=nopad
-
-		;;
-        single|32)
-		{ echo "$as_me:$LINENO: Using No Funnystuff Packer" >&5
-echo "$as_me: Using No Funnystuff Packer" >&6;}
-		PACKER_VPATH=nopad
-
-		;;
-        *)
-	        { { echo "$as_me:$LINENO: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&5
-echo "$as_me: error: Unknown Precision: ${PRECISION}. Please check --enable-precision" >&2;}
-   { (exit 1); exit 1; }; }
-	        ;;
-        esac
-	;;
-
-     scalarvec)
-	PAR_VPATH=scalarvec
-
-	{ echo "$as_me:$LINENO: Scalarvec Build  " >&5
-echo "$as_me: Scalarvec Build  " >&6;}
-	{ { echo "$as_me:$LINENO: error: Scalarvec version not yet supported " >&5
-echo "$as_me: error: Scalarvec version not yet supported " >&2;}
-   { (exit 1); exit 1; }; }
-	;;
-     parscalarvec)
-	PAR_VPATH=parscalarvec
-
-	{ echo "$as_me:$LINENO: ParScalarVec Build  " >&5
-echo "$as_me: ParScalarVec Build  " >&6;}
-	{ { echo "$as_me:$LINENO: error: Parscalarvec version not yet supported  " >&5
-echo "$as_me: error: Parscalarvec version not yet supported  " >&2;}
-   { (exit 1); exit 1; }; }
-	;;
-     *)
-        { { echo "$as_me:$LINENO: error: Unknown Parallel Architecture: ${PARALLEL_ARCH}  " >&5
-echo "$as_me: error: Unknown Parallel Architecture: ${PARALLEL_ARCH}  " >&2;}
-   { (exit 1); exit 1; }; }
+        LAPACK_STUBS="yes"
 	;;
 esac
 
 
 
-
-
-cat >>confdefs.h <<\_ACEOF
-#define SZIN
-_ACEOF
-
-
-if test "X${DEBUGGING}X" = "XnoX"; then
-  AX_CFLAGS_GCC_OPTION(,-fomit-frame-pointer)
-  AX_CFLAGS_GCC_OPTION(,-malign-double)
+if  test "X${LAPACK_STUBS}X" = "XyesX" ; then
+  BUILD_DUMMY_LAPACK_TRUE=
+  BUILD_DUMMY_LAPACK_FALSE='#'
 else
-  { echo "$as_me:$LINENO: Debug Mode. Not activating -fomit-frame-pointer" >&5
-echo "$as_me: Debug Mode. Not activating -fomit-frame-pointer" >&6;}
-  AX_CFLAGS_GCC_OPTION(,-malign-double)
-  AX_CFLAGS_GCC_OPTION(,-g)
+  BUILD_DUMMY_LAPACK_TRUE='#'
+  BUILD_DUMMY_LAPACK_FALSE=
 fi
 
 
 
-
-if  test "X${QDPXX_GIVEN}X" = "XyesX" ; then
-  BUILD_QDP_PACKERS_TRUE=
-  BUILD_QDP_PACKERS_FALSE='#'
+if  test "X${LAPACK_BINDING}X" = "XlapackX" ; then
+  BUILD_FORTRAN_LAPACK_TRUE=
+  BUILD_FORTRAN_LAPACK_FALSE='#'
 else
-  BUILD_QDP_PACKERS_TRUE='#'
-  BUILD_QDP_PACKERS_FALSE=
+  BUILD_FORTRAN_LAPACK_TRUE='#'
+  BUILD_FORTRAN_LAPACK_FALSE=
 fi
-
-
-
-if test "X${qmt_enabled}X" == "XyesX";
-then
-	{ echo "$as_me:$LINENO: Configuring QMT Threading" >&5
-echo "$as_me: Configuring QMT Threading" >&6;}
-
-cat >>confdefs.h <<\_ACEOF
-#define DSLASH_USE_QMT_THREADS 1
-_ACEOF
-
-	QMT_CFLAGS="-I${QMT_HOME}/include"
-
-	QMT_LDFLAGS="-L${QMT_HOME}/lib"
-
-	QMT_LIBS="-lqmt -lpthread -lm"
-
-else
-	QMT_CFLAGS=""
-
-	QMT_LDFLAGS=""
-
-	QMT_LIBS=""
-
-
-fi
-
-
-if test "x${qmt_enabled}x" = "xyesx" ; then
-  BUILD_QMT_TRUE=
-  BUILD_QMT_FALSE='#'
-else
-  BUILD_QMT_TRUE='#'
-  BUILD_QMT_FALSE=
-fi
-
 
 
           ac_config_files="$ac_config_files Makefile"
@@ -4498,17 +3815,17 @@ echo "$as_me: error: conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${BUILD_QDP_PACKERS_TRUE}" && test -z "${BUILD_QDP_PACKERS_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_QDP_PACKERS\" was never defined.
+if test -z "${BUILD_DUMMY_LAPACK_TRUE}" && test -z "${BUILD_DUMMY_LAPACK_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_DUMMY_LAPACK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_QDP_PACKERS\" was never defined.
+echo "$as_me: error: conditional \"BUILD_DUMMY_LAPACK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${BUILD_QMT_TRUE}" && test -z "${BUILD_QMT_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_QMT\" was never defined.
+if test -z "${BUILD_FORTRAN_LAPACK_TRUE}" && test -z "${BUILD_FORTRAN_LAPACK_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_FORTRAN_LAPACK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_QMT\" was never defined.
+echo "$as_me: error: conditional \"BUILD_FORTRAN_LAPACK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5093,20 +4410,18 @@ s,@CXXDEPMODE@,$CXXDEPMODE,;t t
 s,@am__fastdepCXX_TRUE@,$am__fastdepCXX_TRUE,;t t
 s,@am__fastdepCXX_FALSE@,$am__fastdepCXX_FALSE,;t t
 s,@QDPXX_CONFIG@,$QDPXX_CONFIG,;t t
-s,@SSEXX_AUX_CFLAGS@,$SSEXX_AUX_CFLAGS,;t t
-s,@SSEXX_AUX_LDFLAGS@,$SSEXX_AUX_LDFLAGS,;t t
-s,@SSEXX_AUX_LIBS@,$SSEXX_AUX_LIBS,;t t
-s,@QMP_CONFIG@,$QMP_CONFIG,;t t
-s,@PREC_VPATH@,$PREC_VPATH,;t t
-s,@PAR_VPATH@,$PAR_VPATH,;t t
-s,@PACKER_VPATH@,$PACKER_VPATH,;t t
-s,@BUILD_QDP_PACKERS_TRUE@,$BUILD_QDP_PACKERS_TRUE,;t t
-s,@BUILD_QDP_PACKERS_FALSE@,$BUILD_QDP_PACKERS_FALSE,;t t
-s,@QMT_CFLAGS@,$QMT_CFLAGS,;t t
-s,@QMT_LDFLAGS@,$QMT_LDFLAGS,;t t
-s,@QMT_LIBS@,$QMT_LIBS,;t t
-s,@BUILD_QMT_TRUE@,$BUILD_QMT_TRUE,;t t
-s,@BUILD_QMT_FALSE@,$BUILD_QMT_FALSE,;t t
+s,@QDPXX_CXXFLAGS@,$QDPXX_CXXFLAGS,;t t
+s,@QDPXX_LDFLAGS@,$QDPXX_LDFLAGS,;t t
+s,@QDPXX_LIBS@,$QDPXX_LIBS,;t t
+s,@QDPXX_ND@,$QDPXX_ND,;t t
+s,@QDPXX_NC@,$QDPXX_NC,;t t
+s,@QDPXX_NS@,$QDPXX_NS,;t t
+s,@QDPXX_PARALLEL_ARCH@,$QDPXX_PARALLEL_ARCH,;t t
+s,@QDPXX_PRECISION@,$QDPXX_PRECISION,;t t
+s,@BUILD_DUMMY_LAPACK_TRUE@,$BUILD_DUMMY_LAPACK_TRUE,;t t
+s,@BUILD_DUMMY_LAPACK_FALSE@,$BUILD_DUMMY_LAPACK_FALSE,;t t
+s,@BUILD_FORTRAN_LAPACK_TRUE@,$BUILD_FORTRAN_LAPACK_TRUE,;t t
+s,@BUILD_FORTRAN_LAPACK_FALSE@,$BUILD_FORTRAN_LAPACK_FALSE,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

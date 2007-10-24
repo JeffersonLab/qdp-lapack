@@ -14,10 +14,9 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.1 2007-10-11 20:21:11 edwards Exp $
+# $Id: Makefile.in,v 1.2 2007-10-24 01:15:14 edwards Exp $
 #
 # Path for all files used in building the library
-# This file was automatically generated
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -39,11 +38,13 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-@BUILD_QDP_PACKERS_TRUE@am__append_1 = $(PACKVPATH)/qdp_packer.cc
+@BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc
+@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -60,31 +61,23 @@ libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
 AR = ar
 ARFLAGS = cru
-liblevel3_a_AR = $(AR) $(ARFLAGS)
-liblevel3_a_LIBADD =
-am__liblevel3_a_SOURCES_DIST = $(PACKVPATH)/packer.c \
-	$(PARVPATH)/shift_tables.c \
-	$(PRECVPATH)/dslash/sse_su3dslash_w.c \
-	$(PACKVPATH)/qdp_packer.cc
-am__objects_1 = shift_tables.$(OBJEXT) sse_su3dslash_w.$(OBJEXT)
-@BUILD_QDP_PACKERS_TRUE@am__objects_2 = qdp_packer.$(OBJEXT)
-am_liblevel3_a_OBJECTS = packer.$(OBJEXT) $(am__objects_1) \
-	$(am__objects_2)
-liblevel3_a_OBJECTS = $(am_liblevel3_a_OBJECTS)
+libqdp_lapack_a_AR = $(AR) $(ARFLAGS)
+libqdp_lapack_a_LIBADD =
+am__libqdp_lapack_a_SOURCES_DIST = lapack_stub.cc fortran_lapack.cc
+@BUILD_DUMMY_LAPACK_TRUE@am__objects_1 = lapack_stub.$(OBJEXT)
+@BUILD_FORTRAN_LAPACK_TRUE@am__objects_2 = fortran_lapack.$(OBJEXT)
+am_libqdp_lapack_a_OBJECTS = $(am__objects_1) $(am__objects_2)
+libqdp_lapack_a_OBJECTS = $(am_libqdp_lapack_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/include
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(liblevel3_a_SOURCES)
-DIST_SOURCES = $(am__liblevel3_a_SOURCES_DIST)
+SOURCES = $(libqdp_lapack_a_SOURCES)
+DIST_SOURCES = $(am__libqdp_lapack_a_SOURCES_DIST)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -96,10 +89,10 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BUILD_QDP_PACKERS_FALSE = @BUILD_QDP_PACKERS_FALSE@
-BUILD_QDP_PACKERS_TRUE = @BUILD_QDP_PACKERS_TRUE@
-BUILD_QMT_FALSE = @BUILD_QMT_FALSE@
-BUILD_QMT_TRUE = @BUILD_QMT_TRUE@
+BUILD_DUMMY_LAPACK_FALSE = @BUILD_DUMMY_LAPACK_FALSE@
+BUILD_DUMMY_LAPACK_TRUE = @BUILD_DUMMY_LAPACK_TRUE@
+BUILD_FORTRAN_LAPACK_FALSE = @BUILD_FORTRAN_LAPACK_FALSE@
+BUILD_FORTRAN_LAPACK_TRUE = @BUILD_FORTRAN_LAPACK_TRUE@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
@@ -130,21 +123,19 @@ PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
-PACKER_VPATH = @PACKER_VPATH@
-PAR_VPATH = @PAR_VPATH@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-PREC_VPATH = @PREC_VPATH@
 QDPXX_CONFIG = @QDPXX_CONFIG@
-QMP_CONFIG = @QMP_CONFIG@
-QMT_CFLAGS = @QMT_CFLAGS@
-QMT_LDFLAGS = @QMT_LDFLAGS@
-QMT_LIBS = @QMT_LIBS@
+QDPXX_CXXFLAGS = @QDPXX_CXXFLAGS@
+QDPXX_LDFLAGS = @QDPXX_LDFLAGS@
+QDPXX_LIBS = @QDPXX_LIBS@
+QDPXX_NC = @QDPXX_NC@
+QDPXX_ND = @QDPXX_ND@
+QDPXX_NS = @QDPXX_NS@
+QDPXX_PARALLEL_ARCH = @QDPXX_PARALLEL_ARCH@
+QDPXX_PRECISION = @QDPXX_PRECISION@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SSEXX_AUX_CFLAGS = @SSEXX_AUX_CFLAGS@
-SSEXX_AUX_LDFLAGS = @SSEXX_AUX_LDFLAGS@
-SSEXX_AUX_LIBS = @SSEXX_AUX_LIBS@
 STRIP = @STRIP@
 VERSION = @VERSION@
 ac_ct_CC = @ac_ct_CC@
@@ -180,35 +171,24 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
-TOPSRCDIR = @top_srcdir@
-PARVPATH = @top_srcdir@/src/@PAR_VPATH@
-PACKVPATH = $(PARVPATH)/packer/@PACKER_VPATH@
-PRECVPATH = $(PARVPATH)/@PREC_VPATH@
 
-#
-# Include Path
-#
-INCFLAGS = -I$(TOPSRCDIR)/include
 #
 # Any other compiler flags
 # 
-AM_CFLAGS = $(INCFLAGS) @CFLAGS@ @DEFS@ @SSEXX_AUX_CFLAGS@ @QMT_CFLAGS@
-AM_CXXFLAGS = $(INCFLAGS) @SSEXX_AUX_CFLAGS@ @QMT_CFLAGS@
+AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@ 
+AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CXXFLAGS@ @CXXFLAGS@
 AM_CC = $(CC)
 AM_CXX = $(CXX)
-lib_LIBRARIES = liblevel3.a
-DSLASH_SRCS = $(PARVPATH)/shift_tables.c $(PRECVPATH)/dslash/sse_su3dslash_w.c
-CG_SRCS = $(PRECVPATH)/cg/cg.c
+lib_LIBRARIES = libqdp-lapack.a
 
 #
 # An AM_CONDITIONAL if statement to decide which fermion type
 #
-liblevel3_a_SOURCES = $(PACKVPATH)/packer.c $(DSLASH_SRCS) \
-	$(am__append_1)
+libqdp_lapack_a_SOURCES = $(am__append_1) $(am__append_2)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cc .o .obj
+.SUFFIXES: .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -267,10 +247,10 @@ uninstall-libLIBRARIES:
 
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
-liblevel3.a: $(liblevel3_a_OBJECTS) $(liblevel3_a_DEPENDENCIES) 
-	-rm -f liblevel3.a
-	$(liblevel3_a_AR) liblevel3.a $(liblevel3_a_OBJECTS) $(liblevel3_a_LIBADD)
-	$(RANLIB) liblevel3.a
+libqdp-lapack.a: $(libqdp_lapack_a_OBJECTS) $(libqdp_lapack_a_DEPENDENCIES) 
+	-rm -f libqdp-lapack.a
+	$(libqdp_lapack_a_AR) libqdp-lapack.a $(libqdp_lapack_a_OBJECTS) $(libqdp_lapack_a_LIBADD)
+	$(RANLIB) libqdp-lapack.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -278,66 +258,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/packer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qdp_packer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shift_tables.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sse_su3dslash_w.Po@am__quote@
-
-.c.o:
-@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
-
-.c.obj:
-@am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ `$(CYGPATH_W) '$<'`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/$*.Tpo" "$(DEPDIR)/$*.Po"; else rm -f "$(DEPDIR)/$*.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
-
-packer.o: $(PACKVPATH)/packer.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT packer.o -MD -MP -MF "$(DEPDIR)/packer.Tpo" -c -o packer.o `test -f '$(PACKVPATH)/packer.c' || echo '$(srcdir)/'`$(PACKVPATH)/packer.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/packer.Tpo" "$(DEPDIR)/packer.Po"; else rm -f "$(DEPDIR)/packer.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(PACKVPATH)/packer.c' object='packer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o packer.o `test -f '$(PACKVPATH)/packer.c' || echo '$(srcdir)/'`$(PACKVPATH)/packer.c
-
-packer.obj: $(PACKVPATH)/packer.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT packer.obj -MD -MP -MF "$(DEPDIR)/packer.Tpo" -c -o packer.obj `if test -f '$(PACKVPATH)/packer.c'; then $(CYGPATH_W) '$(PACKVPATH)/packer.c'; else $(CYGPATH_W) '$(srcdir)/$(PACKVPATH)/packer.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/packer.Tpo" "$(DEPDIR)/packer.Po"; else rm -f "$(DEPDIR)/packer.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(PACKVPATH)/packer.c' object='packer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o packer.obj `if test -f '$(PACKVPATH)/packer.c'; then $(CYGPATH_W) '$(PACKVPATH)/packer.c'; else $(CYGPATH_W) '$(srcdir)/$(PACKVPATH)/packer.c'; fi`
-
-shift_tables.o: $(PARVPATH)/shift_tables.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT shift_tables.o -MD -MP -MF "$(DEPDIR)/shift_tables.Tpo" -c -o shift_tables.o `test -f '$(PARVPATH)/shift_tables.c' || echo '$(srcdir)/'`$(PARVPATH)/shift_tables.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/shift_tables.Tpo" "$(DEPDIR)/shift_tables.Po"; else rm -f "$(DEPDIR)/shift_tables.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(PARVPATH)/shift_tables.c' object='shift_tables.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o shift_tables.o `test -f '$(PARVPATH)/shift_tables.c' || echo '$(srcdir)/'`$(PARVPATH)/shift_tables.c
-
-shift_tables.obj: $(PARVPATH)/shift_tables.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT shift_tables.obj -MD -MP -MF "$(DEPDIR)/shift_tables.Tpo" -c -o shift_tables.obj `if test -f '$(PARVPATH)/shift_tables.c'; then $(CYGPATH_W) '$(PARVPATH)/shift_tables.c'; else $(CYGPATH_W) '$(srcdir)/$(PARVPATH)/shift_tables.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/shift_tables.Tpo" "$(DEPDIR)/shift_tables.Po"; else rm -f "$(DEPDIR)/shift_tables.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(PARVPATH)/shift_tables.c' object='shift_tables.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o shift_tables.obj `if test -f '$(PARVPATH)/shift_tables.c'; then $(CYGPATH_W) '$(PARVPATH)/shift_tables.c'; else $(CYGPATH_W) '$(srcdir)/$(PARVPATH)/shift_tables.c'; fi`
-
-sse_su3dslash_w.o: $(PRECVPATH)/dslash/sse_su3dslash_w.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT sse_su3dslash_w.o -MD -MP -MF "$(DEPDIR)/sse_su3dslash_w.Tpo" -c -o sse_su3dslash_w.o `test -f '$(PRECVPATH)/dslash/sse_su3dslash_w.c' || echo '$(srcdir)/'`$(PRECVPATH)/dslash/sse_su3dslash_w.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/sse_su3dslash_w.Tpo" "$(DEPDIR)/sse_su3dslash_w.Po"; else rm -f "$(DEPDIR)/sse_su3dslash_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(PRECVPATH)/dslash/sse_su3dslash_w.c' object='sse_su3dslash_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o sse_su3dslash_w.o `test -f '$(PRECVPATH)/dslash/sse_su3dslash_w.c' || echo '$(srcdir)/'`$(PRECVPATH)/dslash/sse_su3dslash_w.c
-
-sse_su3dslash_w.obj: $(PRECVPATH)/dslash/sse_su3dslash_w.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT sse_su3dslash_w.obj -MD -MP -MF "$(DEPDIR)/sse_su3dslash_w.Tpo" -c -o sse_su3dslash_w.obj `if test -f '$(PRECVPATH)/dslash/sse_su3dslash_w.c'; then $(CYGPATH_W) '$(PRECVPATH)/dslash/sse_su3dslash_w.c'; else $(CYGPATH_W) '$(srcdir)/$(PRECVPATH)/dslash/sse_su3dslash_w.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/sse_su3dslash_w.Tpo" "$(DEPDIR)/sse_su3dslash_w.Po"; else rm -f "$(DEPDIR)/sse_su3dslash_w.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(PRECVPATH)/dslash/sse_su3dslash_w.c' object='sse_su3dslash_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o sse_su3dslash_w.obj `if test -f '$(PRECVPATH)/dslash/sse_su3dslash_w.c'; then $(CYGPATH_W) '$(PRECVPATH)/dslash/sse_su3dslash_w.c'; else $(CYGPATH_W) '$(srcdir)/$(PRECVPATH)/dslash/sse_su3dslash_w.c'; fi`
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fortran_lapack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lapack_stub.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -352,20 +274,6 @@ sse_su3dslash_w.obj: $(PRECVPATH)/dslash/sse_su3dslash_w.c
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-qdp_packer.o: $(PACKVPATH)/qdp_packer.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qdp_packer.o -MD -MP -MF "$(DEPDIR)/qdp_packer.Tpo" -c -o qdp_packer.o `test -f '$(PACKVPATH)/qdp_packer.cc' || echo '$(srcdir)/'`$(PACKVPATH)/qdp_packer.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/qdp_packer.Tpo" "$(DEPDIR)/qdp_packer.Po"; else rm -f "$(DEPDIR)/qdp_packer.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(PACKVPATH)/qdp_packer.cc' object='qdp_packer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qdp_packer.o `test -f '$(PACKVPATH)/qdp_packer.cc' || echo '$(srcdir)/'`$(PACKVPATH)/qdp_packer.cc
-
-qdp_packer.obj: $(PACKVPATH)/qdp_packer.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qdp_packer.obj -MD -MP -MF "$(DEPDIR)/qdp_packer.Tpo" -c -o qdp_packer.obj `if test -f '$(PACKVPATH)/qdp_packer.cc'; then $(CYGPATH_W) '$(PACKVPATH)/qdp_packer.cc'; else $(CYGPATH_W) '$(srcdir)/$(PACKVPATH)/qdp_packer.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/qdp_packer.Tpo" "$(DEPDIR)/qdp_packer.Po"; else rm -f "$(DEPDIR)/qdp_packer.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(PACKVPATH)/qdp_packer.cc' object='qdp_packer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qdp_packer.obj `if test -f '$(PACKVPATH)/qdp_packer.cc'; then $(CYGPATH_W) '$(PACKVPATH)/qdp_packer.cc'; else $(CYGPATH_W) '$(srcdir)/$(PACKVPATH)/qdp_packer.cc'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
@@ -534,10 +442,6 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am uninstall-libLIBRARIES
 
-
-# if BUILD_CG
-#	EXTRA_liblevel3_a_SOURCES = $(CG_SRCS)
-# endif
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
