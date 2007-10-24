@@ -15,20 +15,14 @@ dnl dnl **************************************************************
 dnl dnl ***                 Get User Options                       ***
 dnl dnl **************************************************************
 
-dnl use c-lapack wrappings
-AC_ARG_WITH(clapack,
-  AC_HELP_STRING(
-    [--with-clapack=DIR],
-    [Use the BAGEL Clover Apply Library installed in DIR]
-  ),
-    [bagel_clover_enabled="yes"
-     BAGEL_CLOVER_HOME="${with_bagel_clover}"]
-)
-
-AC_ARG_ENABLE(parallel-arch,
-  AC_HELP_STRING([--enable-parallel-arch=<arch>],
-    [Build Assembler for parallel architecture <arch>]),
-  [ PARALLEL_ARCH="${enableval}"]
+dnl What type of wrappings to use
+dnl NOTE: there is uncertainty here. Different OS might need different
+dnl bindings lapack functions. Dunno what they are (the known set of unknowns).
+dnl This might well need more expanding
+AC_ARG_ENABLE(lapack,
+  AC_HELP_STRING([--enable-lapack=<type>],
+    [Use the type of lapack bindings specified by <type>. Currently, this can be lapack]),
+  [LAPACK_BINDING="${enableval}"]
 )
 
 dnl with QDP -- QDP will override everything else
@@ -44,102 +38,98 @@ dnl we can also put the QDP++ packers in here too...
 AC_ARG_WITH(qdp,
   AC_HELP_STRING(
      [--with-qdp=DIR],
-     [ Build Assembler with QDP++, where QDP++ is installed in DIR. ]
+     [Build package with QDP++, where QDP++ is installed in DIR.]
   ),
-  [ QDPXX_HOME="${with_qdp}"
-    QDPXX_GIVEN="yes"
+  [QDPXX_HOME="${with_qdp}"
+   QDPXX_GIVEN="yes"
   ],
-  [ QDPXX_GIVEN="no" ]
+  [QDPXX_GIVEN="no"]
 )
 
 dnl dnl ******************** DONE WITH USER INPUT *********************
 dnl dnl ***        Now Configuration                               ****
 dnl dnl ***************************************************************
 dnl 
-dnl     ***************************************************************
-dnl     ***       There are two distinct branches depending         ***
-dnl     ***      on whether we are compiling with QDP++ or not      ***
-dnl     ***************************************************************
+if test "X${QDPXX_HOME}X" = "XX" ; then
+  AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
+else
+  AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [], [${QDPXX_HOME}/bin:${PATH}])
+fi
 
-dnl 
-if test "X${QDPXX_GIVEN}X" = "XyesX"; then 
-     dnl Find the QDP++ config program 
-     if test "X${QDPXX_HOME}X" = "XX" ; 
-     then
-	AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
-     else
-	AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [], [${QDPXX_HOME}/bin:${PATH}])
-     fi
+if test "X${QDPXX_CONFIG}X" = "XX" ; then
+  AC_MSG_ERROR([QDP++ configuration program qdp++-config not found.])
+fi
 
-     if test "X${QDPXX_CONFIG}X" = "XX" ; then
-	AC_MSG_ERROR([QDP++ configuration program qdp++-config not found.])
-     fi
+AC_MSG_NOTICE([Found QDP++ configuration program ${QDPXX_CONFIG}])
+AC_SUBST(CXX, "`${QDPXX_CONFIG} --cxx`")
+AC_MSG_NOTICE([QDP++ compiler: ${CXX}])
+AC_SUBST(QDPXX_CXXFLAGS, "`${QDPXX_CONFIG} --cxxflags`")
+AC_MSG_NOTICE([QDP++ compile flags: ${QDPXX_CXXFLAGS}])
+AC_SUBST(QDPXX_LDFLAGS,  "`${QDPXX_CONFIG} --ldflags`")
+AC_MSG_NOTICE([QDP++ linking flags: ${QDPXX_LDFLAGS}])
+AC_SUBST(QDPXX_LIBS,     "`${QDPXX_CONFIG} --libs`")
+AC_MSG_NOTICE([QDP++ libraries flags: ${QDPXX_LIBS}])
+AC_SUBST(QDPXX_ND,       "`${QDPXX_CONFIG} --Nd`")
+if test "X${QDPXX_ND}X" = "XX" ; then
+  AC_MSG_ERROR([Cannot determine QDP++ spacetime dimension])
+else
+  AC_MSG_NOTICE([QDP++ spacetime dimension: ${QDPXX_ND}])
+fi
+AC_SUBST(QDPXX_NC,       "`${QDPXX_CONFIG} --Nc`")
+AC_MSG_NOTICE([QDP++ number of colors: ${QDPXX_NC}])
+AC_SUBST(QDPXX_NS,       "`${QDPXX_CONFIG} --Ns`")
+if test "X${QDPXX_NS}X" = "XX" ; then
+  AC_MSG_ERROR([Cannot determine number of spin components in QDP++])
+else
+  AC_MSG_NOTICE([QDP++ number of spin components: ${QDPXX_NS}])
+fi
 
-     AC_MSG_NOTICE([Found QDP++ configuration program ${QDPXX_CONFIG}])
-     AC_MSG_CHECKING([if QDP++ uses checkerboarded layout])
-     layout=`${QDPXX_CONFIG} --layout`
-     if test "X${layout}X" == "Xcb2X"; then 
-	AC_MSG_RESULT([yes])
-     else
-        AC_MSG_RESULT([no])
-	AC_MSG_ERROR([This Dslash Operator only works for checkerboarded QDP++. Sorry])
-     fi
+AC_SUBST(QDPXX_PARALLEL_ARCH, "`${QDPXX_CONFIG} --parallel-arch`")
+AC_MSG_NOTICE([QDP++ parallel arch: ${QDPXX_PARALLEL_ARCH}])
 
-     AC_SUBST(CC, ${CC})
-     AC_MSG_NOTICE([QDP++ C compiler: ${CC}])
+AC_SUBST(QDPXX_PRECISION, "`${QDPXX_CONFIG} --precision`")
+AC_MSG_NOTICE([QDP++ precision: ${QDPXX_PRECISION}])
 
-     AC_SUBST(CXX,"`${QDPXX_CONFIG} --cxx`")
-     AC_MSG_NOTICE([QDP++ C++ compiler: ${CXX}])
-
-     AC_SUBST(SSEXX_AUX_CFLAGS, "`${QDPXX_CONFIG} --cxxflags`")
-     AC_MSG_NOTICE([QDP++ compile flags: ${SSEXX_AUX_CFLAGS}])
-
-     AC_SUBST(SSEXX_AUX_LDFLAGS,  "`${QDPXX_CONFIG} --ldflags`")
-     AC_MSG_NOTICE([QDP++ linking flags: ${SSEXX_AUX_LDFLAGS}])
-
-     AC_SUBST(SSEXX_AUX_LIBS,     "`${QDPXX_CONFIG} --libs`")
-     AC_MSG_NOTICE([QDP++ libraries flags: ${SSEXX_AUX_LIBS}])
-
-     QDPXX_ND="`${QDPXX_CONFIG} --Nd`"
-     AC_MSG_NOTICE([QDP++ spacetime dimension: ${QDPXX_ND}])
-     
-     QDPXX_NC="`${QDPXX_CONFIG} --Nc`"
-     AC_MSG_NOTICE([QDP++ number of colors: ${QDPXX_NC}])
-
-     QDPXX_NS="`${QDPXX_CONFIG} --Ns`"
-     AC_MSG_NOTICE([QDP++ number of spin components: ${QDPXX_NS}])
-
-     PARALLEL_ARCH="`${QDPXX_CONFIG} --parallel-arch`"
-     AC_MSG_NOTICE([QDP++ has parallel arch: ${PARALLEL_ARCH} ] )
-
-     PRECISION="`${QDPXX_CONFIG} --precision`"
-     AC_MSG_NOTICE([QDP++ has precision: ${PRECISION} ] )
-
-     dnl This function is defined in acinclude.m4
-     dnl it tries to try to compile the program 
-     PAC_QDPXX_LINK_CXX_FUNC(
-	${SSEXX_AUX_CFLAGS},
-	${SSEXX_AUX_LDFLAGS},
-	${SSEXX_AUX_LIBS},
-	,
-	,
-	[qdpxx_link_ok=yes],
-	[qdpxx_link_ok=no]
-     )
-
-     AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
-     if test "X${qdpxx_link_ok}X" = "XyesX" ; then 
-	AC_MSG_RESULT(yes)
-     else 
-	AC_MSG_RESULT(no)
-	AC_MSG_ERROR([Cannot compile/link a program with QDP++.
-    Use --with-qdp++=<dir> to select a working version.])
-    fi 
-
-    dnl *********************************************************
-    dnl ***              end of section with QDP++            ***
-    dnl *********************************************************
+dnl Try to compile a QDP++ program to check the --with options
+AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
+PAC_QDPXX_LINK_CXX_FUNC(
+  ${QDPXX_CXXFLAGS},
+  ${QDPXX_LDFLAGS},
+  ${QDPXX_LIBS},
+  ,
+  ,
+  [qdpxx_link_ok=yes],
+  [qdpxx_link_ok=no]
+)
+if test "X${qdpxx_link_ok}X" = "XyesX"; 
+then 
+  AC_MSG_RESULT(yes)
 else 
+  AC_MSG_RESULT(no)
+  AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
+fi 
+
+
+dnl ************************************************************************
+dnl **** Lapack bindings                                                ****
+dnl ************************************************************************
+
+case "${LAPACK_BINDING}" in
+lapack)
+	AC_MSG_NOTICE([Configuring to use Lapack Fortran bindings])
+	AC_DEFINE(FORTRAN_LAPACK_BINDING,[],[Use Lapack Fortran bindings])
+        LAPACK_STUBS="no"
+	;;
+*)
+	AC_MSG_NOTICE([Configuring to use dummy stubs. If you want a real binding, use the --enable-lapack option])
+	AC_DEFINE(DUMMY_LAPACK_BINDING,[],[Use dummy bindings])
+        LAPACK_STUBS="yes"
+	;;
+esac
+
+dnl There is one of these for each case above in the LAPACK_BINDING
+AM_CONDITIONAL(BUILD_DUMMY_LAPACK, [ test "X${LAPACK_STUBS}X" = "XyesX" ])
+AM_CONDITIONAL(BUILD_FORTRAN_LAPACK, [ test "X${LAPACK_BINDING}X" = "XlapackX" ])
 
 dnl dnl produce output
 AC_CONFIG_FILES(Makefile)
