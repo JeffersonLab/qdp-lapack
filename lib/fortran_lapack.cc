@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clapack.cc,v 1.1 2007-10-11 20:21:11 edwards Exp $
+// $Id: fortran_lapack.cc,v 1.1 2007-10-24 01:15:45 edwards Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
