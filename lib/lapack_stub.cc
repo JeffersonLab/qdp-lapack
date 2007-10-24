@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lapack_stub.cc,v 1.1 2007-10-11 20:21:11 edwards Exp $
+// $Id: lapack_stub.cc,v 1.2 2007-10-24 02:41:24 edwards Exp $
 /*! \file
  *  \brief Stubs for QDP interface to Lapack lib
  */
@@ -8,7 +8,7 @@
 
 using namespace QDP;
 
-namespace Lapack
+namespace QDPLapack
 {
   int zheev(char& jobz,
 	    char& uplo,

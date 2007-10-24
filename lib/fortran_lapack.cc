@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.1 2007-10-24 01:15:45 edwards Exp $
+// $Id: fortran_lapack.cc,v 1.2 2007-10-24 02:41:24 edwards Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
 
 #include "qdp-lapack.h"
-#include "clapack_wrapper.h"
+#include "fortran_lapack.h"
 
-namespace Lapack
+namespace QDPLapack
 {
   // hide lapack's temporaries...
   int zheev(char& jobz,
@@ -15,7 +15,8 @@ namespace Lapack
 	    const int& N, // These are the dimensions of the array A
 	    multi2d<DComplex>& A,
 	    //const int& lda,  // These are the dimensions of the array A
-	    multi1d<Double>& w){
+	    multi1d<Double>& w)
+  {
     /**
        char c_jobz = *jobz;
        char c_uplo = *uplo;
@@ -58,7 +59,8 @@ namespace Lapack
 	    multi1d<DComplex>& Work, // Should be length LWork >= max(1,2*N-1)
 	    //const int& LWork,
 	    multi1d<Double>& RWork // Should be length max(1,3*N-2)
-    ){
+    )
+  {
     /**
        char c_jobz = *jobz;
        char c_uplo = *uplo;
@@ -95,8 +97,8 @@ namespace Lapack
 	    //const int& N, // These are the dimensions of the array A
 	    multi2d<DComplex>& A,
 	    //const int& lda,  // These are the dimensions of the array A
-	    multi1d<Double>& w){
-
+	    multi1d<Double>& w)
+  {
     int N = A.size1();
     int LWork = 2*N-1;
     multi1d<DComplex> Work(LWork);
@@ -168,7 +170,8 @@ namespace Lapack
 	     multi2d<DComplex>& A, //input
 	     multi1d<DComplex>& TAU, // some strange LAPACK beast
 	     multi2d<DComplex>& C //input/output
-    ){
+    )
+  {
     /**
        char c_side = *side ;
        char c_trans = *trans ;
@@ -219,6 +222,6 @@ namespace Lapack
   }
     
   
-} // namespace Lapack
+} // namespace QDPLapack
 
 
