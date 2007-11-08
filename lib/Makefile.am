@@ -1,11 +1,11 @@
-# $Id: Makefile.am,v 1.2 2007-10-24 01:13:47 edwards Exp $
+# $Id: Makefile.am,v 1.3 2007-11-08 15:04:53 bjoo Exp $
 #
 # Path for all files used in building the library
 
 #
 # Any other compiler flags
 # 
-AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@ 
+AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@
 AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CXXFLAGS@ @CXXFLAGS@
 AM_CC  = $(CC)
 AM_CXX = $(CXX)
