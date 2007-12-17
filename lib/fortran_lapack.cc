@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.2 2007-10-24 02:41:24 edwards Exp $
+// $Id: fortran_lapack.cc,v 1.3 2007-12-17 19:33:08 kostas Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -221,6 +221,249 @@ namespace QDPLapack
     return r ;
   }
     
+
+  /*--------------------------------------------------------------------
+   *  ZHETRF( UPLO, N, A, IPIV)
+   *  Double precision Cholesky factorization from Lapack
+   *    	A = L*D*L**H
+   *
+   *  UPLO  'U' stores upper triangular / 'L' stores lower triangular
+   *  N     order of A
+   *  A     (input)  The matrix 
+   *  	    (output) The upper/lower triangular factor stored in A
+   *  IPIV  (output) INTEGER array, dimension (N) the pivot array
+   *
+   *  Work is allocated locally
+   *--------------------------------------------------------------------*/
+  int zhetrf( char &uplo, const int& n,
+	      multi2d<DComplex>& A, 
+	      multi1d<int>& ipiv
+	      )
+  {
+    int info;
+    int lda = A.size1() ; 
+    int LWork = n;
+    multi1d<DComplex> Work(LWork);
+    
+    int r = zhetrf_( &uplo, (int *)&n, &A(0,0), &lda, 
+		     &ipiv[0],  &Work[0], &LWork, &info );
+    
+    if(info){
+      QDPIO::cerr<<"Lapack::zhetrf returned with exit code: "<<info<<endl ;
+      exit(1) ;
+    }
+
+    return r ;
+  }
+
+/*--------------------------------------------------------------------
+   * ZHETRS( UPLO, N, A, IPIV, B)
+   *  
+   *  Double precision solution of *only NRHS=1* linear system 
+   *  using Cholesky factors A = L*D*L**H from ZHETRF
+   *
+   *  UPLO  'U' stores upper triangular / 'L' stores lower triangular
+   *  N     order of A
+   *  A     (input) The factor in U or L
+   *  IPIV  (input) INTEGER array, dimension (N) the pivot array
+   *  B	    one right hand size (NRHS = 1)
+   *
+   *--------------------------------------------------------------------*/
+  int zhetrs( char &uplo, const int& n, 
+	      multi2d<DComplex>& A, 
+	      multi1d<int>& ipiv,
+	      multi1d<DComplex>& B
+	    )
+  {
+    int NRHS(1);
+    int info;
+    int lda = A.size1() ; 
+    int ldb = B.size() ; 
+
+    int r = zhetrs_( &uplo, (int *)&n, &NRHS,
+		     &A(0,0), &lda, 
+		     &ipiv[0], 
+		     &B[0], &ldb,
+		     &info );
+    
+    if(info){
+      QDPIO::cerr<<"Lapack::zhetrs returned with exit code: "<<info<<endl ;
+      exit(1) ;
+    }
+
+    return r ;
+  }
+
+
+  // Interfaces to BLAS start here
+
+  int LatFermMat_x_Mat_cgemm(char& TRANSA, 
+                             char& TRANSB,
+                             const int& M, const int& N, const int& K, 
+                             const Complex& ALPHA,
+                             const multi1d<LatticeFermion>& A,
+                             // The LDA is known: int *LDA,
+                             const multi2d<Complex>& B, const int& LDB, 
+                             const Complex& BETA,
+                             multi1d<LatticeFermion>& C
+                             // The LDB is known: int *LDC
+                             ){
+
+    int LDA,LDC ;
+
+    if(N==1)
+      LDA = Layout::sitesOnNode() * Nc *Ns ;
+    else
+      LDA = (Complex *)&A[1].elem(0).elem(0).elem(0) - 
+            (Complex *)&A[0].elem(0).elem(0).elem(0) ;
+
+    C.resize(N) ;
+    if(N==1)
+      LDC = Layout::sitesOnNode() * Nc *Ns ;
+    else
+      LDC = (Complex *)&C[1].elem(0).elem(0).elem(0) - 
+	    (Complex *)&C[0].elem(0).elem(0).elem(0) ;
+
+    //DOES C NEED TO BE ZEROED out ?
+    //for(int i(0);i<N;i++) C[i] = zero ;
+
+    /**
+       QDPIO::cout<<"Leading dim is LDA= "<<LDA<<endl ;
+       int ttLD = Layout::sitesOnNode() * Nc *Ns ;
+       QDPIO::cout<<"  LatticeFerion Data size= "<<ttLD<<endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDA-ttLD<<endl ;
+       QDPIO::cout<<"Leading dim is LDC= "<<LDC<<endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDC-ttLD<<endl ;
+    **/
+
+    return cgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
+                  (Complex *)&ALPHA,
+                  (Complex *)&A[0].elem(0).elem(0).elem(0),&LDA,
+                  (Complex *)&B(0,0),(int *)&LDB,
+                  (Complex *)&BETA,
+                  (Complex *)&C[0].elem(0).elem(0).elem(0),&LDC);
+  }
+
+  
+  //Mixed precision
+  int LatFermMat_x_Mat_cgemm(char& TRANSA, 
+                             char& TRANSB,
+                             const int& M, const int& N, const int& K, 
+                             const DComplex& ALPHA,
+                             const multi1d<LatticeFermion>& A,
+                             // The LDA is known: int *LDA,
+                             const multi2d<DComplex>& B, const int& LDB, 
+                             const Complex& BETA,
+                             multi1d<LatticeFermion>& C
+                             // The LDB is known: int *LDC
+                             ){
+    Complex alpha = ALPHA ;
+    Complex beta = BETA ;
+    
+    multi2d<Complex> b(B.size2(),B.size1());
+    for(int i(0);i<B.size2();i++)
+      for(int j(0);j<B.size1();j++)
+	b(i,j) = B(i,j);
+    
+    return LatFermMat_x_Mat_cgemm(TRANSA, TRANSB,M, N, K, alpha, A, b, LDB, 
+                             beta, C  );
+  }
+
+
+  /*--------------------------------------------------------------------
+   * cgemm     	** this is a BLAS not a Lapack function **
+   * 		COMPLEX 
+   *            Full interface
+   *
+   *            C = alpha*A*B + beta*C
+   *
+   * 		A mxk,	B kxn, 	C mxn 
+   * 		(or more accurately op(A),op(B),op(C) have these dimensions)
+   * 		
+   *--------------------------------------------------------------------*/
+  int cgemm(char &transa,
+	    char &transb,
+	    int m,
+	    int n,
+	    int k,
+	    Complex alpha,
+	    multi2d<Complex>& A,  // input
+	    int lda,
+	    multi2d<Complex>& B,  // input
+	    int ldb,
+	    Complex beta,
+	    multi2d<Complex>& C,  //input/output
+	    int ldc   
+    )
+  {
+    int r = cgemm_(&transa,&transb, &m, &n, &k, &alpha,
+		   &A(0,0),&lda, &B(0,0),&ldb, &beta, &C(0,0),&ldc
+		   );
+  }
+
+/*--------------------------------------------------------------------
+   * zgemm     	** this is a BLAS not a Lapack function **
+   * 		DOUBLE COMPLEX 
+   *            Full interface
+   *
+   *            C = alpha*A*B + beta*C
+   *
+   * 		A mxk,	B kxn, 	C mxn
+   * 		(or more accurately op(A),op(B),op(C) have these dimensions)
+   * 		
+   *--------------------------------------------------------------------*/
+  int zgemm(char &transa,
+	    char &transb,
+	    int m,
+	    int n,
+	    int k,
+	    DComplex alpha,
+	    multi2d<DComplex>& A,  // input
+	    int lda,
+	    multi2d<DComplex>& B,  // input
+	    int ldb,
+	    DComplex beta,
+	    multi2d<DComplex>& C,  //input/output
+	    int ldc   
+    )
+  {
+    int r = zgemm_(&transa,&transb, &m, &n, &k, &alpha,
+		   &A(0,0),&lda, &B(0,0),&ldb, &beta, &C(0,0),&ldc
+		  );
+  }
+
+  /*--------------------------------------------------------------------
+   * CGEMV  	** this is a BLAS not a Lapack function **
+   * 		single precision interface for 
+   * 			y=A*x
+   *  
+   *  TRANS   'N' y := A*x,   'T' y := A'*x,   'C' y := conjg( A' )*x 
+   *  M     rows of A
+   *  N     columns of A
+   *  A     The m x n matrix
+   *  X     the vector of dim (n)
+   *  Y     (output) the result
+   *
+   *--------------------------------------------------------------------*/
+  int cgemv(char &trans, 
+	    const int& m, const int& n,
+	    multi2d<Complex>& A, 
+	    multi1d<Complex>& x,
+	    multi1d<Complex>& y
+	    )
+  {
+    int incx(1), incy(1);
+    Complex alpha(1.0), beta(0.0);
+    int lda = A.size1() ; 
+
+    return cgemv_(&trans, (int *) &m, (int *) &n, &alpha, 
+		    (Complex *) &A(0,0), &lda, 
+		    &x[0], &incx, &beta, 
+		    &y[0], &incy);
+  }
+
+  
+
   
 } // namespace QDPLapack
 
