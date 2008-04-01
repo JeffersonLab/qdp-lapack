@@ -30,7 +30,7 @@
 //#include <stdio.h>
 //#include "TEST/wtime.h"
 #include "qdp-lapack_Complex.h"
-#include "numerical_private.h"
+#include "qdp-lapack_numerical_private.h"
 #define min(a, b) (a < b ? a : b)
   
 void restart_X(Complex_C *X, int ldx, Complex_C *hVecs, int nLocal, 

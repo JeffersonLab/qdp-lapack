@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.7 2007-11-08 15:04:53 bjoo Exp $
+# $Id: Makefile.in,v 1.8 2008-04-01 19:59:46 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -34,8 +34,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-@BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc
-@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc
+@BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc 
+@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc Complex.c  IncrEigpcg.c         numerical.c  restart_X.c eigpcg.c   ortho.c
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -59,14 +59,25 @@ AR = ar
 ARFLAGS = cru
 libqdp_lapack_a_AR = $(AR) $(ARFLAGS)
 libqdp_lapack_a_LIBADD =
-am__libqdp_lapack_a_SOURCES_DIST = lapack_stub.cc fortran_lapack.cc
+am__libqdp_lapack_a_SOURCES_DIST = lapack_stub.cc fortran_lapack.cc \
+	Complex.c IncrEigpcg.c numerical.c restart_X.c eigpcg.c \
+	ortho.c
 @BUILD_DUMMY_LAPACK_TRUE@am__objects_1 = lapack_stub.$(OBJEXT)
-@BUILD_FORTRAN_LAPACK_TRUE@am__objects_2 = fortran_lapack.$(OBJEXT)
+@BUILD_FORTRAN_LAPACK_TRUE@am__objects_2 = fortran_lapack.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	Complex.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	IncrEigpcg.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	numerical.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	restart_X.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	eigpcg.$(OBJEXT) ortho.$(OBJEXT)
 am_libqdp_lapack_a_OBJECTS = $(am__objects_1) $(am__objects_2)
 libqdp_lapack_a_OBJECTS = $(am_libqdp_lapack_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/include@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -176,7 +187,8 @@ top_srcdir = @top_srcdir@
 #
 # Any other compiler flags
 # 
-AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@
+#AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@
+AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @CFLAGS@
 AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CXXFLAGS@ @CXXFLAGS@
 AM_CC = $(CC)
 AM_CXX = $(CXX)
@@ -189,7 +201,7 @@ libqdp_lapack_a_SOURCES = $(am__append_1) $(am__append_2)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .o .obj
+.SUFFIXES: .c .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -259,8 +271,28 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Complex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IncrEigpcg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eigpcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fortran_lapack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lapack_stub.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/numerical.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ortho.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/restart_X.Po@am__quote@
+
+.c.o:
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+
+.c.obj:
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

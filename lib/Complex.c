@@ -13,7 +13,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "Complex.h"
+#include "qdp-lapack_Complex.h"
 
 /*------------------------------------------------------------------------
  * Single Precision complex

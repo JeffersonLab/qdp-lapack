@@ -86,7 +86,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>  // is this needed?
-#include "eigpcg.h"
+#include "qdp-lapack_eigpcg.h"
 
 /* DEBUG FUNCTION **********************************************************/
 void showSubMat(Complex_C *H, int lde, int rows, int cols){
