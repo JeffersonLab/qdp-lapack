@@ -1,8 +1,15 @@
+#ifndef __EIGPCG_C_H
+#define __EIGPCG_C_H
+
 #include "qdp-lapack_Complex.h"
 #include "qdp-lapack_numerical.h"
 #include "qdp-lapack_numerical_private.h"
 #include "qdp-lapack_restart_X.h"
 #include "qdp-lapack_ortho.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif 
 
 /* function prototypes */
 static void displayInfo(float tol, int maxit, int flag, int iter, 
@@ -25,3 +32,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
 	 int nev, float *evals, float *rnorms,
   	 int v_max, Complex_C *V, int esize, Complex_C *ework);
 
+#ifdef __cplusplus
+};
+#endif 
+#endif

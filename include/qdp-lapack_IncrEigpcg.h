@@ -1,4 +1,11 @@
+#ifndef  __INCREIGCG_C_H
+#define __INCREIGCG_C_H
 #include "qdp-lapack_eigpcg.h"
+#include "stdio.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif 
 
 void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 	int nrhs, 		/* The number of right hand sides to solve */
@@ -40,3 +47,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 	int v_max,		/* Maximum number of n-dim vectors in V */
 	FILE *outputFile);      /* File to write reports. Could be STDERR */
 
+#ifdef __cplusplus
+};
+#endif 
+#endif
