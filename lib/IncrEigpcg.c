@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include "qdp-lapack_IncrEigpcg.h"
 
+#ifdef USE_QMP
+#define fprintf QMP_fprintf
+#endif
+
 /* DEBUG **********************************************************************/
 void RayleighRitz(Complex_C *evecs, int lde, int n, int numEvecs,
      Complex_C *H, int ldh,

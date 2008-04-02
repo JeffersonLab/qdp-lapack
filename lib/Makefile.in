@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.8 2008-04-01 19:59:46 kostas Exp $
+# $Id: Makefile.in,v 1.9 2008-04-02 02:45:53 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -34,8 +34,12 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+
+#if USE_QMP2
+#AM_CFLAGS += -DUSE_QMP
+#endif
 @BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc 
-@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc Complex.c  IncrEigpcg.c         numerical.c  restart_X.c eigpcg.c   ortho.c
+@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc Complex.c  IncrEigpcg.c  numerical.c  restart_X.c eigpcg.c   ortho.c
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -188,7 +192,7 @@ top_srcdir = @top_srcdir@
 # Any other compiler flags
 # 
 #AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@
-AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @CFLAGS@
+AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @CFLAGS@ -DUSE_QMP
 AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CXXFLAGS@ @CXXFLAGS@
 AM_CC = $(CC)
 AM_CXX = $(CXX)
