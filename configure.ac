@@ -7,7 +7,8 @@ dnl check for compiler
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_RANLIB
-     
+AC_PROG_F77
+  
 dnl initialise automake
 AM_INIT_AUTOMAKE
 

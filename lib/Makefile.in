@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.9 2008-04-02 02:45:53 kostas Exp $
+# $Id: Makefile.in,v 1.10 2008-04-02 17:55:44 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -39,7 +39,7 @@ POST_UNINSTALL = :
 #AM_CFLAGS += -DUSE_QMP
 #endif
 @BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc 
-@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc Complex.c  IncrEigpcg.c  numerical.c  restart_X.c eigpcg.c   ortho.c
+@BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc Complex.c  IncrEigpcg.c  numerical.c  restart_X.c eigpcg.c   ortho.c wtime.c cdotcsub.f  zdotcsub.f
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -65,14 +65,16 @@ libqdp_lapack_a_AR = $(AR) $(ARFLAGS)
 libqdp_lapack_a_LIBADD =
 am__libqdp_lapack_a_SOURCES_DIST = lapack_stub.cc fortran_lapack.cc \
 	Complex.c IncrEigpcg.c numerical.c restart_X.c eigpcg.c \
-	ortho.c
+	ortho.c wtime.c cdotcsub.f zdotcsub.f
 @BUILD_DUMMY_LAPACK_TRUE@am__objects_1 = lapack_stub.$(OBJEXT)
 @BUILD_FORTRAN_LAPACK_TRUE@am__objects_2 = fortran_lapack.$(OBJEXT) \
 @BUILD_FORTRAN_LAPACK_TRUE@	Complex.$(OBJEXT) \
 @BUILD_FORTRAN_LAPACK_TRUE@	IncrEigpcg.$(OBJEXT) \
 @BUILD_FORTRAN_LAPACK_TRUE@	numerical.$(OBJEXT) \
 @BUILD_FORTRAN_LAPACK_TRUE@	restart_X.$(OBJEXT) \
-@BUILD_FORTRAN_LAPACK_TRUE@	eigpcg.$(OBJEXT) ortho.$(OBJEXT)
+@BUILD_FORTRAN_LAPACK_TRUE@	eigpcg.$(OBJEXT) ortho.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	wtime.$(OBJEXT) cdotcsub.$(OBJEXT) \
+@BUILD_FORTRAN_LAPACK_TRUE@	zdotcsub.$(OBJEXT)
 am_libqdp_lapack_a_OBJECTS = $(am__objects_1) $(am__objects_2)
 libqdp_lapack_a_OBJECTS = $(am_libqdp_lapack_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)/include@am__isrc@
@@ -87,6 +89,10 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+F77COMPILE = $(F77) $(AM_FFLAGS) $(FFLAGS)
+F77LD = $(F77)
+F77LINK = $(F77LD) $(AM_FFLAGS) $(FFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o \
+	$@
 SOURCES = $(libqdp_lapack_a_SOURCES)
 DIST_SOURCES = $(am__libqdp_lapack_a_SOURCES_DIST)
 ETAGS = etags
@@ -112,6 +118,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+FFLAGS = @FFLAGS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -151,6 +159,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_F77 = @ac_ct_F77@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -192,7 +201,7 @@ top_srcdir = @top_srcdir@
 # Any other compiler flags
 # 
 #AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CFLAGS@ @CFLAGS@
-AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @CFLAGS@ -DUSE_QMP
+AM_CFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @CFLAGS@
 AM_CXXFLAGS = -I@top_srcdir@/include -I@top_builddir@/include @QDPXX_CXXFLAGS@ @CXXFLAGS@
 AM_CC = $(CC)
 AM_CXX = $(CXX)
@@ -205,7 +214,7 @@ libqdp_lapack_a_SOURCES = $(am__append_1) $(am__append_2)
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .cc .o .obj
+.SUFFIXES: .c .cc .f .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -283,6 +292,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/numerical.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ortho.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/restart_X.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wtime.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -311,6 +321,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.f.o:
+	$(F77COMPILE) -c -o $@ $<
+
+.f.obj:
+	$(F77COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
