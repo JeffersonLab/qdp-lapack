@@ -266,13 +266,23 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
          /* ------------------------------------------------------------ */
          wt1 = primme_get_wtime(); 
          primme_get_time(&ut1,&st1);
-   
-         eigpcg(n, lde, x, b, &normb, tol, *restartTol, 
+	 eigpcg(n, lde, x, b, &normb, tol, *restartTol, 
 		maxit_remain, &numIts, &reshist[numIts], &flag, plvl,
 		work, matvec, precon, params,
                 nev_used, &evals[*ncurEvals], &rnorms[*ncurEvals], 
 		v_max, V, esize, ework);
-   
+
+	 matvec(x, work, params);  /* work(1:n) used for residual b-Ax */
+	 for (i = 0; i < n; i ++) {
+	   work[i].r = b[i].r - work[i].r;
+	   work[i].i = b[i].i - work[i].i;
+	 }
+	 tempc = wrap_cdot(&n, work, &ONE, work, &ONE, params); /* norm ||x||^2 */
+	 fprintf(outputFile, "true residual	: %g\n", sqrt(tempc.r));
+	 tempc = wrap_cdot(&n, x, &ONE, x, &ONE, params); /* norm ||x||^2 */
+	 fprintf(outputFile, "solution norm	: %g\n", sqrt(tempc.r));
+	 fprintf(outputFile, "solution pointer	: %d\n", x);
+
          wt2 = primme_get_wtime();
          primme_get_time(&ut2,&st2);
 
@@ -421,6 +431,18 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
       /* ------------------------------------------------------------------- */
 
    } /* end of nrhs loop */
+
+  matvec(x, work, params);  /* work(1:n) used for residual b-Ax */
+  for (i = 0; i < n; i ++) {
+    work[i].r = b[i].r - work[i].r;
+    work[i].i = b[i].i - work[i].i;
+  }
+  tempc = wrap_cdot(&n, work, &ONE, work, &ONE, params); /* norm ||x||^2 */
+  fprintf(outputFile, "2 true residual	: %g\n", sqrt(tempc.r));
+  tempc = wrap_cdot(&n, x, &ONE, x, &ONE, params); /* norm ||x||^2 */
+  fprintf(outputFile, "2 solution norm	: %g\n", sqrt(tempc.r));
+  fprintf(outputFile, "2 solution pointer	: %d\n", x);
+
 
 
    if (freeEwork) {
