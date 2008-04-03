@@ -18,10 +18,10 @@ c
 !        z = zdotc( n, a, 1, b, 1 )
 !
 !        print *, z
-      print *, n, (x(i),i=1,n)
+!      print *, n, (x(i),i=1,n)
       cdotcr = cdotc( n, x, incx, y, incy )
-      print *, n, (x(i),i=1,n)
-      print *, cdotcr
+!      print *, n, (x(i),i=1,n)
+!      print *, cdotcr
 c
       return
 c-----end-of-cdotcsub---------------------------------------------------

@@ -199,7 +199,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
        for (i=0; i<n; i++) { x[i].r=0.0; x[i].i=0.0;}
        *flag = 0;		
        reshist[0] = 0.0;
-       if (plvl) displayInfo(tol,maxit,*flag,*iter,reshist);
+       if (plvl) displayInfo(tol,maxit,*flag,*iter-1,reshist);
        return;
      }
   }
