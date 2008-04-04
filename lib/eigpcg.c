@@ -525,7 +525,7 @@ static void displayInfo(float tol,
     if (iter == 0)
       printf("The initial guess has relative residual %0.2g which is within\nthe desired tolerance %0.2g\n", reshist[iter], tol);
     else
-      printf("PCG converged at iteration %d to a solution with relative residual %0.2g", iter, reshist[iter]/reshist[0]);
+      printf("PCG converged at iteration %d to a solution with relative residual %0.2g", iter, reshist[iter-1]/reshist[0]);
     break;
   case 1:
     printf("\nbecause the maximum number of iterations was reached.");
