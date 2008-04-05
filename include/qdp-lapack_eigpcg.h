@@ -13,7 +13,7 @@ extern "C" {
 
 /* function prototypes */
 static void displayInfo(float tol, int maxit, int flag, int iter, 
-		float *reshist);
+		float resnorm);
 
 void computeResNorm
     (Complex_C *x, float *lambda, float *rnorm, Complex_C *Res, int n, 
