@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 2008-04-02 17:55:44 kostas Exp $
+# $Id: Makefile.am,v 1.8 2008-04-05 18:59:22 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -23,7 +23,7 @@ libqdp_lapack_a_SOURCES =
 #endif
 
 if BUILD_DUMMY_LAPACK
-libqdp_lapack_a_SOURCES += lapack_stub.cc 
+libqdp_lapack_a_SOURCES += lapack_stub.cc IncrEigpcg_stub.c
 endif
 
 if BUILD_FORTRAN_LAPACK
