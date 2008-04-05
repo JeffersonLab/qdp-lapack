@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "qdp-lapack_IncrEigpcg.h"
+#include "qdp-lapack_wtime.h"
 
 #ifdef USE_QMP
 #define fprintf QMP_fprintf
@@ -104,7 +105,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 {
 
   /* Timing vars */
-  double wt1,wt2,ut1,ut2,st1,st2;
+  double wt1,wt2,ut1,ut2,st1,st2,wE,wI;
 
   /* Pointers */
   Complex_C *oldEwork = ework;
@@ -129,6 +130,13 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
   char cV = 'V'; char cU = 'U'; char cC ='C';
 
   if (updateRestartTol) Cholesky = 0;
+
+  /* ------------------------------------------------------------------- */
+/* printf("--------------------------------------------\n");
+printf("n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,normAestimate, updateRestartTol, nev, v_max, %d %d %d %d %d %d %g %g %d %d %d \n",
+	n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,
+        normAestimate, updateRestartTol, nev, v_max);
+*/
 
   /* ------------------------------------------------------------------- */
   /* Work allocations */
@@ -188,6 +196,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
       /* WHILE: Call eigCG until this rhs converges. eigCG must be called 
        * repeatedly if the deflation in initCG needs to restart it often */
       /* --------------------------------------------------------------- */
+      wE = 0.0; wI = 0.0;     /* Start accumulator timers */
       flag = -1;    	      /* First time through. Run eigCG regularly */
       maxit_remain = maxit;   /* Initialize Max and current # of iters   */
       numIts = 0;
@@ -199,7 +208,6 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
              * xinit = xinit + evecs*Hinv*evec'*(b-Ax0) 		 */
             /* --------------------------------------------------------- */
             wt1 = primme_get_wtime(); 
-            primme_get_time(&ut1,&st1);
    
             tempc = wrap_cdot(&n, x, &ONE, x, &ONE, params); /* norm ||x||^2 */
             if (tempc.r > 0.0) { /* If initial guess */
@@ -239,13 +247,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 	    BLAS_CAXPY(&n, &tpone, work, &ONE, x, &ONE);
    
             wt2 = primme_get_wtime();
-            primme_get_time(&ut2,&st2);
-	    if (plvl) {
-               fprintf(outputFile, "InitCG\n");
-               fprintf(outputFile, "I Wallclock : %-f\n", wt2-wt1);
-               fprintf(outputFile, "I User Time  : %f seconds\n", ut2-ut1);
-               fprintf(outputFile, "I Syst Time  : %f seconds\n", st2-st1);
-	    }
+	    wI = wI + wt2-wt1;
          }
          /* end of init-CG with evecs vectors                            */
          /* ------------------------------------------------------------ */
@@ -253,8 +255,12 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
          /* ------------------------------------------------------------ */
 	 /* Adjust nev for eigcg according to available ldh/restart      */
          /* ------------------------------------------------------------ */
-	 if (flag == 3) /* restart with the same rhs, set nev_used = 0 */
+	 if (flag == 3) { /* restart with the same rhs, set nev_used = 0 */
 	    nev_used = 0;
+	    /* if convergence seems before next restart do not restart again */
+ 	    if (reshist[numIts-1]*(*restartTol) < tol*normb) 
+		*restartTol = 0.0;
+	 }
 	 else {         /* First time through this rhs. Find nev evecs */
                         /* limited by the ldh evecs we can store in total */
             if (ldh-*ncurEvals < nev)
@@ -265,26 +271,15 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
          /* Solve Ax = b with x initial guess                            */
          /* ------------------------------------------------------------ */
          wt1 = primme_get_wtime(); 
-         primme_get_time(&ut1,&st1);
+
 	 eigpcg(n, lde, x, b, &normb, tol, *restartTol, 
 		maxit_remain, &numIts, &reshist[numIts], &flag, plvl,
 		work, matvec, precon, params,
                 nev_used, &evals[*ncurEvals], &rnorms[*ncurEvals], 
 		v_max, V, esize, ework);
 
-	 matvec(x, work, params);  /* work(1:n) used for residual b-Ax */
-	 for (i = 0; i < n; i ++) {
-	   work[i].r = b[i].r - work[i].r;
-	   work[i].i = b[i].i - work[i].i;
-	 }
-	 tempc = wrap_cdot(&n, work, &ONE, work, &ONE, params); /* norm ||x||^2 */
-	 fprintf(outputFile, "true residual	: %g\n", sqrt(tempc.r));
-	 tempc = wrap_cdot(&n, x, &ONE, x, &ONE, params); /* norm ||x||^2 */
-	 fprintf(outputFile, "solution norm	: %g\n", sqrt(tempc.r));
-	 fprintf(outputFile, "solution pointer	: %d\n", x);
-
          wt2 = primme_get_wtime();
-         primme_get_time(&ut2,&st2);
+	 wE = wE + wt2-wt1;
 
 	 /* if flag == 3 update the remain max number of iterations */
 	 maxit_remain = maxit - numIts;
@@ -297,12 +292,11 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
       /* ---------- */
 
       if (plvl) {
-         fprintf(outputFile, "eigCG\n");
-         fprintf(outputFile, "E Wallclock 	: %-f\n", wt2-wt1);
-         fprintf(outputFile, "E User Time    : %f seconds\n", ut2-ut1);
-         fprintf(outputFile, "E Syst Time    : %f seconds\n", st2-st1);
+         fprintf(outputFile, "For this rhs:\n");
+         fprintf(outputFile, "Total initCG Wallclock : %-f\n", wI);
+         fprintf(outputFile, "Total eigpcg Wallclock : %-f\n", wE);
          fprintf(outputFile, "Iterations: %-d\n", numIts); 
-         fprintf(outputFile, "Actual Resid of LinSys  : %e\n", reshist[numIts]);
+         fprintf(outputFile, "Actual Resid of LinSys  : %e\n", reshist[numIts-1]);
 	 if (plvl > 1) 
             for (i=0; i < nev; i++) 
                fprintf(outputFile, "Eval[%d]: %-22.15E rnorm: %-22.15E\n", 
@@ -379,7 +373,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 	    /* Note: do not compute the norm of the most recently added evec */
 	    normsComputed = 0;
      	    for (i=step-1;i<*ncurEvals-step;i+=step)  {
-		if (rnorms[i] > tol*10.0) {
+		if (rnorms[i] > tol*10.0 || rnorms[i] == 0.0) {
                    BLAS_CGEMV(&cN,&n,ncurEvals,&tpone,evecs,&lde,&HU[i*ldh],
 	                       &ONE,&tzero,work,&ONE);
                    computeResNorm(work, &lambda, &rnorms[i], &work[n], n, 
@@ -431,19 +425,6 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
       /* ------------------------------------------------------------------- */
 
    } /* end of nrhs loop */
-
-  matvec(x, work, params);  /* work(1:n) used for residual b-Ax */
-  for (i = 0; i < n; i ++) {
-    work[i].r = b[i].r - work[i].r;
-    work[i].i = b[i].i - work[i].i;
-  }
-  tempc = wrap_cdot(&n, work, &ONE, work, &ONE, params); /* norm ||x||^2 */
-  fprintf(outputFile, "2 true residual	: %g\n", sqrt(tempc.r));
-  tempc = wrap_cdot(&n, x, &ONE, x, &ONE, params); /* norm ||x||^2 */
-  fprintf(outputFile, "2 solution norm	: %g\n", sqrt(tempc.r));
-  fprintf(outputFile, "2 solution pointer	: %d\n", x);
-
-
 
    if (freeEwork) {
       free(ework);
