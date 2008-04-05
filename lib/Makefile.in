@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.10 2008-04-02 17:55:44 kostas Exp $
+# $Id: Makefile.in,v 1.11 2008-04-05 18:59:41 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -38,7 +38,7 @@ POST_UNINSTALL = :
 #if USE_QMP2
 #AM_CFLAGS += -DUSE_QMP
 #endif
-@BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc 
+@BUILD_DUMMY_LAPACK_TRUE@am__append_1 = lapack_stub.cc IncrEigpcg_stub.c
 @BUILD_FORTRAN_LAPACK_TRUE@am__append_2 = fortran_lapack.cc Complex.c  IncrEigpcg.c  numerical.c  restart_X.c eigpcg.c   ortho.c wtime.c cdotcsub.f  zdotcsub.f
 subdir = lib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -63,10 +63,11 @@ AR = ar
 ARFLAGS = cru
 libqdp_lapack_a_AR = $(AR) $(ARFLAGS)
 libqdp_lapack_a_LIBADD =
-am__libqdp_lapack_a_SOURCES_DIST = lapack_stub.cc fortran_lapack.cc \
-	Complex.c IncrEigpcg.c numerical.c restart_X.c eigpcg.c \
-	ortho.c wtime.c cdotcsub.f zdotcsub.f
-@BUILD_DUMMY_LAPACK_TRUE@am__objects_1 = lapack_stub.$(OBJEXT)
+am__libqdp_lapack_a_SOURCES_DIST = lapack_stub.cc IncrEigpcg_stub.c \
+	fortran_lapack.cc Complex.c IncrEigpcg.c numerical.c \
+	restart_X.c eigpcg.c ortho.c wtime.c cdotcsub.f zdotcsub.f
+@BUILD_DUMMY_LAPACK_TRUE@am__objects_1 = lapack_stub.$(OBJEXT) \
+@BUILD_DUMMY_LAPACK_TRUE@	IncrEigpcg_stub.$(OBJEXT)
 @BUILD_FORTRAN_LAPACK_TRUE@am__objects_2 = fortran_lapack.$(OBJEXT) \
 @BUILD_FORTRAN_LAPACK_TRUE@	Complex.$(OBJEXT) \
 @BUILD_FORTRAN_LAPACK_TRUE@	IncrEigpcg.$(OBJEXT) \
@@ -286,6 +287,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Complex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IncrEigpcg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IncrEigpcg_stub.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eigpcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fortran_lapack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lapack_stub.Po@am__quote@
