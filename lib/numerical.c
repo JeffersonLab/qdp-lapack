@@ -35,6 +35,8 @@
 #ifdef USE_QMP
 #include "qmp.h"
 #endif
+// Define the following to make all gemvs and gemms sum in double precision 
+#define USE_DOUBLE_PREC_SUMMATION
 /******************************************************************************/
 /* These wrappers perform the blas functions on a parallel distributed array
  * and apply the global sum of the resulting values through a user provided
@@ -53,10 +55,55 @@ void wrap_cgemv(char *transa, int *m, int *n, Complex_C *alpha, Complex_C *a,
    int *lda, Complex_C *x, int *incx, Complex_C *beta, Complex_C *y, int *incy,
    Complex_C *work, void *params)
 {
+// WARNING This function works only when transa = 'C' Otherwise globalsum
+// is not needed and you should use plain BLAS_CGEMV
 
-   BLAS_CGEMV(transa, m, n, alpha, a, lda, x, incx, beta, work, incy);
+#ifdef USE_DOUBLE_PREC_SUMMATION
 
-   globalSumDouble(work, y, n, params );
+   int i, yix = 0, ONE=1;
+
+   if (beta->r  == 0.0 &&  beta->i ==0.0 &&  /* Special case y = a'*x */
+       alpha->r == 1.0 && alpha->i ==0.0 ) { 
+
+      for (i=0;i<*n;i++)
+         work[i] = zsum_cdot(m, &a[(*lda)*i], &ONE, x, incx);
+      globalSumDouble(work, y, n, params );
+
+   }
+   else { // Perform all the multiplicatons needed y = alpha*a'*x+beta*y
+      for (i=0;i<*n;i++) {
+	   work[0] = wrap_zsum_cdot(m, &a[(*lda)*i], &ONE, x, incx, params);
+           c_mul_primme(&work[1], beta, &y[yix]);
+           c_mul_primme(&work[2], alpha, work);
+	   y[yix].r = work[1].r + work[2].r;
+	   y[yix].i = work[1].i + work[2].i;
+           yix = yix + *incy;
+      }
+   }
+#else 
+   int i, yix = 0;
+   Complex_C tzero = {0.0, 0.0};
+   Complex_C w1, w2;
+
+   BLAS_CGEMV(transa, m, n, alpha, a, lda, x, incx, &tzero, work, incy);
+
+
+   if (beta->r != 0.0 || beta->i !=0.0 || alpha->r != 1.0 || alpha->i != 0.0) {
+      // Sum first a*x into work[n]
+      globalSumDouble(work, &work[*n], n, params );
+      // y = beta*y + alpha *(sum)
+      for (i=0;i<*n;i++) {
+         c_mul_primme(&w1, beta, &y[yix]);
+         c_mul_primme(&w2, alpha, &work[*n+i]);
+	 y[yix].r = w1.r + w2.r;
+	 y[yix].i = w1.i + w2.i;
+         yix = yix + *incy;
+      }
+   }
+   else // just globalsum directly onto y
+      globalSumDouble(work, y, n, params );
+
+#endif
 
 }
 
@@ -84,6 +131,27 @@ Complex_C wrap_zsum_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *inc
 
 }
 /******************************************************************************/
+/* Perform result = x'*y where all are single precision but the summation 
+ * is performed in double precision. THIS IS LOCAL ON THE NODE.
+ * global sum if needed must be performed separately */
+Complex_C zsum_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy) 
+{
+   int i;
+   Complex_C cdotc, xconj, prod;
+   Complex_Z sum;
+
+   sum.r = 0.0;sum.i = 0.0;
+   for (i=0;i<*n;i++) {
+       s_cnjg_primme(&xconj,&x[i]);
+       c_mul_primme(&prod,&xconj,&y[i]);
+       sum.r = sum.r + prod.r;
+       sum.i = sum.i + prod.i;
+   }
+   cdotc.r = sum.r;
+   cdotc.i = sum.i;
+   return(cdotc);
+}
+/******************************************************************************/
 Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
    void *params) 
 {
@@ -101,6 +169,35 @@ void wrap_cgemm(char *transa, char *transb, int *m, int *n, int *k,
    Complex_C *beta, Complex_C *c, int *ldc,
    Complex_C *work, void *params)
 {
+// WARNING This function works only when transa = 'C' and transb = "N"
+// Otherwise globalsum is not needed and you should use plain BLAS_CGEMM
+#ifdef USE_DOUBLE_PREC_SUMMATION
+   int i, j, cx=0,  ONE=1;
+
+   if (beta->r  == 0.0 &&  beta->i ==0.0 &&  /* Special case c = a'*b */
+       alpha->r == 1.0 && alpha->i ==0.0 ) {
+      for (i=0;i<*n;i++) { 
+         for (j=0;j<*m;j++) // or c[cx++] = wrap_zsum_cdot(k, ...
+            work[j] = zsum_cdot(k, &a[(*lda)*j], &ONE, &b[(*ldb)*i], &ONE );
+         globalSumDouble(work, &c[(*ldc)*i], m, params);
+      }
+   }
+   else {  // Perform all the multiplicatons needed c = alpha*a'*b+beta*c
+      for (i=0;i<*n;i++) { 
+         cx = (*ldc)*i;
+         for (j=0;j<*m;j++) { 
+            work[0] = wrap_zsum_cdot(k, &a[(*lda)*j], &ONE, 
+			        &b[(*ldb)*i], &ONE, params);
+            c_mul_primme(&work[1], beta, &c[cx]);
+            c_mul_primme(&work[2], alpha, work);
+            c[cx].r = work[1].r + work[2].r;
+            c[cx].i = work[1].i + work[2].i;
+	    cx++;
+         }
+      }
+   }
+#else
+// WARNING THIS DOES NOT WORK FOR beta != 0.
    int i;
 
    BLAS_CGEMM(transa, transb, m, n, k, alpha, a, lda, b, ldb, beta, work, m);
@@ -114,6 +211,7 @@ void wrap_cgemm(char *transa, char *transb, int *m, int *n, int *k,
       for (i=0; i<*n; i++)
          globalSumDouble(&work[i*(*m)], &c[i*(*ldc)], m, params);
    }
+#endif
 
 }
 /******************************************************************************/

@@ -199,7 +199,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
        for (i=0; i<n; i++) { x[i].r=0.0; x[i].i=0.0;}
        *flag = 0;		
        reshist[0] = 0.0;
-       if (plvl) displayInfo(tol,maxit,*flag,*iter-1,reshist);
+       if (plvl) displayInfo(tol,maxit,*flag,*iter,reshist[0]);
        return;
      }
   }
@@ -428,7 +428,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
   
   *iter = *iter + it+1; /* record the number of CG iterations plus any older */
 
-  if (plvl) displayInfo(tol,maxit,*flag,*iter,reshist);
+  if (plvl) displayInfo(tol,maxit,*flag,*iter-1,reshist[it]);
 
   if (nev > 0) {
      /* Restart V, compute and return most recent nev Ritz pairs */
@@ -515,7 +515,7 @@ static void displayInfo(float tol,
 		    int maxit,
 		    int flag,
 		    int iter,
-		    float *reshist) {
+		    float resnorm) {
   if (flag != 0) {
     printf("PCG stopped at iteration %d with flag %d. ", iter, flag);
   }
@@ -523,9 +523,9 @@ static void displayInfo(float tol,
   switch(flag) {
   case 0:
     if (iter == 0)
-      printf("The initial guess has relative residual %0.2g which is within\nthe desired tolerance %0.2g\n", reshist[iter], tol);
+      printf("The initial guess has relative residual %0.2g which is within\nthe desired tolerance %0.2g\n", resnorm, tol);
     else
-      printf("PCG converged at iteration %d to a solution with relative residual %0.2g", iter, reshist[iter-1]/reshist[0]);
+      printf("PCG converged at iteration %d to a solution with residual norm %0.2g", iter, resnorm);
     break;
   case 1:
     printf("\nbecause the maximum number of iterations was reached.");
@@ -536,7 +536,7 @@ static void displayInfo(float tol,
   }
   
   if (flag != 0)
-    printf("\nThe iterate returned (number %d) has relative residual %0.2g",iter,reshist[iter]/reshist[0]);
+    printf("\nThe iterate returned at iteration %d has residual norm %0.2g",iter,resnorm);
 
   printf("\n");
 }
