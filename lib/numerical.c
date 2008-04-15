@@ -32,9 +32,7 @@
 #include "qdp-lapack_Complex.h"
 #include "qdp-lapack_numerical_private.h"
 #include "qdp-lapack_numerical.h"
-#ifdef USE_QMP
-#include "qmp.h"
-#endif
+
 // Define the following to make all gemvs and gemms sum in double precision 
 #define USE_DOUBLE_PREC_SUMMATION
 /******************************************************************************/

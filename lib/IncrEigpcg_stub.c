@@ -6,9 +6,6 @@
 #include <stdlib.h>
 #include "qdp-lapack_IncrEigpcg.h"
 
-#ifdef USE_QMP
-#define fprintf QMP_fprintf
-#endif
 
 /******************************************************************************/
 void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
