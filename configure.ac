@@ -28,6 +28,65 @@ AC_ARG_ENABLE(lapack,
   [LAPACK_BINDING="${enableval}"]
 )
 
+dnl dnl **************************************************************
+dnl dnl ***                 Get the QMP flags                      ***
+dnl dnl **************************************************************
+dnl  QMP_CFLAGS="-Wall -msse2 -O3  -DUSE_QMP"
+
+AC_ARG_WITH(qmp,
+  AC_HELP_STRING(
+    [--with-qmp=DIR],
+    [Build on top of QMP, where QMP is installed in DIR.]
+  ),
+  [QMP_HOME="${with_qmp}"]
+  AC_MSG_NOTICE([Configuring parallel version with QMP])
+)
+AC_SUBST(QMP_CFLAGS)
+AC_MSG_NOTICE([ Checking for QMP ])
+
+if test "X${QMP_HOME}X" = "XX" ; then
+     AC_PATH_PROG([QMP_CONFIG], [qmp-config], [])
+else
+     AC_PATH_PROG([QMP_CONFIG], [qmp-config], [], [${QMP_HOME}/bin:${PATH}])
+fi
+if test "X${QMP_CONFIG}X" != "XX" ; then
+   AC_MSG_NOTICE([Found QMP configuration program ${QMP_CONFIG}])
+   AC_SUBST(QMP_HOME,    "${QMP_HOME}")
+   AC_SUBST(QMP_CFLAGS,  "`${QMP_CONFIG} --cflags` -DUSE_QMP")
+   AC_MSG_NOTICE([QMP compile flags: ${QMP_CFLAGS}])
+   AC_SUBST(QMP_LDFLAGS, "`${QMP_CONFIG} --ldflags`")
+   AC_MSG_NOTICE([QMP linking flags: ${QMP_LDFLAGS}])
+   AC_SUBST(QMP_LIBS,    "`${QMP_CONFIG} --libs`")
+   AC_MSG_NOTICE([QMP libraries flags: ${QMP_LIBS}])
+
+dnl verify we can compile and link against QMP, if needed
+PAC_QMP_COMPILE_CC_FUNC(
+  [${QMP_CFLAGS}],
+  [${QMP_LDFLAGS}],
+  [${QMP_LIBS}],
+  ,
+  ,
+  [qmp_compile_ok=yes],
+  [qmp_compile_ok=no]
+)
+
+AC_MSG_CHECKING([if we can compile  of a simple QMP C program])
+if test "X${qmp_compile_ok}X" = "XyesX" ; then
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+   AC_MSG_ERROR([Cannot compile a basic QMP C++ program!
+        Check QMP_CFLAGS, QMP_LDFLAGS, QMP_LIBS.])
+fi
+
+else   
+   AC_MSG_WARN([QMP configuration program qmp-config not found.])
+   AC_MSG_NOTICE([Building scalar version])
+   AC_MSG_WARN([If parallel version is needed set environment variables 
+                QMP_CFLAGS (with a -DUSE_QMP) QMP_LDFAGS QMP_LIBS 
+                before configure])
+fi
+
 dnl with QDP -- QDP will override everything else
 dnl since a parallel QDP will know its architecture
 dnl precition and have all the flags for QMP set already
@@ -38,7 +97,7 @@ dnl to each other therefore. Also --with-qdp is also
 dnl passed down the command line when compiling Chroma,
 dnl so a sub-configure will also work
 dnl we can also put the QDP++ packers in here too...
-AC_ARG_WITH(qdp,
+  AC_ARG_WITH(qdp,
   AC_HELP_STRING(
      [--with-qdp=DIR],
      [Build package with QDP++, where QDP++ is installed in DIR.]

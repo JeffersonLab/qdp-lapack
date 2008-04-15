@@ -1,3 +1,9 @@
+#ifdef USE_QMP
+#include <qmp.h>
+#define fprintf if(QMP_get_node_number()==0)fprintf
+#define printf  if(QMP_get_node_number()==0)printf
+#endif
+
 void wrap_cgemv(char *transa, int *m, int *n, Complex_C *alpha, Complex_C *a,
    int *lda, Complex_C *x, int *incx, Complex_C *beta, Complex_C *y, int *incy,
    Complex_C *work, void *);
