@@ -23,3 +23,4 @@ void wrap_zgemv(char *transa, int *m, int *n, Complex_Z *alpha, Complex_Z *a,
 Complex_Z wrap_zdot(int *n, Complex_Z *x, int *incx, Complex_Z *y, int *incy, void *);
 
 void globalSumDouble(void *sendBuf, void *recvBuf, int *count, void *params);
+void globalSumSingle(void *sendBuf, void *recvBuf, int *count, void *params);

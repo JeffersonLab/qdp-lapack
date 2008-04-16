@@ -59,13 +59,13 @@ void wrap_cgemv(char *transa, int *m, int *n, Complex_C *alpha, Complex_C *a,
 #ifdef USE_DOUBLE_PREC_SUMMATION
 
    int i, yix = 0, ONE=1;
-
+   int count = 2*(*n) ; // 2*N floats need summation
    if (beta->r  == 0.0 &&  beta->i ==0.0 &&  /* Special case y = a'*x */
        alpha->r == 1.0 && alpha->i ==0.0 ) { 
 
       for (i=0;i<*n;i++)
          work[i] = zsum_cdot(m, &a[(*lda)*i], &ONE, x, incx);
-      globalSumDouble(work, y, n, params );
+      globalSumSingle(work, y, &count, params );
 
    }
    else { // Perform all the multiplicatons needed y = alpha*a'*x+beta*y
@@ -153,13 +153,14 @@ Complex_C zsum_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy)
 Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
    void *params) 
 {
-   int ONE = 1;
-   Complex_C cdotc_r, cdotc;
-   CDOTCSUB(&cdotc_r, n, x, incx, y, incy);
-   //cblas_cdotc_sub(*n, x, *incx, y, *incy, &cdotc_r);
-   globalSumDouble(&cdotc_r, &cdotc, &ONE, params);
-   return(cdotc);
-
+  //int ONE = 1;
+  int TWO = 2;
+  Complex_C cdotc_r, cdotc;
+  CDOTCSUB(&cdotc_r, n, x, incx, y, incy);
+  //cblas_cdotc_sub(*n, x, *incx, y, *incy, &cdotc_r);
+  //globalSumDouble(&cdotc_r, &cdotc, &ONE, params);
+  globalSumSingle(&cdotc_r, &cdotc, &TWO, params);
+  return(cdotc);
 }
 /******************************************************************************/
 void wrap_cgemm(char *transa, char *transb, int *m, int *n, int *k,
@@ -171,13 +172,14 @@ void wrap_cgemm(char *transa, char *transb, int *m, int *n, int *k,
 // Otherwise globalsum is not needed and you should use plain BLAS_CGEMM
 #ifdef USE_DOUBLE_PREC_SUMMATION
    int i, j, cx=0,  ONE=1;
+   int count = 2*(*m);
 
    if (beta->r  == 0.0 &&  beta->i ==0.0 &&  /* Special case c = a'*b */
        alpha->r == 1.0 && alpha->i ==0.0 ) {
       for (i=0;i<*n;i++) { 
          for (j=0;j<*m;j++) // or c[cx++] = wrap_zsum_cdot(k, ...
             work[j] = zsum_cdot(k, &a[(*lda)*j], &ONE, &b[(*ldb)*i], &ONE );
-         globalSumDouble(work, &c[(*ldc)*i], m, params);
+         globalSumSingle(work, &c[(*ldc)*i], &count, params);
       }
    }
    else {  // Perform all the multiplicatons needed c = alpha*a'*b+beta*c
@@ -222,7 +224,8 @@ void wrap_zgemv(char *transa, int *m, int *n, Complex_Z *alpha, Complex_Z *a,
 
    BLAS_CGEMV(transa, m, n, alpha, a, lda, x, incx, beta, work, incy);
 
-   globalSumDouble(work, y, n, params );
+   int count = 2*(*n);// 2 N doubles need global sum
+   globalSumDouble(work, y, &count, params );
 
 }
 
@@ -230,13 +233,13 @@ void wrap_zgemv(char *transa, int *m, int *n, Complex_Z *alpha, Complex_Z *a,
 Complex_Z wrap_zdot(int *n, Complex_Z *x, int *incx, Complex_Z *y, int *incy,
    void *params) 
 {
-   int ONE=1;
+   // a double comples is two doubles 
+   int ONE=2;
    Complex_Z zdotc_r, zdotc;
    ZDOTCSUB(&zdotc_r, n, x, incx, y, incy);
    //cblas_zdotc_sub(*n, x, *incx, y, *incy, &zdotc_r);
    globalSumDouble(&zdotc_r, &zdotc, &ONE, params);
    return(zdotc);
-
 }
 
 /******************************************************************************
@@ -264,6 +267,24 @@ void globalSumDouble(void *sendBuf, void *recvBuf, int *count, void *params)
    int ONE = 1;
 
    BLAS_DCOPY(count, (double *) sendBuf, &ONE, (double *) recvBuf, &ONE);
+
+}
+#endif
+
+#ifdef USE_QMP
+void globalSumSingle(void *sendBuf, void *recvBuf, int *count, void *params) {
+   int ONE = 1;
+   QMP_status_t f;
+
+   BLAS_SCOPY(count, (float *) sendBuf, &ONE, (float *) recvBuf, &ONE);
+   f = QMP_sum_float_array((double* ) recvBuf, *count);
+}
+#else
+void globalSumSingle(void *sendBuf, void *recvBuf, int *count, void *params) 
+{
+   int ONE = 1;
+
+   BLAS_SCOPY(count, (float *) sendBuf, &ONE, (float *) recvBuf, &ONE);
 
 }
 #endif
