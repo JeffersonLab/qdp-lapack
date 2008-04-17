@@ -410,18 +410,22 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
 
     alphaprev = alpha;
     alpha = rho / pAp;
+#define USE_DOUBLE_PREC_SUM_NOT_CAXPY
+#ifdef USE_DOUBLE_PREC_SUM_NOT_CAXPY
     /* The following addition is performed in double precision */
     for (i=0;i<n;i++) {
-        x[i].r = x[i].r+alpha*p[i].r;   /* x = x + alpha * Ap */
-        x[i].i = x[i].i+alpha*p[i].i;
-        r[i].r = r[i].r-alpha*Ap[i].r;  /* r = r - alpha * Ap */
-        r[i].i = r[i].i-alpha*Ap[i].i;
+      x[i].r = x[i].r+alpha*p[i].r;   /* x = x + alpha * Ap */
+      x[i].i = x[i].i+alpha*p[i].i;
+      r[i].r = r[i].r-alpha*Ap[i].r;  /* r = r - alpha * Ap */
+      r[i].i = r[i].i-alpha*Ap[i].i;
     }
+#else
     /* Use BLAS in signle precision */
-    //tempc.r = alpha; tempc.i = 0.0;
-    //BLAS_CAXPY(&n, &tempc, p, &ONE, x, &ONE);  /* x = x + alpha * Ap */
-    //tempc.r = -alpha;
-    //BLAS_CAXPY(&n, &tempc, Ap, &ONE, r, &ONE); /* r = r - alpha * Ap */
+    tempc.r = alpha; tempc.i = 0.0;
+    BLAS_CAXPY(&n, &tempc, p, &ONE, x, &ONE);  /* x = x + alpha * Ap */
+    tempc.r = -alpha;
+    BLAS_CAXPY(&n, &tempc, Ap, &ONE, r, &ONE); /* r = r - alpha * Ap */
+#endif
     
 //printf("%d beta, alpha, rho, pAp %le %le %le %le\n",it,beta,alpha,rho,pAp);
   } /* for it = 0 : maxit-1 */
