@@ -157,19 +157,44 @@ Complex_C zsum_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy)
    cdotc.i = sum.i;
    return(cdotc);
 }
-/******************************************************************************/
+
+/*****************************************************************************/
 Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
    void *params) 
 {
    int TWO = 2; /* length of Complex_C in floats */
    Complex_C cdotc_r, cdotc;
+//#define USE_BLAS_CDOT
+#ifdef USE_BLAS_CDOT
    CDOTCSUB(&cdotc_r, n, x, incx, y, incy);
    //cblas_cdotc_sub(*n, x, *incx, y, *incy, &cdotc_r);
+#else
+   int i ;
+   cdotc_r.r=cdotc_r.i=0.0;
+   if((*incx==1)&&(*incy==1)){
+     for(i=0;i<*n;i++){
+       cdotc_r.r += x[i].r*y[i].r + x[i].i*y[i].i;
+       cdotc_r.i += x[i].r*y[i].i - x[i].i*y[i].r;
+     }     
+   }
+   else{
+     int ix,iy;
+     ix=iy=0;
+     if(incx<0) ix = (- (*n) + 1)*(*incx) ;
+     if(incy<0) iy = (- (*n) + 1)*(*incy) ;
+     for(i=0;i<*n;i++,ix+= *incx,iy+= *incy){
+       //ix+=incx;
+       //iy+=incy;
+       cdotc_r.r += x[ix].r*y[iy].r + x[ix].i*y[iy].i;
+       cdotc_r.i += x[ix].r*y[iy].i - x[ix].i*y[iy].r;
+     }
+   }
+#endif
    globalSumFloat(&cdotc_r, &cdotc, &TWO, params);
    return(cdotc);
-
 }
-/******************************************************************************/
+
+/*****************************************************************************/
 void wrap_cgemm(char *transa, char *transb, int *m, int *n, int *k,
    Complex_C *alpha, Complex_C *a, int *lda, Complex_C *b, int *ldb,
    Complex_C *beta, Complex_C *c, int *ldc,
