@@ -164,7 +164,7 @@ Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
 {
    int TWO = 2; /* length of Complex_C in floats */
    Complex_C cdotc_r, cdotc;
-//#define USE_BLAS_CDOT
+
 #ifdef USE_BLAS_CDOT
    CDOTCSUB(&cdotc_r, n, x, incx, y, incy);
    //cblas_cdotc_sub(*n, x, *incx, y, *incy, &cdotc_r);
@@ -182,11 +182,11 @@ Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
      ix=iy=0;
      if(incx<0) ix = (- (*n) + 1)*(*incx) ;
      if(incy<0) iy = (- (*n) + 1)*(*incy) ;
-     for(i=0;i<*n;i++,ix+= *incx,iy+= *incy){
-       //ix+=incx;
-       //iy+=incy;
+     for(i=0;i<*n;i++){
        cdotc_r.r += x[ix].r*y[iy].r + x[ix].i*y[iy].i;
        cdotc_r.i += x[ix].r*y[iy].i - x[ix].i*y[iy].r;
+       ix+= *incx;
+       iy+= *incy;
      }
    }
 #endif

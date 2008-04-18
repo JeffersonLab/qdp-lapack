@@ -185,6 +185,8 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
   p = work + 2*lde;
   Ap = work + 3*lde;
 
+  if(precon==NULL) z=r ;
+
   /*--------------------------------------------------------------------
      Initialization phase 
   --------------------------------------------------------------------*/
@@ -227,8 +229,8 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
     
     if (precon) 
       precon(r, z, params);
-    else 
-      BLAS_CCOPY(&n, r, &ONE, z, &ONE);
+    //    else 
+    //  BLAS_CCOPY(&n, r, &ONE, z, &ONE);
    
     rhoprev = rho;
     tempc = wrap_zsum_cdot(&n, r, &ONE, z, &ONE, params); /* Sum in double */
