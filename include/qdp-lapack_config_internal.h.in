@@ -24,5 +24,11 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
+/* Use BLAS CDOT */
+#undef USE_BLAS_CDOT
+
+/* Using the QMP library for communications */
+#undef USE_QMP
+
 /* Version number of package */
 #undef VERSION

@@ -1,3 +1,4 @@
+#include "qdp-lapack_config_internal.h"
 #ifdef USE_QMP
 #include <qmp.h>
 #define fprintf if(QMP_get_node_number()==0)fprintf

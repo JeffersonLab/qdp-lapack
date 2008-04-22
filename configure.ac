@@ -28,6 +28,13 @@ AC_ARG_ENABLE(lapack,
   [LAPACK_BINDING="${enableval}"]
 )
 
+AC_ARG_ENABLE(blas-cdot,
+  AC_HELP_STRING([--enable-blas-cdot],
+    [Use BLAS CDOT]),
+  AC_DEFINE(USE_BLAS_CDOT,[],[Use BLAS CDOT])
+dnl [USE_BLAS_CDOT="${enableval}"]
+)
+
 dnl dnl **************************************************************
 dnl dnl ***                 Get the QMP flags                      ***
 dnl dnl **************************************************************
@@ -52,7 +59,8 @@ fi
 if test "X${QMP_CONFIG}X" != "XX" ; then
    AC_MSG_NOTICE([Found QMP configuration program ${QMP_CONFIG}])
    AC_SUBST(QMP_HOME,    "${QMP_HOME}")
-   AC_SUBST(QMP_CFLAGS,  "`${QMP_CONFIG} --cflags` -DUSE_QMP")
+   AC_SUBST(QMP_CFLAGS,  "`${QMP_CONFIG} --cflags`")
+   AC_DEFINE(USE_QMP,[],[Using the QMP library for communications])	      
    AC_MSG_NOTICE([QMP compile flags: ${QMP_CFLAGS}])
    AC_SUBST(QMP_LDFLAGS, "`${QMP_CONFIG} --ldflags`")
    AC_MSG_NOTICE([QMP linking flags: ${QMP_LDFLAGS}])
