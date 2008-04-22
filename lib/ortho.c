@@ -1,4 +1,4 @@
-
+/* $Id: ortho.c,v 1.2 2008-04-22 03:53:05 kostas Exp $ */
 /**********************************************************************
  * Function ortho_retained_vectors -- This function orthogonalizes
  *   coefficient vectors (the eigenvectors of the projection H) that

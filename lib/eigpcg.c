@@ -1,3 +1,4 @@
+/* $Id: eigpcg.c,v 1.8 2008-04-22 03:50:13 kostas Exp $ */
 /*-------------------------------------------------------------------------
 
   EIGPCG   Solve Ax=b by the preconditioned conjugate gradient method.

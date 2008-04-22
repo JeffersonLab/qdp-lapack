@@ -1,3 +1,4 @@
+/* $Id: restart_X.c,v 1.3 2008-04-22 03:53:05 kostas Exp $ */
 /*******************************************************************************
  * Subroutine restart_X - This subroutine computes X*hVecs and places 
  *    the result in X.
