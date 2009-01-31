@@ -32,6 +32,22 @@ extern "C" {
 	      DComplex *a, int *lda, int *ipiv, DComplex *b, 
 	      int *ldb, int *info);
 
+  // Cholesky factorization
+  int zpotrf_(char *uplo, int *n, DComplex *a, int *lda, int *info);
+  int cpotrf_(char *uplo, int *n, Complex *a, int *lda, int *info);
+
+  // Cholesky inverse
+  int zpotri_(char *uplo, int *n, DComplex *a, int *lda, int *info);
+  int cpotri_(char *uplo, int *n, Complex *a, int *lda, int *info);
+
+  // Cholesky linear system solve
+  int zpotrs_(char *uplo, int *n, int *nrhs, DComplex *a, int *lda, 
+	      DComplex *b, int *ldb, int *info);
+  int cpotrs_(char *uplo, int *n, int *nrhs, Complex *a, int *lda, 
+	      Complex *b, int *ldb, int *info);
+
+  
+
   //BLAS routines  
   int cgemm_(char *TRANSA, char *TRANSB,int *M,int *N,int *K, 
              Complex *ALPHA,
