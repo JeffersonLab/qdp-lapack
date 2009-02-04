@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.4 2009-02-04 21:23:34 kostas Exp $
+// $Id: fortran_lapack.cc,v 1.5 2009-02-04 21:55:34 kostas Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -489,7 +489,19 @@ namespace QDPLapack
     return cpotrf(uplo,LDA,A,LDA,info);
     
   }
-  
+
+
+
+  int zpotrf(char &uplo, int N,  multi1d<DComplex>& A, int LDA, int& info){
+    
+    return zpotrf_(&uplo, &N, (DComplex *) &A[0], &LDA, &info);
+  }
+
+
+  int cpotrf(char &uplo, int N,  multi1d<Complex>& A, int LDA, int& info){
+    
+    return cpotrf_(&uplo, &N, (Complex *) &A[0], &LDA, &info);
+  }
 
   
   int zpotrs(char &uplo, int N, int nrhs,  
@@ -513,6 +525,7 @@ namespace QDPLapack
     
   }
 
+  
 
   int cpotrs(char &uplo, int N, int nrhs,  
 	     multi2d<Complex>& A, int LDA, 
@@ -535,7 +548,28 @@ namespace QDPLapack
     
   }
   
+
+  int zpotrs(char &uplo, int N, int nrhs,  
+	     multi1d<DComplex>& A, int LDA, 
+	     multi2d<DComplex>& B, int LDB, int& info){
+    
+    return zpotrs_(&uplo, &N, &nrhs, 
+		   (DComplex *)&A[0], &LDA,
+		   (DComplex *)&B(0,0), &LDB,
+		   &info);
+  }
   
+  
+  int cpotrs(char &uplo, int N, int nrhs,  
+	     multi1d<Complex>& A, int LDA, 
+	     multi2d<Complex>& B, int LDB, int& info){
+
+    return cpotrs_(&uplo, &N, &nrhs, 
+		   (Complex *)&A[0], &LDA,
+		   (Complex *)&B(0,0), &LDB,
+		   &info);
+  }
+
 
   
 } // namespace QDPLapack

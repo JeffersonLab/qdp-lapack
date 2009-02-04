@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp-lapack.h,v 1.3 2009-02-04 21:23:34 kostas Exp $
+// $Id: qdp-lapack.h,v 1.4 2009-02-04 21:55:34 kostas Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -285,6 +285,10 @@ namespace QDPLapack
   int cpotrf(char &uplo, int N,  multi2d<Complex>& A, int LDA, int& info) ;
   int cpotrf(char &uplo, multi2d<Complex>& A, int& info) ;
 
+  int zpotrf(char &uplo, int N,  multi1d<DComplex>& A, int LDA, int& info) ;
+  
+  int cpotrf(char &uplo, int N,  multi1d<Complex>& A, int LDA, int& info) ;
+
   /**
      SUBROUTINE ZPOTRS( UPLO, N, NRHS, A, LDA, B, LDB, INFO )
      *
@@ -355,6 +359,16 @@ namespace QDPLapack
 
   int cpotrs(char &uplo, multi2d<Complex>& A,  multi2d<Complex>& B,  
 	     int& info) ;
+
+
+  int zpotrs(char &uplo, int N, int nrhs,  
+	     multi1d<DComplex>& A, int LDA, 
+	     multi2d<DComplex>& B, int LDB, int& info) ;
+
+  int cpotrs(char &uplo, int N, int nrhs,  
+	     multi1d<Complex>& A, int LDA, 
+	     multi2d<Complex>& B, int LDB, int& info) ;
+
   
 
 
