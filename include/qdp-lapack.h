@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp-lapack.h,v 1.2 2007-12-17 19:33:08 kostas Exp $
+// $Id: qdp-lapack.h,v 1.3 2009-02-04 21:23:34 kostas Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -216,6 +216,146 @@ namespace QDPLapack
 	    multi1d<Complex>& x,
 	    multi1d<Complex>& y
 	    );
+
+  /**
+     SUBROUTINE ZPOTRF( UPLO, N, A, LDA, INFO )
+     *
+     *  -- LAPACK routine (version 3.1) --
+     *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+     *     November 2006
+     *
+     *     .. Scalar Arguments ..
+     CHARACTER          UPLO
+     INTEGER            INFO, LDA, N
+     *     ..
+     *     .. Array Arguments ..
+     COMPLEX*16         A( LDA, * )
+     *     ..
+     *
+     *  Purpose
+     *  =======
+     *
+     *  ZPOTRF computes the Cholesky factorization of a complex Hermitian
+     *  positive definite matrix A.
+     *
+     *  The factorization has the form
+     *     A = U**H * U,  if UPLO = 'U', or
+     *     A = L  * L**H,  if UPLO = 'L',
+     *  where U is an upper triangular matrix and L is lower triangular.
+     *
+     *  This is the block version of the algorithm, calling Level 3 BLAS.
+     *
+     *  Arguments
+     *  =========
+     *
+     *  UPLO    (input) CHARACTER*1
+     *          = 'U':  Upper triangle of A is stored;
+     *          = 'L':  Lower triangle of A is stored.
+     *
+     *  N       (input) INTEGER
+     *          The order of the matrix A.  N >= 0.
+     *
+     *  A       (input/output) COMPLEX*16 array, dimension (LDA,N)
+     *          On entry, the Hermitian matrix A.  If UPLO = 'U', the leading
+     *          N-by-N upper triangular part of A contains the upper
+     *          triangular part of the matrix A, and the strictly lower
+     *          triangular part of A is not referenced.  If UPLO = 'L', the
+     *          leading N-by-N lower triangular part of A contains the lower
+     *          triangular part of the matrix A, and the strictly upper
+     *          triangular part of A is not referenced.
+     *
+     *          On exit, if INFO = 0, the factor U or L from the Cholesky
+     *          factorization A = U**H*U or A = L*L**H.
+     *
+     *  LDA     (input) INTEGER
+     *          The leading dimension of the array A.  LDA >= max(1,N).
+     *
+     *  INFO    (output) INTEGER
+     *          = 0:  successful exit
+     *          < 0:  if INFO = -i, the i-th argument had an illegal value
+     *          > 0:  if INFO = i, the leading minor of order i is not
+     *                positive definite, and the factorization could not be
+     *                completed.
+     *
+     **/
+
+  int zpotrf(char &uplo, int N,  multi2d<DComplex>& A, int LDA, int& info) ;
+  int zpotrf(char &uplo, multi2d<DComplex>& A, int& info) ;
+  
+  int cpotrf(char &uplo, int N,  multi2d<Complex>& A, int LDA, int& info) ;
+  int cpotrf(char &uplo, multi2d<Complex>& A, int& info) ;
+
+  /**
+     SUBROUTINE ZPOTRS( UPLO, N, NRHS, A, LDA, B, LDB, INFO )
+     *
+     *  -- LAPACK routine (version 3.1) --
+     *     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+     *     November 2006
+     *
+     *     .. Scalar Arguments ..
+     CHARACTER          UPLO
+     INTEGER            INFO, LDA, LDB, N, NRHS
+     *     ..
+     *     .. Array Arguments ..
+     COMPLEX*16         A( LDA, * ), B( LDB, * )
+     *     ..
+     *
+     *  Purpose
+     *  =======
+     *
+     *  ZPOTRS solves a system of linear equations A*X = B with a Hermitian
+     *  positive definite matrix A using the Cholesky factorization
+     *  A = U**H*U or A = L*L**H computed by ZPOTRF.
+     *
+     *  Arguments
+     *  =========
+     *
+     *  UPLO    (input) CHARACTER*1
+     *          = 'U':  Upper triangle of A is stored;
+     *          = 'L':  Lower triangle of A is stored.
+     *
+     *  N       (input) INTEGER
+     *          The order of the matrix A.  N >= 0.
+     *
+     *  NRHS    (input) INTEGER
+     *          The number of right hand sides, i.e., the number of columns
+     *          of the matrix B.  NRHS >= 0.
+     *
+     *  A       (input) COMPLEX*16 array, dimension (LDA,N)
+     *          The triangular factor U or L from the Cholesky factorization
+     *          A = U**H*U or A = L*L**H, as computed by ZPOTRF.
+     *
+     *  LDA     (input) INTEGER
+     *          The leading dimension of the array A.  LDA >= max(1,N).
+     *
+     *  B       (input/output) COMPLEX*16 array, dimension (LDB,NRHS)
+     *          On entry, the right hand side matrix B.
+     *          On exit, the solution matrix X.
+     *
+     *  LDB     (input) INTEGER
+     *          The leading dimension of the array B.  LDB >= max(1,N).
+     *
+     *  INFO    (output) INTEGER
+     *          = 0:  successful exit
+     *          < 0:  if INFO = -i, the i-th argument had an illegal value
+     *
+     *  =====================================================================
+     **/
+
+  int zpotrs(char &uplo, int N, int nrhs,  
+	     multi2d<DComplex>& A, int LDA, 
+	     multi2d<DComplex>& B, int LDB, int& info) ;
+
+  int zpotrs(char &uplo, multi2d<DComplex>& A,  multi2d<DComplex>& B,  
+	     int& info) ;
+
+  int cpotrs(char &uplo, int N, int nrhs,  
+	     multi2d<Complex>& A, int LDA, 
+	     multi2d<Complex>& B, int LDB, int& info) ;
+
+  int cpotrs(char &uplo, multi2d<Complex>& A,  multi2d<Complex>& B,  
+	     int& info) ;
+  
 
 
 } // namespace QDPLapack

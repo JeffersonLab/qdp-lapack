@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: fortran_lapack.h,v 1.4 2009-02-04 21:23:34 kostas Exp $
+/*! \file
+ *  \brief QDP interface to Lapack lib
+ */
 //MAC OS X
 //#include <vecLib/vBLAS.h>
 //#include <veclib/clapack.h>
@@ -31,6 +36,22 @@ extern "C" {
   int zhetrs_(char *uplo, int *n, int *nrhs, 
 	      DComplex *a, int *lda, int *ipiv, DComplex *b, 
 	      int *ldb, int *info);
+
+  // Cholesky factorization
+  int zpotrf_(char *uplo, int *n, DComplex *a, int *lda, int *info);
+  int cpotrf_(char *uplo, int *n, Complex *a, int *lda, int *info);
+
+  // Cholesky inverse
+  int zpotri_(char *uplo, int *n, DComplex *a, int *lda, int *info);
+  int cpotri_(char *uplo, int *n, Complex *a, int *lda, int *info);
+
+  // Cholesky linear system solve
+  int zpotrs_(char *uplo, int *n, int *nrhs, DComplex *a, int *lda, 
+	      DComplex *b, int *ldb, int *info);
+  int cpotrs_(char *uplo, int *n, int *nrhs, Complex *a, int *lda, 
+	      Complex *b, int *ldb, int *info);
+
+  
 
   //BLAS routines  
   int cgemm_(char *TRANSA, char *TRANSB,int *M,int *N,int *K, 

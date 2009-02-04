@@ -1,3 +1,8 @@
+// -*- C++ -*-
+// $Id: qdp-lapack_fortran_lapack.h,v 1.3 2009-02-04 21:23:34 kostas Exp $
+/*! \file
+ *  \brief QDP interface to Lapack lib
+ */
 //MAC OS X
 //#include <vecLib/vBLAS.h>
 //#include <veclib/clapack.h>

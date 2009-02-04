@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.3 2007-12-17 19:33:08 kostas Exp $
+// $Id: fortran_lapack.cc,v 1.4 2009-02-04 21:23:34 kostas Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -462,6 +462,79 @@ namespace QDPLapack
 		    &y[0], &incy);
   }
 
+
+  int zpotrf(char &uplo, int N,  multi2d<DComplex>& A, int LDA, int& info){
+    
+    return zpotrf_(&uplo, &N, 
+		   (DComplex *) &A(0,0), &LDA, &info);
+
+  }
+  int zpotrf(char &uplo, multi2d<DComplex>& A, int& info){
+    int LDA = A.size1() ; // Assumes square matrix
+    
+    return zpotrf(uplo,LDA,A,LDA,info);
+    
+  }
+
+
+  int cpotrf(char &uplo, int N,  multi2d<Complex>& A, int LDA, int& info){
+    
+    return cpotrf_(&uplo, &N, 
+		   (Complex *) &A(0,0), &LDA, &info);
+
+  }
+  int cpotrf(char &uplo, multi2d<Complex>& A, int& info){
+    int LDA = A.size1() ; // Assumes square matrix
+    
+    return cpotrf(uplo,LDA,A,LDA,info);
+    
+  }
+  
+
+  
+  int zpotrs(char &uplo, int N, int nrhs,  
+	     multi2d<DComplex>& A, int LDA, 
+	     multi2d<DComplex>& B, int LDB, int& info){
+
+    return zpotrs_(&uplo, &N, &nrhs, 
+		   (DComplex *)&A(0,0), &LDA,
+		   (DComplex *)&B(0,0), &LDB,
+		   &info);
+  }
+  
+  int zpotrs(char &uplo, multi2d<DComplex>& A,  multi2d<DComplex>& B,  
+	     int& info){
+    
+    int LDA = A.size1() ; // Assumes square matrix
+    int LDB = B.size1() ; // second index is fast and its size is size1
+    int nrhs = B.size2() ;
+    
+    zpotrs(uplo,LDA,nrhs,A,LDA,B,LDB,info);
+    
+  }
+
+
+  int cpotrs(char &uplo, int N, int nrhs,  
+	     multi2d<Complex>& A, int LDA, 
+	     multi2d<Complex>& B, int LDB, int& info){
+
+    return cpotrs_(&uplo, &N, &nrhs, 
+		   (Complex *)&A(0,0), &LDA,
+		   (Complex *)&B(0,0), &LDB,
+		   &info);
+  }
+  
+  int cpotrs(char &uplo, multi2d<Complex>& A,  multi2d<Complex>& B,  
+	     int& info){
+    
+    int LDA = A.size1() ; // Assumes square matrix
+    int LDB = B.size1() ; // second index is fast and its size is size1
+    int nrhs = B.size2() ;
+    
+    cpotrs(uplo,LDA,nrhs,A,LDA,B,LDB,info);
+    
+  }
+  
   
 
   
