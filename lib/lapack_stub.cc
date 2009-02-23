@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lapack_stub.cc,v 1.3 2009-02-04 21:26:59 kostas Exp $
+// $Id: lapack_stub.cc,v 1.4 2009-02-23 19:35:31 kostas Exp $
 /*! \file
  *  \brief Stubs for QDP interface to Lapack lib
  */
@@ -120,7 +120,7 @@ namespace QDPLapack
 
 
   int cpotrs(char &uplo, int N, int nrhs,  
-	     multi2d<Complex>& A, int LDA, 
+	     multi1d<Complex>& A, int LDA, 
 	     multi2d<Complex>& B, int LDB, int& info){
 
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
@@ -128,7 +128,7 @@ namespace QDPLapack
   
   }
   
-  int cpotrs(char &uplo, multi2d<Complex>& A,  multi2d<Complex>& B,  
+  int cpotrs(char &uplo, multi1d<Complex>& A,  multi2d<Complex>& B,  
 	     int& info){
     
     int LDA = A.size1() ; // Assumes square matrix
