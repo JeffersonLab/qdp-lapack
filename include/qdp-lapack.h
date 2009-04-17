@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp-lapack.h,v 1.5 2009-04-17 02:05:41 bjoo Exp $
+// $Id: qdp-lapack.h,v 1.6 2009-04-17 13:07:15 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -8,6 +8,7 @@
 #define __qdp_lapack_h__
 
 #include "qdp.h"
+using namespace QDP;
 
 namespace QDPLapack
 {

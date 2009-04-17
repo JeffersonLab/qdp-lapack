@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.h,v 1.4 2009-02-04 21:23:34 kostas Exp $
+// $Id: fortran_lapack.h,v 1.5 2009-04-17 13:07:15 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -9,6 +9,7 @@
 
 // May need other includes for other OS 
 #include "qdp.h"
+using namespace QDP;
 
 extern "C" {
 
