@@ -1,4 +1,4 @@
-/* $Id: IncrEigpcg.c,v 1.6 2008-04-22 03:53:05 kostas Exp $ */
+/* $Id: IncrEigpcg.c,v 1.7 2009-04-17 02:05:41 bjoo Exp $ */
 /*******************************************************************************
  * Function IncrEigpcg -- Incremental eigpcg. 
  *
@@ -177,6 +177,33 @@ printf("n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,normAestimate, updateResta
   /* ------------------------------------------------------------------- */
   /* end Work allocations */
   /* ------------------------------------------------------------------- */
+
+  if (*ncurEvals > 0) {
+    
+    /* V = A*evecs(new) */
+    for (i=0; i< (*ncurEvals); i++) {  
+      matvec(&evecs[i*lde], &V[0], params);
+
+         /* Hnew = evecs(old+new)'*V(new) = evecs(old+new)'*A*evecs(new) */
+         nAdded = 1;
+         tmpsize = i+nAdded;
+         wrap_cgemm(&cC, &cN, &tmpsize, &nAdded, &n, &tpone, evecs, &lde, 
+	         V, &n, &tzero, &H[i*ldh], &ldh, work, params);
+    }
+
+    /* Copy H into HU */
+    tmpsize = ldh*ldh;
+    BLAS_CCOPY(&tmpsize, H, &ONE, HU, &ONE);
+   
+    if (Cholesky)  /* Cholesky factorize H = HU'*HU */
+        BLAS_CPOTRF(&cU, ncurEvals, HU, &ldh, &flag);
+    else {         /* Eigendecompose: H = HU Lambda HU'. Don't form V(HU)*/
+       i = 4*lde;
+       BLAS_CHEEV(&cV,&cU,ncurEvals,HU,&ldh,evals,work,&i,(float *)ework,&flag);
+    }
+
+ } /* if nev>0 */
+
 
   /* ------------------------------------------------------------------- */
   /* Solving one by one the nrhs systems with incremental init-eigpcg    */

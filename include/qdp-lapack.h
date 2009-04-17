@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp-lapack.h,v 1.4 2009-02-04 21:55:34 kostas Exp $
+// $Id: qdp-lapack.h,v 1.5 2009-04-17 02:05:41 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -15,6 +15,8 @@ namespace QDPLapack
   /*!
    * @{
    */
+  using namespace QDP;
+
   int zheev(char& jobz,
 	    char& uplo,
 	    //const int& N, // These are the dimensions of the array A
