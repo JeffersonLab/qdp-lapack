@@ -1,4 +1,4 @@
-/* $Id: IncrEigpcg.c,v 1.7 2009-04-17 02:05:41 bjoo Exp $ */
+/* $Id: IncrEigpcg.c,v 1.8 2009-04-17 14:42:08 bjoo Exp $ */
 /*******************************************************************************
  * Function IncrEigpcg -- Incremental eigpcg. 
  *
@@ -177,7 +177,11 @@ printf("n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,normAestimate, updateResta
   /* ------------------------------------------------------------------- */
   /* end Work allocations */
   /* ------------------------------------------------------------------- */
-
+#if 0
+  /* This code was added by Andreas to reorthogonalize the vecs and 
+   * perform a Cholesky decomposition into H and HU - to have these
+   * spaces set up in case we wanted to use this code in an HMC 
+   * chronological like solver. I am disabling it for now */
   if (*ncurEvals > 0) {
     
     /* V = A*evecs(new) */
@@ -203,7 +207,7 @@ printf("n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,normAestimate, updateResta
     }
 
  } /* if nev>0 */
-
+#endif 
 
   /* ------------------------------------------------------------------- */
   /* Solving one by one the nrhs systems with incremental init-eigpcg    */
