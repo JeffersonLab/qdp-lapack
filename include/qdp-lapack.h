@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp-lapack.h,v 1.6 2009-04-17 13:07:15 bjoo Exp $
+// $Id: qdp-lapack.h,v 1.7 2009-07-02 11:10:52 edwards Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -373,6 +373,8 @@ namespace QDPLapack
 	     multi2d<Complex>& B, int LDB, int& info) ;
 
   
+  void dsteqr(char *, int *, double *, double *, double *, int *,
+              double *, int *);
 
 
 } // namespace QDPLapack

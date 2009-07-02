@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lapack_stub.cc,v 1.5 2009-07-02 10:52:20 edwards Exp $
+// $Id: lapack_stub.cc,v 1.6 2009-07-02 11:10:52 edwards Exp $
 /*! \file
  *  \brief Stubs for QDP interface to Lapack lib
  */
@@ -140,11 +140,12 @@ namespace QDPLapack
   }
   
   
-  void dsteqr_(char *, int *, double *, double *, double *, int *,
+  void dsteqr(char *, int *, double *, double *, double *, int *,
                double *, int *)
   {
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
   }
+
 
   
 } // namespace Lapack

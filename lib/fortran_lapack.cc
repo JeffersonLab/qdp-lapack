@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.5 2009-02-04 21:55:34 kostas Exp $
+// $Id: fortran_lapack.cc,v 1.6 2009-07-02 11:10:52 edwards Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -568,6 +568,13 @@ namespace QDPLapack
 		   (Complex *)&A[0], &LDA,
 		   (Complex *)&B(0,0), &LDB,
 		   &info);
+  }
+
+
+  void dsteqr(char *a, int *b, double *c, double *d, double *e, int *f,
+              double *g, int *h)
+  {
+    dsteqr_(a,b,c,d,e,f,g,h);
   }
 
 

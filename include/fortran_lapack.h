@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.h,v 1.5 2009-04-17 13:07:15 bjoo Exp $
+// $Id: fortran_lapack.h,v 1.6 2009-07-02 11:10:52 edwards Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -76,6 +76,10 @@ extern "C" {
   int zgemv_(char *trans, int *M, int *N, DComplex *alpha, 
 	     DComplex *A, int *lda, DComplex *x, int *incx, 
 	     DComplex *beta, DComplex *y, int *incy);
+
+  
+  void dsteqr_(char *, int *, double *, double *, double *, int *,
+               double *, int *);
 
 
 
