@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.h,v 1.6 2009-07-02 11:10:52 edwards Exp $
+// $Id: fortran_lapack.h,v 1.7 2009-07-17 14:52:54 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -81,7 +81,7 @@ extern "C" {
   void dsteqr_(char *, int *, double *, double *, double *, int *,
                double *, int *);
 
-
-
+  /* Fort Justin */
+  void dlartg_(double* F, double* G, double* CS, double* SN, double* R);
 }
 

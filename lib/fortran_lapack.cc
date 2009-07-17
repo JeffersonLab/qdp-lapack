@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.6 2009-07-02 11:10:52 edwards Exp $
+// $Id: fortran_lapack.cc,v 1.7 2009-07-17 14:52:54 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -577,6 +577,13 @@ namespace QDPLapack
     dsteqr_(a,b,c,d,e,f,g,h);
   }
 
+
+  // Pass by reference, so we can take addresses of the reference args.
+  // for the fortran cross call.
+  void dlartg(double& F, double& G, double& CS, double& SN, double& R)
+  {
+    dlartg_(&F,&G,&CS,&SN,&R);
+  }
 
   
 } // namespace QDPLapack

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lapack_stub.cc,v 1.6 2009-07-02 11:10:52 edwards Exp $
+// $Id: lapack_stub.cc,v 1.7 2009-07-17 14:52:54 bjoo Exp $
 /*! \file
  *  \brief Stubs for QDP interface to Lapack lib
  */
@@ -146,7 +146,11 @@ namespace QDPLapack
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
   }
 
-
+  void dlartg(Real64& F, Real64& G, Real64& CS, Real64& SN, Real64& R)
+  {
+    // Stub function
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+  }
   
 } // namespace Lapack
 

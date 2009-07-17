@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qdp-lapack_fortran_lapack.h,v 1.3 2009-02-04 21:23:34 kostas Exp $
+// $Id: qdp-lapack_fortran_lapack.h,v 1.4 2009-07-17 14:52:54 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib
  */
@@ -51,7 +51,11 @@ extern "C" {
   int cpotrs_(char *uplo, int *n, int *nrhs, Complex *a, int *lda, 
 	      Complex *b, int *ldb, int *info);
 
-  
+
+
+  // For Justin:
+  void dlartg_(Real64* F, Real64* G, Real64* CS, Real64* SN, Real64* R);
+
 
   //BLAS routines  
   int cgemm_(char *TRANSA, char *TRANSB,int *M,int *N,int *K, 
