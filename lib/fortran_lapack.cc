@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.7 2009-07-17 14:52:54 bjoo Exp $
+// $Id: fortran_lapack.cc,v 1.8 2009-07-30 20:33:58 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -296,16 +296,16 @@ namespace QDPLapack
 
 
   // Interfaces to BLAS start here
-
+  // Explicit Single Precision....
   int LatFermMat_x_Mat_cgemm(char& TRANSA, 
                              char& TRANSB,
                              const int& M, const int& N, const int& K, 
-                             const Complex& ALPHA,
-                             const multi1d<LatticeFermion>& A,
+                             const Complex32& ALPHA,
+                             const multi1d<LatticeDiracFermionF3>& A,
                              // The LDA is known: int *LDA,
-                             const multi2d<Complex>& B, const int& LDB, 
-                             const Complex& BETA,
-                             multi1d<LatticeFermion>& C
+                             const multi2d<Complex32>& B, const int& LDB, 
+                             const Complex32& BETA,
+                             multi1d<LatticeDiracFermionF3>& C
                              // The LDB is known: int *LDC
                              ){
 
@@ -337,13 +337,67 @@ namespace QDPLapack
     **/
 
     return cgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
-                  (Complex *)&ALPHA,
-                  (Complex *)&A[0].elem(0).elem(0).elem(0),&LDA,
-                  (Complex *)&B(0,0),(int *)&LDB,
-                  (Complex *)&BETA,
-                  (Complex *)&C[0].elem(0).elem(0).elem(0),&LDC);
+		 (Complex *)&ALPHA,
+		 (Complex *)&A[0].elem(0).elem(0).elem(0),&LDA,
+		 (Complex *)&B(0,0),(int *)&LDB,
+		 (Complex *)&BETA,
+		 (Complex *)&C[0].elem(0).elem(0).elem(0),&LDC);
   }
 
+  // Interfaces to BLAS start here
+  // Explicit Double Precision....
+  int LatFermMat_x_Mat_cgemm(char& TRANSA, 
+                             char& TRANSB,
+                             const int& M, const int& N, const int& K, 
+                             const Complex64& ALPHA,
+                             const multi1d<LatticeDiracFermionD3>& A,
+                             // The LDA is known: int *LDA,
+                             const multi2d<Complex64>& B, const int& LDB, 
+                             const Complex64& BETA,
+                             multi1d<LatticeDiracFermionD3>& C
+                             // The LDB is known: int *LDC
+                             ){
+
+    int LDA,LDC ;
+
+    if(N==1)
+      LDA = Layout::sitesOnNode() * Nc *Ns ;
+    else
+      LDA = (Complex *)&A[1].elem(0).elem(0).elem(0) - 
+            (Complex *)&A[0].elem(0).elem(0).elem(0) ;
+
+    C.resize(N) ;
+    if(N==1)
+      LDC = Layout::sitesOnNode() * Nc *Ns ;
+    else
+      LDC = (Complex *)&C[1].elem(0).elem(0).elem(0) - 
+	    (Complex *)&C[0].elem(0).elem(0).elem(0) ;
+
+    //DOES C NEED TO BE ZEROED out ?
+    //for(int i(0);i<N;i++) C[i] = zero ;
+
+    /**
+       QDPIO::cout<<"Leading dim is LDA= "<<LDA<<endl ;
+       int ttLD = Layout::sitesOnNode() * Nc *Ns ;
+       QDPIO::cout<<"  LatticeFerion Data size= "<<ttLD<<endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDA-ttLD<<endl ;
+       QDPIO::cout<<"Leading dim is LDC= "<<LDC<<endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDC-ttLD<<endl ;
+    **/
+
+    return zgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
+		 (Complex *)&ALPHA,
+		 (Complex *)&A[0].elem(0).elem(0).elem(0),&LDA,
+		 (Complex *)&B(0,0),(int *)&LDB,
+		 (Complex *)&BETA,
+		 (Complex *)&C[0].elem(0).elem(0).elem(0),&LDC);
+  }
+
+
+#if 0  
+  // I don't know if this was really needed ever, or whether
+  // It was an attempt to make a double precision build work.
+  // I am commenting it out now...
   
   //Mixed precision
   int LatFermMat_x_Mat_cgemm(char& TRANSA, 
@@ -368,6 +422,7 @@ namespace QDPLapack
     return LatFermMat_x_Mat_cgemm(TRANSA, TRANSB,M, N, K, alpha, A, b, LDB, 
                              beta, C  );
   }
+#endif
 
 
   /*--------------------------------------------------------------------
