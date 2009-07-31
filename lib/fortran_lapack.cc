@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fortran_lapack.cc,v 1.8 2009-07-30 20:33:58 bjoo Exp $
+// $Id: fortran_lapack.cc,v 1.9 2009-07-31 14:09:31 bjoo Exp $
 /*! \file
  *  \brief QDP interface to Lapack lib using c-lapack
  */
@@ -13,7 +13,7 @@ namespace QDPLapack
   int zheev(char& jobz,
 	    char& uplo,
 	    const int& N, // These are the dimensions of the array A
-	    multi2d<DComplex>& A,
+	    multi2d<Complex64>& A,
 	    //const int& lda,  // These are the dimensions of the array A
 	    multi1d<Double>& w)
   {
@@ -23,7 +23,7 @@ namespace QDPLapack
     **/
 
     int LWork = 2*N-1;
-    multi1d<DComplex> Work(LWork);
+    multi1d<Complex64> Work(LWork);
     multi1d<Double> RWork(3*N-2);
     
     int lda = A.size1() ; 
@@ -53,10 +53,10 @@ namespace QDPLapack
   int zheev(char& jobz,
 	    char& uplo,
 	    //const int& N, // These are the dimensions of the array A
-	    multi2d<DComplex>& A,
+	    multi2d<Complex64>& A,
 	    //const int& lda,  // These are the dimensions of the array A
 	    multi1d<Double>& w,
-	    multi1d<DComplex>& Work, // Should be length LWork >= max(1,2*N-1)
+	    multi1d<Complex64>& Work, // Should be length LWork >= max(1,2*N-1)
 	    //const int& LWork,
 	    multi1d<Double>& RWork // Should be length max(1,3*N-2)
     )
@@ -95,13 +95,13 @@ namespace QDPLapack
   int zheev(char& jobz,
 	    char& uplo,
 	    //const int& N, // These are the dimensions of the array A
-	    multi2d<DComplex>& A,
+	    multi2d<Complex64>& A,
 	    //const int& lda,  // These are the dimensions of the array A
 	    multi1d<Double>& w)
   {
     int N = A.size1();
     int LWork = 2*N-1;
-    multi1d<DComplex> Work(LWork);
+    multi1d<Complex64> Work(LWork);
     multi1d<Double> RWork(3*N-2);
     
     return zheev(jobz,uplo,A,w,Work,RWork) ;
@@ -109,8 +109,8 @@ namespace QDPLapack
 
   int zgeqrf(const int M, // The vector length
 	     const int N, // The number of vectors
-	     multi2d<DComplex>& A, // the array containing the vectors
-	     multi1d<DComplex>& TAU // some strange LAPACK beast
+	     multi2d<Complex64>& A, // the array containing the vectors
+	     multi1d<Complex64>& TAU // some strange LAPACK beast
     )
   {
     if(N>M)
@@ -119,7 +119,7 @@ namespace QDPLapack
       TAU.resize(N);
 	
     int LWork = N ;
-    multi1d<DComplex> Work(LWork);
+    multi1d<Complex64> Work(LWork);
     
 
     int lda = A.size1(); // need to check which is LDA size1 or size2
@@ -167,9 +167,9 @@ namespace QDPLapack
 	     char& trans,
 	     const int M,
 	     const int N,
-	     multi2d<DComplex>& A, //input
-	     multi1d<DComplex>& TAU, // some strange LAPACK beast
-	     multi2d<DComplex>& C //input/output
+	     multi2d<Complex64>& A, //input
+	     multi1d<Complex64>& TAU, // some strange LAPACK beast
+	     multi2d<Complex64>& C //input/output
     )
   {
     /**
@@ -197,7 +197,7 @@ namespace QDPLapack
        cout<<"ZUNMQR->LWork : "<<LWork<<endl ;
     **/
 
-    multi1d<DComplex> Work(LWork);
+    multi1d<Complex64> Work(LWork);
     
     int info ;
     int r = zunmqr_(&side, &trans,
@@ -236,14 +236,14 @@ namespace QDPLapack
    *  Work is allocated locally
    *--------------------------------------------------------------------*/
   int zhetrf( char &uplo, const int& n,
-	      multi2d<DComplex>& A, 
+	      multi2d<Complex64>& A, 
 	      multi1d<int>& ipiv
 	      )
   {
     int info;
     int lda = A.size1() ; 
     int LWork = n;
-    multi1d<DComplex> Work(LWork);
+    multi1d<Complex64> Work(LWork);
     
     int r = zhetrf_( &uplo, (int *)&n, &A(0,0), &lda, 
 		     &ipiv[0],  &Work[0], &LWork, &info );
@@ -270,9 +270,9 @@ namespace QDPLapack
    *
    *--------------------------------------------------------------------*/
   int zhetrs( char &uplo, const int& n, 
-	      multi2d<DComplex>& A, 
+	      multi2d<Complex64>& A, 
 	      multi1d<int>& ipiv,
-	      multi1d<DComplex>& B
+	      multi1d<Complex64>& B
 	    )
   {
     int NRHS(1);
@@ -301,11 +301,11 @@ namespace QDPLapack
                              char& TRANSB,
                              const int& M, const int& N, const int& K, 
                              const Complex32& ALPHA,
-                             const multi1d<LatticeDiracFermionF3>& A,
+                             const multi1d<LatticeFermionF3>& A,
                              // The LDA is known: int *LDA,
                              const multi2d<Complex32>& B, const int& LDB, 
                              const Complex32& BETA,
-                             multi1d<LatticeDiracFermionF3>& C
+                             multi1d<LatticeFermionF3>& C
                              // The LDB is known: int *LDC
                              ){
 
@@ -314,15 +314,15 @@ namespace QDPLapack
     if(N==1)
       LDA = Layout::sitesOnNode() * Nc *Ns ;
     else
-      LDA = (Complex *)&A[1].elem(0).elem(0).elem(0) - 
-            (Complex *)&A[0].elem(0).elem(0).elem(0) ;
+      LDA = (Complex32 *)&A[1].elem(0).elem(0).elem(0) - 
+            (Complex32 *)&A[0].elem(0).elem(0).elem(0) ;
 
     C.resize(N) ;
     if(N==1)
       LDC = Layout::sitesOnNode() * Nc *Ns ;
     else
-      LDC = (Complex *)&C[1].elem(0).elem(0).elem(0) - 
-	    (Complex *)&C[0].elem(0).elem(0).elem(0) ;
+      LDC = (Complex32 *)&C[1].elem(0).elem(0).elem(0) - 
+	    (Complex32 *)&C[0].elem(0).elem(0).elem(0) ;
 
     //DOES C NEED TO BE ZEROED out ?
     //for(int i(0);i<N;i++) C[i] = zero ;
@@ -337,11 +337,11 @@ namespace QDPLapack
     **/
 
     return cgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
-		 (Complex *)&ALPHA,
-		 (Complex *)&A[0].elem(0).elem(0).elem(0),&LDA,
-		 (Complex *)&B(0,0),(int *)&LDB,
-		 (Complex *)&BETA,
-		 (Complex *)&C[0].elem(0).elem(0).elem(0),&LDC);
+		 (Complex32 *)&ALPHA,
+		 (Complex32 *)&A[0].elem(0).elem(0).elem(0),&LDA,
+		 (Complex32 *)&B(0,0),(int *)&LDB,
+		 (Complex32 *)&BETA,
+		 (Complex32 *)&C[0].elem(0).elem(0).elem(0),&LDC);
   }
 
   // Interfaces to BLAS start here
@@ -350,11 +350,11 @@ namespace QDPLapack
                              char& TRANSB,
                              const int& M, const int& N, const int& K, 
                              const Complex64& ALPHA,
-                             const multi1d<LatticeDiracFermionD3>& A,
+                             const multi1d<LatticeFermionD3>& A,
                              // The LDA is known: int *LDA,
                              const multi2d<Complex64>& B, const int& LDB, 
                              const Complex64& BETA,
-                             multi1d<LatticeDiracFermionD3>& C
+                             multi1d<LatticeFermionD3>& C
                              // The LDB is known: int *LDC
                              ){
 
@@ -363,15 +363,15 @@ namespace QDPLapack
     if(N==1)
       LDA = Layout::sitesOnNode() * Nc *Ns ;
     else
-      LDA = (Complex *)&A[1].elem(0).elem(0).elem(0) - 
-            (Complex *)&A[0].elem(0).elem(0).elem(0) ;
+      LDA = (Complex64 *)&A[1].elem(0).elem(0).elem(0) - 
+            (Complex64 *)&A[0].elem(0).elem(0).elem(0) ;
 
     C.resize(N) ;
     if(N==1)
       LDC = Layout::sitesOnNode() * Nc *Ns ;
     else
-      LDC = (Complex *)&C[1].elem(0).elem(0).elem(0) - 
-	    (Complex *)&C[0].elem(0).elem(0).elem(0) ;
+      LDC = (Complex64 *)&C[1].elem(0).elem(0).elem(0) - 
+	    (Complex64 *)&C[0].elem(0).elem(0).elem(0) ;
 
     //DOES C NEED TO BE ZEROED out ?
     //for(int i(0);i<N;i++) C[i] = zero ;
@@ -386,11 +386,11 @@ namespace QDPLapack
     **/
 
     return zgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
-		 (Complex *)&ALPHA,
-		 (Complex *)&A[0].elem(0).elem(0).elem(0),&LDA,
-		 (Complex *)&B(0,0),(int *)&LDB,
-		 (Complex *)&BETA,
-		 (Complex *)&C[0].elem(0).elem(0).elem(0),&LDC);
+		 (Complex64 *)&ALPHA,
+		 (Complex64 *)&A[0].elem(0).elem(0).elem(0),&LDA,
+		 (Complex64 *)&B(0,0),(int *)&LDB,
+		 (Complex64 *)&BETA,
+		 (Complex64 *)&C[0].elem(0).elem(0).elem(0),&LDC);
   }
 
 
@@ -403,11 +403,11 @@ namespace QDPLapack
   int LatFermMat_x_Mat_cgemm(char& TRANSA, 
                              char& TRANSB,
                              const int& M, const int& N, const int& K, 
-                             const DComplex& ALPHA,
+                             const Complex64& ALPHA,
                              const multi1d<LatticeFermion>& A,
                              // The LDA is known: int *LDA,
-                             const multi2d<DComplex>& B, const int& LDB, 
-                             const Complex& BETA,
+                             const multi2d<Complex64>& B, const int& LDB, 
+                             const Complex64& BETA,
                              multi1d<LatticeFermion>& C
                              // The LDB is known: int *LDC
                              ){
@@ -441,13 +441,13 @@ namespace QDPLapack
 	    int m,
 	    int n,
 	    int k,
-	    Complex alpha,
-	    multi2d<Complex>& A,  // input
+	    Complex32 alpha,
+	    multi2d<Complex32>& A,  // input
 	    int lda,
-	    multi2d<Complex>& B,  // input
+	    multi2d<Complex32>& B,  // input
 	    int ldb,
-	    Complex beta,
-	    multi2d<Complex>& C,  //input/output
+	    Complex32 beta,
+	    multi2d<Complex32>& C,  //input/output
 	    int ldc   
     )
   {
@@ -472,13 +472,13 @@ namespace QDPLapack
 	    int m,
 	    int n,
 	    int k,
-	    DComplex alpha,
-	    multi2d<DComplex>& A,  // input
+	    Complex64 alpha,
+	    multi2d<Complex64>& A,  // input
 	    int lda,
-	    multi2d<DComplex>& B,  // input
+	    multi2d<Complex64>& B,  // input
 	    int ldb,
-	    DComplex beta,
-	    multi2d<DComplex>& C,  //input/output
+	    Complex64 beta,
+	    multi2d<Complex64>& C,  //input/output
 	    int ldc   
     )
   {
@@ -502,29 +502,29 @@ namespace QDPLapack
    *--------------------------------------------------------------------*/
   int cgemv(char &trans, 
 	    const int& m, const int& n,
-	    multi2d<Complex>& A, 
-	    multi1d<Complex>& x,
-	    multi1d<Complex>& y
+	    multi2d<Complex32>& A, 
+	    multi1d<Complex32>& x,
+	    multi1d<Complex32>& y
 	    )
   {
     int incx(1), incy(1);
-    Complex alpha(1.0), beta(0.0);
+    Complex32 alpha(1.0), beta(0.0);
     int lda = A.size1() ; 
 
     return cgemv_(&trans, (int *) &m, (int *) &n, &alpha, 
-		    (Complex *) &A(0,0), &lda, 
+		    (Complex32 *) &A(0,0), &lda, 
 		    &x[0], &incx, &beta, 
 		    &y[0], &incy);
   }
 
 
-  int zpotrf(char &uplo, int N,  multi2d<DComplex>& A, int LDA, int& info){
+  int zpotrf(char &uplo, int N,  multi2d<Complex64>& A, int LDA, int& info){
     
     return zpotrf_(&uplo, &N, 
-		   (DComplex *) &A(0,0), &LDA, &info);
+		   (Complex64 *) &A(0,0), &LDA, &info);
 
   }
-  int zpotrf(char &uplo, multi2d<DComplex>& A, int& info){
+  int zpotrf(char &uplo, multi2d<Complex64>& A, int& info){
     int LDA = A.size1() ; // Assumes square matrix
     
     return zpotrf(uplo,LDA,A,LDA,info);
@@ -532,13 +532,13 @@ namespace QDPLapack
   }
 
 
-  int cpotrf(char &uplo, int N,  multi2d<Complex>& A, int LDA, int& info){
+  int cpotrf(char &uplo, int N,  multi2d<Complex32>& A, int LDA, int& info){
     
     return cpotrf_(&uplo, &N, 
-		   (Complex *) &A(0,0), &LDA, &info);
+		   (Complex32 *) &A(0,0), &LDA, &info);
 
   }
-  int cpotrf(char &uplo, multi2d<Complex>& A, int& info){
+  int cpotrf(char &uplo, multi2d<Complex32>& A, int& info){
     int LDA = A.size1() ; // Assumes square matrix
     
     return cpotrf(uplo,LDA,A,LDA,info);
@@ -547,29 +547,29 @@ namespace QDPLapack
 
 
 
-  int zpotrf(char &uplo, int N,  multi1d<DComplex>& A, int LDA, int& info){
+  int zpotrf(char &uplo, int N,  multi1d<Complex64>& A, int LDA, int& info){
     
-    return zpotrf_(&uplo, &N, (DComplex *) &A[0], &LDA, &info);
+    return zpotrf_(&uplo, &N, (Complex64 *) &A[0], &LDA, &info);
   }
 
 
-  int cpotrf(char &uplo, int N,  multi1d<Complex>& A, int LDA, int& info){
+  int cpotrf(char &uplo, int N,  multi1d<Complex32>& A, int LDA, int& info){
     
-    return cpotrf_(&uplo, &N, (Complex *) &A[0], &LDA, &info);
+    return cpotrf_(&uplo, &N, (Complex32 *) &A[0], &LDA, &info);
   }
 
   
   int zpotrs(char &uplo, int N, int nrhs,  
-	     multi2d<DComplex>& A, int LDA, 
-	     multi2d<DComplex>& B, int LDB, int& info){
+	     multi2d<Complex64>& A, int LDA, 
+	     multi2d<Complex64>& B, int LDB, int& info){
 
     return zpotrs_(&uplo, &N, &nrhs, 
-		   (DComplex *)&A(0,0), &LDA,
-		   (DComplex *)&B(0,0), &LDB,
+		   (Complex64 *)&A(0,0), &LDA,
+		   (Complex64 *)&B(0,0), &LDB,
 		   &info);
   }
   
-  int zpotrs(char &uplo, multi2d<DComplex>& A,  multi2d<DComplex>& B,  
+  int zpotrs(char &uplo, multi2d<Complex64>& A,  multi2d<Complex64>& B,  
 	     int& info){
     
     int LDA = A.size1() ; // Assumes square matrix
@@ -583,16 +583,16 @@ namespace QDPLapack
   
 
   int cpotrs(char &uplo, int N, int nrhs,  
-	     multi2d<Complex>& A, int LDA, 
-	     multi2d<Complex>& B, int LDB, int& info){
+	     multi2d<Complex32>& A, int LDA, 
+	     multi2d<Complex32>& B, int LDB, int& info){
 
     return cpotrs_(&uplo, &N, &nrhs, 
-		   (Complex *)&A(0,0), &LDA,
-		   (Complex *)&B(0,0), &LDB,
+		   (Complex32 *)&A(0,0), &LDA,
+		   (Complex32 *)&B(0,0), &LDB,
 		   &info);
   }
   
-  int cpotrs(char &uplo, multi2d<Complex>& A,  multi2d<Complex>& B,  
+  int cpotrs(char &uplo, multi2d<Complex32>& A,  multi2d<Complex32>& B,  
 	     int& info){
     
     int LDA = A.size1() ; // Assumes square matrix
@@ -605,23 +605,23 @@ namespace QDPLapack
   
 
   int zpotrs(char &uplo, int N, int nrhs,  
-	     multi1d<DComplex>& A, int LDA, 
-	     multi2d<DComplex>& B, int LDB, int& info){
+	     multi1d<Complex64>& A, int LDA, 
+	     multi2d<Complex64>& B, int LDB, int& info){
     
     return zpotrs_(&uplo, &N, &nrhs, 
-		   (DComplex *)&A[0], &LDA,
-		   (DComplex *)&B(0,0), &LDB,
+		   (Complex64 *)&A[0], &LDA,
+		   (Complex64 *)&B(0,0), &LDB,
 		   &info);
   }
   
   
   int cpotrs(char &uplo, int N, int nrhs,  
-	     multi1d<Complex>& A, int LDA, 
-	     multi2d<Complex>& B, int LDB, int& info){
+	     multi1d<Complex32>& A, int LDA, 
+	     multi2d<Complex32>& B, int LDB, int& info){
 
     return cpotrs_(&uplo, &N, &nrhs, 
-		   (Complex *)&A[0], &LDA,
-		   (Complex *)&B(0,0), &LDB,
+		   (Complex32 *)&A[0], &LDA,
+		   (Complex32 *)&B(0,0), &LDB,
 		   &info);
   }
 
