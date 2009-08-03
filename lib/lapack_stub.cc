@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lapack_stub.cc,v 1.7 2009-07-17 14:52:54 bjoo Exp $
+// $Id: lapack_stub.cc,v 1.8 2009-08-03 15:19:19 bjoo Exp $
 /*! \file
  *  \brief Stubs for QDP interface to Lapack lib
  */
@@ -118,6 +118,12 @@ namespace QDPLapack
     
   }
 
+ int zpotrs(char &uplo, int N, int nrhs,  
+	     multi1d<Complex64>& A, int LDA, 
+	     multi2d<Complex64>& B, int LDB, int& info){
+   QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
+ }
 
   int cpotrs(char &uplo, int N, int nrhs,  
 	     multi1d<Complex>& A, int LDA, 
