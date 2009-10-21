@@ -1,4 +1,4 @@
-/* $Id: IncrEigpcg.c,v 1.8 2009-04-17 14:42:08 bjoo Exp $ */
+/* $Id: IncrEigpcg.c,v 1.9 2009-10-21 20:50:57 kostas Exp $ */
 /*******************************************************************************
  * Function IncrEigpcg -- Incremental eigpcg. 
  *
@@ -42,7 +42,7 @@ void RayleighRitz(Complex_C *evecs, int lde, int n, int numEvecs,
         BLAS_CCOPY(&numEvecs, &H[i*ldh], &ONE, &Ht[i*numEvecs], &ONE);
 
      BLAS_CHEEV(&cV,&cU,&numEvecs,Ht,&numEvecs,Hevals,cwork,&lwork,awork,&info);
-     restart_X(V, lde, Ht, n, numEvecs, numEvecs, cwork, lwork);
+     Crestart_X(V, lde, Ht, n, numEvecs, numEvecs, cwork, lwork);
 
      for (i=0;i<numEvecs;i++)  {
          computeResNorm(&V[i*lde], &Hevals[i], &rnorm, cwork, n, matvec,params);

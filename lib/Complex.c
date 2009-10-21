@@ -1,4 +1,4 @@
-/* $Id: Complex.c,v 1.3 2008-04-22 03:53:05 kostas Exp $ */
+/* $Id: Complex.c,v 1.4 2009-10-21 20:50:57 kostas Exp $ */
 /* ================================================
  *
  * Based on slu_complex.c implemented by Sherry Li.
@@ -118,7 +118,7 @@ float s_imag_primme(Complex_C *z)
  * Double Precision complex
  *-----------------------------------------------------------------------*/
 /* Complex multiplication c= a*b */
-void z_mul_primme(Complex_C *c, Complex_C *a, Complex_C *b)
+void z_mul_primme(Complex_Z *c, Complex_Z *a, Complex_Z *b)
 {       
         c->r = a->r*b->r - a->i*b->i ;
         c->i = a->r*b->i + a->i*b->r ;

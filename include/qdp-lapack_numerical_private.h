@@ -15,6 +15,7 @@
 
 #ifdef NUM_SUN
 
+
 #define ZDOTCSUB  zdotcsub_
 #define BLAS_ZCOPY  zcopy_
 #define BLAS_ZSWAP  zswap_
@@ -29,6 +30,7 @@
 #define BLAS_ZHETRS zhetrs_
 #define BLAS_ZGEQRF zgeqrf_
 #define BLAS_ZUNMQR zunmqr_
+
 
 #define CDOTCSUB  cdotcsub_
 #define BLAS_CCOPY  ccopy_
@@ -73,8 +75,23 @@
 #define BLAS_SSYTRF ssytrf_
 #define BLAS_SSYTRS ssytrs_
 
+/*Functions added for use with EIGBICG*/
+/**********************************/
+#define BLAS_CGEEV  cgeev_
+#define BLAS_ZGEEV  zgeev_
+#define BLAS_CGESV  cgesv_
+#define BLAS_ZGESV  zgesv_
+#define BLAS_CGETRF cgetrf_
+#define BLAS_CGETRS cgetrs_
+#define BLAS_ZGETRF zgetrf_
+#define BLAS_ZGETRS zgetrs_
+/*********************************/
+
+
 
 #elif defined(NUM_IBM)
+
+
 
 #define ZDOTCSUB  zdotcsub
 #define BLAS_ZCOPY  zcopy
@@ -133,6 +150,20 @@
 #define BLAS_SSYTRF ssytrf
 #define BLAS_SSYTRS ssytrs
 
+/*Functions added for use with EIGBICG*/
+/**********************************/
+#define BLAS_CGEEV  cgeev
+#define BLAS_ZGEEV  zgeev
+#define BLAS_CGESV  cgesv
+#define BLAS_ZGESV  zgesv
+#define BLAS_CGETRF cgetrf
+#define BLAS_CGETRS cgetrs
+#define BLAS_ZGETRF zgetrf
+#define BLAS_ZGETRS zgetrs
+/*********************************/
+
+
+
 #ifdef NUM_ESSL
 #include <essl.h>
 #endif
@@ -140,6 +171,8 @@
 #elif defined(NUM_CRAY)
 #include <fortran.h>
 #include <string.h>
+
+
 
 #define ZDOTCSUB  zdotcsub
 #define BLAS_ZCOPY  zcopy
@@ -169,6 +202,20 @@
 #define BLAS_DSYEV  SSYEV
 #define BLAS_DSYTRF DSYTRF
 #define BLAS_DSYTRS DSYTRS
+
+/*Functions added for use with EIGBICG*/
+/**********************************/
+#define BLAS_CGEEV  cgeev
+#define BLAS_ZGEEV  zgeev
+#define BLAS_CGESV  cgesv
+#define BLAS_ZGESV  zgesv
+#define BLAS_CGETRF cgetrf
+#define BLAS_CGETRS cgetrs
+#define BLAS_ZGETRF zgetrf
+#define BLAS_ZGETRS zgetrs
+/*********************************/
+
+
 
 #endif
 #ifdef Cplusplus
@@ -240,6 +287,36 @@ void   BLAS_CUNMQR(char *,char *,int *,int *,int *,void *,int *, void *, void *,
 void   BLAS_CPOTRF(char *uplo, int *N, void *A, int *LDA, int *info );
 void   BLAS_CPOTRS(char *uplo, int *N, int *NRHS, Complex_C *A, int *LDA, Complex_C *B,int *LDB,int *INFO);
 void   CDOTCSUB(void *dot, int *n, void *x, int *incx, void *y, int *incy);
+
+
+/* Functions added for use with EIGBICG */
+/* ------------------------------------ */
+void BLAS_CGEEV(char *JOBVL, char *JOBVR, int *N, Complex_C *A, int *LDA, Complex_C *W, Complex_C *VL, int *LDVL,
+                 Complex_C *VR, int *LDVR, Complex_C *WORK, int *LWORK, float *RWORK, int *INFO); 
+
+void BLAS_ZGEEV(char *JOBVL, char *JOBVR, int *N, Complex_Z *A, int *LDA, Complex_Z *W, Complex_Z *VL, int *LDVL,
+                 Complex_Z *VR, int *LDVR, Complex_Z *WORK, int *LWORK, double *RWORK, int *INFO); 
+
+void BLAS_CGESV(int *N, int *NRHS, Complex_C *A, int *LDA, int *IPIV, Complex_C *B, int *LDB, int* INFO);
+
+void BLAS_ZGESV(int *N, int *NRHS, Complex_Z *A, int *LDA, int *IPIV, Complex_Z *B, int *LDB, int* INFO);
+
+void BLAS_CGETRF(int *M, int *N, Complex_C *A, int *LDA, int *IPIV, int *INFO);
+
+void BLAS_CGETRS(char *TRANS, int *N, int *NRHS, Complex_C *A, int *LDA, int *IPIV, Complex_C *B, int *LDB, int *INFO);
+
+void BLAS_ZGETRF(int *M, int *N, Complex_Z *A, int *LDA, int *IPIV, int *INFO);
+
+void BLAS_ZGETRS(char *TRANS, int *N, int *NRHS, Complex_Z *A, int *LDA, int *IPIV, Complex_Z *B, int *LDB, int *INFO);
+
+/*-------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
+
 
 #ifdef NUM_ESSL
 /* Use these in ESSL */

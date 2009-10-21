@@ -1,3 +1,4 @@
+// $Id: qdp-lapack_Complex.h,v 1.3 2009-10-21 20:50:56 kostas Exp $
 /* Slight modification of the SuperLU header file
  * to avoid conflicts with f2c and g2c libraries 
  * A. Stathopoulos, Feb 7, 2008                     */
@@ -90,7 +91,7 @@ typedef struct {
 
 
 /* Prototypes for functions in dcomplex.c */
-void   z_mul_primme(Complex_C *c, Complex_C *a, Complex_C *b);
+void   z_mul_primme(Complex_Z *c, Complex_Z *a, Complex_Z *b);
 void   z_div_primme(Complex_Z *, Complex_Z *, Complex_Z *);
 double z_abs_primme(Complex_Z);     /* exact sqrt(r^2+i^2) */
 double z_abs1_primme(Complex_Z);    /* approximate  |r|+|i| */

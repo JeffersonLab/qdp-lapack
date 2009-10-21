@@ -1,4 +1,4 @@
-/* $Id: eigpcg.c,v 1.8 2008-04-22 03:50:13 kostas Exp $ */
+/* $Id: eigpcg.c,v 1.9 2009-10-21 20:50:57 kostas Exp $ */
 /*-------------------------------------------------------------------------
 
   EIGPCG   Solve Ax=b by the preconditioned conjugate gradient method.
@@ -337,7 +337,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
 	  for (i=0; i < v_size*v_max; i++)
 	      {Coef[i].r = Hevecsold[i].r; Coef[i].i = Hevecsold[i].i;}
 	  /* Restart V = V(n,v_max)*Coef(v_max,v_size) */
-	  restart_X(V, n, Coef, n, v_max, v_size, tmp_work, tmpsize);
+	  Crestart_X(V, n, Coef, n, v_max, v_size, tmp_work, tmpsize);
 	  /* Restart H = diag(Hevals) plus a column and a row */
 	  for (i = 0; i < allelems; i++ )  {H[i].r = 0.0; H[i].i=0.0;}
     	  for (i = 0; i < v_size; i++) H[i*(v_max+1)].r = Hevals[i];
@@ -512,7 +512,7 @@ void computeFinalEvecs(Complex_C *V, int n, double *Hevals, Complex_Z *H,
   for (i=0; i < nev*v_max; i++)
       {Coef[i].r = H[i].r; Coef[i].i = H[i].i;}
   /* Restart V = V(n,v_size)*Coef(v_max,v_size) */
-  restart_X(V, n, Coef, n, v_max, nev, tmp_work, tmpsize);
+  Crestart_X(V, n, Coef, n, v_max, nev, tmp_work, tmpsize);
 
 }
 /* end computeFinalEvecs ****************************************************/
