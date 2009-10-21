@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2008-04-15 14:17:10 kostas Exp $
+# $Id: Makefile.am,v 1.10 2009-10-21 21:03:39 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -19,10 +19,10 @@ lib_LIBRARIES = libqdp-lapack.a
 libqdp_lapack_a_SOURCES =
 
 if BUILD_DUMMY_LAPACK
-libqdp_lapack_a_SOURCES += lapack_stub.cc IncrEigpcg_stub.c
+libqdp_lapack_a_SOURCES += lapack_stub.cc IncrEigpcg_stub.c IncrEigbicg_stub.c
 endif
 
 if BUILD_FORTRAN_LAPACK
-libqdp_lapack_a_SOURCES += fortran_lapack.cc Complex.c  IncrEigpcg.c  numerical.c  restart_X.c eigpcg.c   ortho.c wtime.c cdotcsub.f  zdotcsub.f
+libqdp_lapack_a_SOURCES += fortran_lapack.cc Complex.c  IncrEigpcg.c  numerical.c  restart_X.c eigpcg.c   ortho.c wtime.c cdotcsub.f  bicgstab.c biortho.c conjugate.c eigbicg.c G_eval.c IncrEigbicg.c sort.c zdotcsub.f
 endif
 

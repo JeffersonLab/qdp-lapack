@@ -1,4 +1,4 @@
-// $Id: bicgstab.h,v 1.1 2009-10-21 20:50:56 kostas Exp $
+// $Id: bicgstab.h,v 1.2 2009-10-21 21:03:39 kostas Exp $
 /*------------------------------------------------------------------------
   BICGSTAB algorithm for solving A*x=b with A a sparse non-symmetric matrix 
   Authors     : Abdou M. Abdel-Rehim, Kostas Orginos, Andreas Stathopoulos
@@ -15,7 +15,6 @@
 #include "qdp-lapack_Complex.h"
 #include "qdp-lapack_numerical.h"
 #include "qdp-lapack_numerical_private.h"
-#include "MV_multiply.h"
 
 void MyBICGSTAB_C(int n, int lde, Complex_C *x, Complex_C *b, float tol, int maxiter, int *iter, float *res,
                    void (*matvec) (void *, void *, void *), void *params, float AnormEst, int ConvTestOpt, 

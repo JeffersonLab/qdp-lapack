@@ -1,4 +1,4 @@
-// $Id: qdp-lapack_eigbicg.h,v 1.1 2009-10-21 20:50:56 kostas Exp $
+// $Id: qdp-lapack_eigbicg.h,v 1.2 2009-10-21 21:03:39 kostas Exp $
 /*******************************************************************************
     Eig-BiCG algorithm for solving ono-symmetric linear system Ax=b and 
     approximating few small eignvalues and eignvectors.
@@ -18,7 +18,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include "MV_multiply.h"
 #include "qdp-lapack_restart_X.h"           
 #include "qdp-lapack_biortho.h" 
 
