@@ -1,9 +1,10 @@
-/*------------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------
   Computing and sorting eignvalues and eignvectors for a general complex matrix.
   Authors     : Abdou M. Abdel-Rehim, Kostas Orginos, Andreas Stathopoulos
                 andreas@cs.wm.edu
   Last Updated: August, 28th, 2009.
--------------------------------------------------------------------------------*/
+------------------------------------------------------------------------------
+*/
 
 #include "G_eval.h"
 
@@ -133,7 +134,7 @@ void ZG_eval(Complex_Z *A, int N, int LDA, Complex_Z *W, char SRT_OPT, double ep
                      {  WORK[j].r = WORK[N+j].r - WORK[j].r;
                         WORK[j].i = WORK[N+j].i - WORK[j].i;
                      }
-                   ZDOTCSUB(&tmpz1,&N,WORK,&ONE,WORK,&ONE);
+                   wrap_zdot_small(&tmpz1,&N,WORK,&ONE,WORK,&ONE);
                    printf("Eval# %d, value %g %g , resnorm= %g\n",i,W[i].r,W[i].i,sqrt(tmpz1.r));
               }
              */
@@ -171,7 +172,7 @@ void ZG_eval(Complex_Z *A, int N, int LDA, Complex_Z *W, char SRT_OPT, double ep
             //for(i=0; i<N; i++)
             //  for(j=0; j<=i; j++)
             //     {
-            //        ZDOTCSUB(&tmpz1,&N,&VL[i*LDVL],&ONE,&VR[j*LDVR],&ONE);
+            //        wrap_zdot_small(&tmpz1,&N,&VL[i*LDVL],&ONE,&VR[j*LDVR],&ONE);
             //        printf("%d %d %g %g\n",i,j,tmpz1.r,tmpz1.i);
             //     }
 
@@ -191,19 +192,19 @@ void ZG_eval(Complex_Z *A, int N, int LDA, Complex_Z *W, char SRT_OPT, double ep
      /*
      for(i=0; i<N; i++)
         {
-           ZDOTCSUB(&tmpz1,&N,&VL[LDVL*i],&ONE,&VL[LDVL*i],&ONE);
+           wrap_zdot_small(&tmpz1,&N,&VL[LDVL*i],&ONE,&VL[LDVL*i],&ONE);
            tmpz1.r=sqrt(fabs((double) tmpz1.r));
            tmpz1.i=0.0;
            z_div_primme(&tmpz2,&z_one,&tmpz1);
            BLAS_ZSCAL(&N,&tmpz2,&VL[LDVL*i],&ONE);
 
-           ZDOTCSUB(&tmpz1,&N,&VR[LDVR*i],&ONE,&VR[LDVR*i],&ONE);
+           wrap_zdot_small(&tmpz1,&N,&VR[LDVR*i],&ONE,&VR[LDVR*i],&ONE);
            tmpz1.r=sqrt(fabs((double) tmpz1.r));
            tmpz1.i=0.0;
            z_div_primme(&tmpz2,&z_one,&tmpz1);
            BLAS_ZSCAL(&N,&tmpz2,&VR[LDVR*i],&ONE);
 
-           ZDOTCSUB(&tmpz1,&N,&VR[LDVR*i],&ONE,&VL[LDVL*i],&ONE);
+           wrap_zdot_small(&tmpz1,&N,&VR[LDVR*i],&ONE,&VL[LDVL*i],&ONE);
 
            tmpd = z_abs_primme(tmpz1);
            tmpd = sqrt(tmpd);
@@ -342,19 +343,19 @@ void ZG_eval_original(Complex_Z *A, int N, int LDA, Complex_Z *W, char SRT_OPT, 
 
      for(i=0; i<N; i++)
         {
-           ZDOTCSUB(&tmpz1,&N,&VL[LDVL*i],&ONE,&VL[LDVL*i],&ONE);
+           wrap_zdot_small(&tmpz1,&N,&VL[LDVL*i],&ONE,&VL[LDVL*i],&ONE);
            tmpz1.r=sqrt(fabs((double) tmpz1.r));
            tmpz1.i=0.0;
            z_div_primme(&tmpz2,&z_one,&tmpz1);
            BLAS_ZSCAL(&N,&tmpz2,&VL[LDVL*i],&ONE);
 
-           ZDOTCSUB(&tmpz1,&N,&VR[LDVR*i],&ONE,&VR[LDVR*i],&ONE);
+           wrap_zdot_small(&tmpz1,&N,&VR[LDVR*i],&ONE,&VR[LDVR*i],&ONE);
            tmpz1.r=sqrt(fabs((double) tmpz1.r));
            tmpz1.i=0.0;
            z_div_primme(&tmpz2,&z_one,&tmpz1);
            BLAS_ZSCAL(&N,&tmpz2,&VR[LDVR*i],&ONE);
 
-           ZDOTCSUB(&tmpz1,&N,&VR[LDVR*i],&ONE,&VL[LDVL*i],&ONE);
+           wrap_zdot_small(&tmpz1,&N,&VR[LDVR*i],&ONE,&VL[LDVL*i],&ONE);
 
            tmpd = z_abs_primme(tmpz1);
            tmpd = sqrt(tmpd);
@@ -483,19 +484,19 @@ void CG_eval(Complex_C *A, int N, int LDA, Complex_C *W, char SRT_OPT, float eps
         further consideration is needed. */
      for(i=0; i<N; i++)
         {
-           CDOTCSUB(&tmpz1,&N,&VL[LDVL*i],&ONE,&VL[LDVL*i],&ONE);
+           wrap_cdot_small(&tmpz1,&N,&VL[LDVL*i],&ONE,&VL[LDVL*i],&ONE);
            tmpz1.r=sqrt(tmpz1.r);
            tmpz1.i=0.0;
            c_div_primme(&tmpz2,&z_one,&tmpz1);
            BLAS_CSCAL(&N,&tmpz2,&VL[LDVL*i],&ONE);
 
-           CDOTCSUB(&tmpz1,&N,&VR[LDVR*i],&ONE,&VR[LDVR*i],&ONE);
+           wrap_cdot_small(&tmpz1,&N,&VR[LDVR*i],&ONE,&VR[LDVR*i],&ONE);
            tmpz1.r=sqrt(tmpz1.r);
            tmpz1.i=0.0;
            c_div_primme(&tmpz2,&z_one,&tmpz1);
            BLAS_CSCAL(&N,&tmpz2,&VR[LDVR*i],&ONE);
 
-           CDOTCSUB(&tmpz1,&N,&VR[LDVR*i],&ONE,&VL[LDVL*i],&ONE);
+           wrap_cdot_small(&tmpz1,&N,&VR[LDVR*i],&ONE,&VL[LDVL*i],&ONE);
            tmpd = c_abs_primme(tmpz1);
            tmpd = sqrt(tmpd);
            tmpz3.r = tmpz1.r/tmpd; tmpz3.i = tmpz1.i/tmpd;

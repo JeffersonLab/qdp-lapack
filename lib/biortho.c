@@ -1,4 +1,3 @@
-/* $Id: biortho.c,v 1.1 2009-10-21 20:54:49 kostas Exp $ */
 /**********************************************************************
  * Given nf left and right vectors such that the first ni-1 vectors are
  * bi-orthogonal, biortho_local extends the biorthogonality through the 
@@ -36,7 +35,7 @@ void biortho_local(Complex_Z *VL, int ldvl, Complex_Z *VR, int ldvr, int m, int 
         
          for(j=0; j <i; j++)
             {
-               ZDOTCSUB(&tmpz,&m, &VL[j*ldvl],&ONE,&VR[i*ldvr],&ONE);
+               wrap_zdot_small(&tmpz,&m, &VL[j*ldvl],&ONE,&VR[i*ldvr],&ONE);
                for(iq=0; iq<m; iq++)
                  {
                    z_mul_primme(&tmpz1,&tmpz,&VR[j*ldvr+iq]);
@@ -45,7 +44,7 @@ void biortho_local(Complex_Z *VL, int ldvl, Complex_Z *VR, int ldvr, int m, int 
                  }
 
                
-               ZDOTCSUB(&tmpz,&m, &VR[j*ldvr], &ONE, &VL[i*ldvl],&ONE);
+               wrap_zdot_small(&tmpz,&m, &VR[j*ldvr], &ONE, &VL[i*ldvl],&ONE);
                for(iq=0; iq<m; iq++)
                  {
                    z_mul_primme(&tmpz1,&tmpz,&VL[j*ldvl+iq]);
@@ -57,18 +56,18 @@ void biortho_local(Complex_Z *VL, int ldvl, Complex_Z *VR, int ldvr, int m, int 
 
          
          /* Normalize the new vectors */
-         ZDOTCSUB(&tmpz,&m, &VR[i*ldvr], &ONE, &VR[i*ldvr], &ONE);
+         wrap_zdot_small(&tmpz,&m, &VR[i*ldvr], &ONE, &VR[i*ldvr], &ONE);
          tmpz.r = sqrt(tmpz.r);  tmpz.i=0.0;
          z_div_primme(&tmpz1, &z_one, &tmpz);  /* 1/tempz */
          BLAS_ZSCAL(&m, &tmpz1, &VR[i*ldvr], &ONE); 
 
-         ZDOTCSUB(&tmpz,&m, &VL[i*ldvl], &ONE, &VL[i*ldvl], &ONE);
+         wrap_zdot_small(&tmpz,&m, &VL[i*ldvl], &ONE, &VL[i*ldvl], &ONE);
          tmpz.r=sqrt(tmpz.r); tmpz.i=0.0;
          z_div_primme(&tmpz1, &z_one, &tmpz);  /* 1/tempz */
          BLAS_ZSCAL(&m, &tmpz1, &VL[i*ldvl], &ONE);
 
          /* bi-orthogonalize */
-         ZDOTCSUB(&tmpz,&m, &VR[i*ldvr], &ONE, &VL[i*ldvl], &ONE);
+         wrap_zdot_small(&tmpz,&m, &VR[i*ldvr], &ONE, &VL[i*ldvl], &ONE);
          z_div_primme(&tmpz1,&z_one,&tmpz);
          BLAS_ZSCAL(&m, &tmpz1, &VL[i*ldvl], &ONE);
          

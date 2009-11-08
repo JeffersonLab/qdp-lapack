@@ -1,5 +1,4 @@
-/* $Id: numerical.c,v 1.8 2008-04-22 03:53:05 kostas Exp $ */
-/*******************************************************************************
+/******************************************************************************
  *   Adapted from PRIMME: Feb 7, 2008
  *
  *   PRIMME PReconditioned Iterative MultiMethod Eigensolver
@@ -26,7 +25,7 @@
  * Purpose - This file contains for the most part C wrapper routines for
  *    calling various BLAS and LAPACK FORTRAN routines.
  *
- ******************************************************************************/
+ *****************************************************************************/
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -166,10 +165,10 @@ Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
    int TWO = 2; /* length of Complex_C in floats */
    Complex_C cdotc_r, cdotc;
 
-#ifdef USE_BLAS_CDOT
-   CDOTCSUB(&cdotc_r, n, x, incx, y, incy);
+   //#ifdef USE_BLAS_CDOT
+   //CDOTCSUB(&cdotc_r, n, x, incx, y, incy);
    //cblas_cdotc_sub(*n, x, *incx, y, *incy, &cdotc_r);
-#else
+   //#else
    int i ;
    cdotc_r.r=cdotc_r.i=0.0;
    if((*incx==1)&&(*incy==1)){
@@ -190,9 +189,39 @@ Complex_C wrap_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy,
        iy+= *incy;
      }
    }
-#endif
+   //#endif
    globalSumFloat(&cdotc_r, &cdotc, &TWO, params);
    return(cdotc);
+}
+
+void wrap_cdot_small(Complex_C *cdotc_r, int *n, Complex_C *x, int *incx, Complex_C *y, int *incy) 
+{
+  //int TWO=2;  /* double complex are two doubles */
+  //Complex_Z zdotc_r;
+   //   ZDOTCSUB(&zdotc_r, n, x, incx, y, incy);
+   //cblas_zdotc_sub(*n, x, *incx, y, *incy, &zdotc_r);
+
+   int i ;
+   cdotc_r->r=cdotc_r->i=0.0;
+   if((*incx==1)&&(*incy==1)){
+     for(i=0;i<*n;i++){
+       cdotc_r->r += x[i].r*y[i].r + x[i].i*y[i].i;
+       cdotc_r->i += x[i].r*y[i].i - x[i].i*y[i].r;
+     }
+   }
+   else{
+     int ix,iy;
+     ix=iy=0;
+     if(incx<0) ix = (- (*n) + 1)*(*incx) ;
+     if(incy<0) iy = (- (*n) + 1)*(*incy) ;
+     for(i=0;i<*n;i++){
+       cdotc_r->r += x[ix].r*y[iy].r + x[ix].i*y[iy].i;
+       cdotc_r->i += x[ix].r*y[iy].i - x[ix].i*y[iy].r;
+       ix+= *incx;
+       iy+= *incy;
+     }
+   }
+
 }
 
 /*****************************************************************************/
@@ -282,10 +311,64 @@ Complex_Z wrap_zdot(int *n, Complex_Z *x, int *incx, Complex_Z *y, int *incy,
 {
    int TWO=2;  /* double complex are two doubles */
    Complex_Z zdotc_r, zdotc;
-   ZDOTCSUB(&zdotc_r, n, x, incx, y, incy);
+   //   ZDOTCSUB(&zdotc_r, n, x, incx, y, incy);
    //cblas_zdotc_sub(*n, x, *incx, y, *incy, &zdotc_r);
+
+   int i ;
+   zdotc_r.r=zdotc_r.i=0.0;
+   if((*incx==1)&&(*incy==1)){
+     for(i=0;i<*n;i++){
+       zdotc_r.r += x[i].r*y[i].r + x[i].i*y[i].i;
+       zdotc_r.i += x[i].r*y[i].i - x[i].i*y[i].r;
+     }
+   }
+   else{
+     int ix,iy;
+     ix=iy=0;
+     if(incx<0) ix = (- (*n) + 1)*(*incx) ;
+     if(incy<0) iy = (- (*n) + 1)*(*incy) ;
+     for(i=0;i<*n;i++){
+       zdotc_r.r += x[ix].r*y[iy].r + x[ix].i*y[iy].i;
+       zdotc_r.i += x[ix].r*y[iy].i - x[ix].i*y[iy].r;
+       ix+= *incx;
+       iy+= *incy;
+     }
+   }
+
    globalSumDouble(&zdotc_r, &zdotc, &TWO, params);
    return(zdotc);
+
+}
+
+void wrap_zdot_small(Complex_Z *zdotc_r, int *n, Complex_Z *x, int *incx, Complex_Z *y, int *incy) 
+{
+  //int TWO=2;  /* double complex are two doubles */
+  //Complex_Z zdotc_r;
+   //   ZDOTCSUB(&zdotc_r, n, x, incx, y, incy);
+   //cblas_zdotc_sub(*n, x, *incx, y, *incy, &zdotc_r);
+
+   int i ;
+   zdotc_r->r=zdotc_r->i=0.0;
+   if((*incx==1)&&(*incy==1)){
+     for(i=0;i<*n;i++){
+       zdotc_r->r += x[i].r*y[i].r + x[i].i*y[i].i;
+       zdotc_r->i += x[i].r*y[i].i - x[i].i*y[i].r;
+     }
+   }
+   else{
+     int ix,iy;
+     ix=iy=0;
+     if(incx<0) ix = (- (*n) + 1)*(*incx) ;
+     if(incy<0) iy = (- (*n) + 1)*(*incy) ;
+     for(i=0;i<*n;i++){
+       zdotc_r->r += x[ix].r*y[iy].r + x[ix].i*y[iy].i;
+       zdotc_r->i += x[ix].r*y[iy].i - x[ix].i*y[iy].r;
+       ix+= *incx;
+       iy+= *incy;
+     }
+   }
+
+   //return(zdotc_r);
 
 }
 

@@ -14,6 +14,8 @@ void wrap_cgemm(char *transa, char *transb, int *m, int *n, int *k,
    Complex_C *beta, Complex_C *c, int *ldc,
    Complex_C *work, void *params);
 
+void wrap_zdot_small(Complex_Z *zdot_r, int *n, Complex_Z *x, int *incx, Complex_Z *y, int *incy);
+void wrap_cdot_small(Complex_C *zdot_r, int *n, Complex_C *x, int *incx, Complex_C *y, int *incy);
 
 Complex_C wrap_zsum_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy, void *);
 Complex_C zsum_cdot(int *n, Complex_C *x, int *incx, Complex_C *y, int *incy);
