@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.18 2009-10-21 21:03:39 kostas Exp $
+# $Id: Makefile.am,v 1.10 2009-10-21 21:03:39 kostas Exp $
 #
 # Path for all files used in building the library
 
