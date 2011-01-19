@@ -1,4 +1,4 @@
-// $Id: qdp-lapack_Complex.h,v 1.3 2009-10-21 20:50:56 kostas Exp $
+/* $Id: qdp-lapack_Complex.h,v 1.3 2009-10-21 20:50:56 kostas Exp $ */
 /* Slight modification of the SuperLU header file
  * to avoid conflicts with f2c and g2c libraries 
  * A. Stathopoulos, Feb 7, 2008                     */
