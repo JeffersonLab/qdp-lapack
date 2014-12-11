@@ -217,7 +217,6 @@ void IncrEigbicg_C( int n, int lde,int nrhs, Complex_C *X, Complex_C *B, int *nc
                    fprintf(outputFile,"%-d  %-22.15E\n",i,reshist[i]);
               }  
 
-            fflush(outputFile);
              
             if (flag != 0) {
                fprintf(outputFile, "Error: eigbicg returned with nonzero exit status\n");
@@ -365,7 +364,6 @@ void init_BICG_C(Complex_C *vl, int ldvl, Complex_C *vr, int ldvr, int nvecs,
     //solve using LU factorized H
     BLAS_CGETRS(&cN,&nvecs,&ONE,H,&ldH,IPIV,work,&nvecs,info);
     printf("inside init_bicg\n");
-    fflush(stdout);
 
     if( (*info) != 0)
       { fprintf(stderr,"Error in BLAS_CGESV inside init-BICG. info %d\n",(*info));
@@ -429,7 +427,7 @@ void LRD_BICGSTAB_C(Complex_C *vl, int ldvl, Complex_C *vr, int ldvr, int nvecs,
      }
 
      
-     //initial residual vector
+     //initial residual std::vector
      tempc = wrap_zsum_cdot(&n,x,&ONE,x,&ONE,params);
      xnorm = sqrt(tempc.r);
      if(tempc.r > 0 )
@@ -821,8 +819,6 @@ void IncrEigbicg_Z(  int n, int lde,int nrhs, Complex_Z *X, Complex_Z *B, int *n
                    fprintf(outputFile,"%-d  %-22.15E\n",i,reshist[i]);
               }  
 
-            fflush(outputFile);
-             
             if (flag != 0) {
                fprintf(outputFile, "Error: eigbicg returned with nonzero exit status\n");
             return;}
@@ -969,7 +965,6 @@ void init_BICG_Z(Complex_Z *vl, int ldvl, Complex_Z *vr, int ldvr, int nvecs,
     //solve using LU factorized H
     BLAS_ZGETRS(&cN,&nvecs,&ONE,H,&ldH,IPIV,work,&nvecs,info);
     printf("inside init_bicg\n");
-    fflush(stdout);
 
     if( (*info) != 0)
       { fprintf(stderr,"Error in BLAS_ZGESV inside init-BICG_Z. info %d\n",(*info));
@@ -1033,7 +1028,7 @@ void LRD_BICGSTAB_Z(Complex_Z *vl, int ldvl, Complex_Z *vr, int ldvr, int nvecs,
      }
 
      
-     //initial residual vector
+     //initial residual std::vector
      tempc = wrap_zdot(&n,x,&ONE,x,&ONE,params);
      xnorm = sqrt(tempc.r);
      if(tempc.r > 0 )

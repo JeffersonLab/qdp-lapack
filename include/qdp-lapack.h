@@ -45,7 +45,7 @@ namespace QDPLapack
 	    multi1d<Double>& w
     ) ;
 
-  int zgeqrf(const int M, // The vector length
+  int zgeqrf(const int M, // The std::vector length
 	     const int N, // The number of vectors
 	     multi2d<DComplex>& A, // the array containing the vectors
 	     multi1d<DComplex>& TAU // some strange LAPACK beast
@@ -73,7 +73,7 @@ namespace QDPLapack
    */
   int zunmqr(char& side,//'L' or 'R': apply Q or Q^\dagger from the Left
 	     char& trans,//'N' or 'C':  apply Q or Q^\dagger
-	     const int M, // The vector length
+	     const int M, // The std::vector length
 	     const int N,  // The number of vectors
 	     multi2d<DComplex>& A, //input MxN matrix
 	     multi1d<DComplex>& TAU, // some strange LAPACK beast
@@ -209,7 +209,7 @@ namespace QDPLapack
    *  M     rows of A
    *  N     columns of A
    *  A     The m x n matrix
-   *  X     the vector of dim (n)
+   *  X     the std::vector of dim (n)
    *  Y     (output) the result
    *
    *--------------------------------------------------------------------*/

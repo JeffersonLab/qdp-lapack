@@ -24,14 +24,14 @@ void MyBICGSTAB_C(int n, int lde, Complex_C *x, Complex_C *b, float tol, int max
 /* BICGSTAB to solve the linear system Ax=b 
    n (IN)         : the active size of the matrix A.
    lde(IN)        : Leading dimension of A.
-   x  (IN/OUT)    : on input this vector has the inital guess and on output it has the solution.
+   x  (IN/OUT)    : on input this std::vector has the inital guess and on output it has the solution.
    b  (IN)        : right-hand side.
    tol(IN)        : tolerance for convergence. At convergence, norm(r) <= tol*norm(b).
    maxiter(IN)    : allowed maximum number of iterations.
    iter (OUT)     : number of iterations till convergence.
-   res (OUT)      : vector of length iter of residual norms at every iteration.
-   matvec (IN)    : matrix-vector product function.
-   params (IN)    : parameters needed by the matrix-vector function.
+   res (OUT)      : std::vector of length iter of residual norms at every iteration.
+   matvec (IN)    : matrix-std::vector product function.
+   params (IN)    : parameters needed by the matrix-std::vector function.
    AnormEst(IN)   : Estimate of the norm of A.Irrelevant if ConvTestOpt ==1.
    ConvTestOpt (IN): choice of how to determine convergence:
                        1 means norm(res) < tol*norm(b) 

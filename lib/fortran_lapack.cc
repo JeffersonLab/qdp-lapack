@@ -43,7 +43,7 @@ namespace QDPLapack
 		   &info) ;
     
     if(info){
-      QDPIO::cerr<<"Lapack::zheev returned with exit code: "<<info<<endl ;
+      QDPIO::cerr<<"Lapack::zheev returned with exit code: "<<info<<std::endl ;
       exit(1) ;
     }
 
@@ -83,7 +83,7 @@ namespace QDPLapack
 		    &info) ;
     
     if(info){
-      QDPIO::cerr<<"Lapack::zheev returned with exit code: "<<info<<endl ;
+      QDPIO::cerr<<"Lapack::zheev returned with exit code: "<<info<<std::endl ;
       exit(1) ;
     }
 
@@ -107,7 +107,7 @@ namespace QDPLapack
     return zheev(jobz,uplo,A,w,Work,RWork) ;
   }
 
-  int zgeqrf(const int M, // The vector length
+  int zgeqrf(const int M, // The std::vector length
 	     const int N, // The number of vectors
 	     multi2d<Complex64>& A, // the array containing the vectors
 	     multi1d<Complex64>& TAU // some strange LAPACK beast
@@ -136,7 +136,7 @@ namespace QDPLapack
 
     
     if(info){
-      QDPIO::cerr<<"Lapack::zgeqrf returned with exit code: "<<info<<endl ;
+      QDPIO::cerr<<"Lapack::zgeqrf returned with exit code: "<<info<<std::endl ;
       exit(1) ;
     }
 
@@ -187,14 +187,14 @@ namespace QDPLapack
       LWork = N ;
 
     /**
-       cout<<"ZUNMQR->side  : "<<side<<endl  ;
-       cout<<"ZUNMQR->trans : "<<trans<<endl ;
-       cout<<"ZUNMQR->M     : "<<M<<endl ;
-       cout<<"ZUNMQR->N     : "<<N<<endl ;
-       cout<<"ZUNMQR->K     : "<<K<<endl ;
-       cout<<"ZUNMQR->lda   : "<<lda<<endl ;
-       cout<<"ZUNMQR->ldc   : "<<ldc<<endl ;
-       cout<<"ZUNMQR->LWork : "<<LWork<<endl ;
+       std::cout<<"ZUNMQR->side  : "<<side<<std::endl  ;
+       std::cout<<"ZUNMQR->trans : "<<trans<<std::endl ;
+       std::cout<<"ZUNMQR->M     : "<<M<<std::endl ;
+       std::cout<<"ZUNMQR->N     : "<<N<<std::endl ;
+       std::cout<<"ZUNMQR->K     : "<<K<<std::endl ;
+       std::cout<<"ZUNMQR->lda   : "<<lda<<std::endl ;
+       std::cout<<"ZUNMQR->ldc   : "<<ldc<<std::endl ;
+       std::cout<<"ZUNMQR->LWork : "<<LWork<<std::endl ;
     **/
 
     multi1d<Complex64> Work(LWork);
@@ -214,7 +214,7 @@ namespace QDPLapack
 		    &info);
 
     if(info){
-      QDPIO::cerr<<"Lapack::zunmqr returned with exit code: "<<info<<endl ;
+      QDPIO::cerr<<"Lapack::zunmqr returned with exit code: "<<info<<std::endl ;
       exit(1) ;
     }
 
@@ -249,7 +249,7 @@ namespace QDPLapack
 		     &ipiv[0],  &Work[0], &LWork, &info );
     
     if(info){
-      QDPIO::cerr<<"Lapack::zhetrf returned with exit code: "<<info<<endl ;
+      QDPIO::cerr<<"Lapack::zhetrf returned with exit code: "<<info<<std::endl ;
       exit(1) ;
     }
 
@@ -287,7 +287,7 @@ namespace QDPLapack
 		     &info );
     
     if(info){
-      QDPIO::cerr<<"Lapack::zhetrs returned with exit code: "<<info<<endl ;
+      QDPIO::cerr<<"Lapack::zhetrs returned with exit code: "<<info<<std::endl ;
       exit(1) ;
     }
 
@@ -328,12 +328,12 @@ namespace QDPLapack
     //for(int i(0);i<N;i++) C[i] = zero ;
 
     /**
-       QDPIO::cout<<"Leading dim is LDA= "<<LDA<<endl ;
+       QDPIO::cout<<"Leading dim is LDA= "<<LDA<<std::endl ;
        int ttLD = Layout::sitesOnNode() * Nc *Ns ;
-       QDPIO::cout<<"  LatticeFerion Data size= "<<ttLD<<endl ;
-       QDPIO::cout<<"   extra stuff= "<<LDA-ttLD<<endl ;
-       QDPIO::cout<<"Leading dim is LDC= "<<LDC<<endl ;
-       QDPIO::cout<<"   extra stuff= "<<LDC-ttLD<<endl ;
+       QDPIO::cout<<"  LatticeFerion Data size= "<<ttLD<<std::endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDA-ttLD<<std::endl ;
+       QDPIO::cout<<"Leading dim is LDC= "<<LDC<<std::endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDC-ttLD<<std::endl ;
     **/
 
     return cgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
@@ -377,12 +377,12 @@ namespace QDPLapack
     //for(int i(0);i<N;i++) C[i] = zero ;
 
     /**
-       QDPIO::cout<<"Leading dim is LDA= "<<LDA<<endl ;
+       QDPIO::cout<<"Leading dim is LDA= "<<LDA<<std::endl ;
        int ttLD = Layout::sitesOnNode() * Nc *Ns ;
-       QDPIO::cout<<"  LatticeFerion Data size= "<<ttLD<<endl ;
-       QDPIO::cout<<"   extra stuff= "<<LDA-ttLD<<endl ;
-       QDPIO::cout<<"Leading dim is LDC= "<<LDC<<endl ;
-       QDPIO::cout<<"   extra stuff= "<<LDC-ttLD<<endl ;
+       QDPIO::cout<<"  LatticeFerion Data size= "<<ttLD<<std::endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDA-ttLD<<std::endl ;
+       QDPIO::cout<<"Leading dim is LDC= "<<LDC<<std::endl ;
+       QDPIO::cout<<"   extra stuff= "<<LDC-ttLD<<std::endl ;
     **/
 
     return zgemm_(&TRANSA,&TRANSB,(int *)&M,(int *)&N,(int *)&K,
@@ -496,7 +496,7 @@ namespace QDPLapack
    *  M     rows of A
    *  N     columns of A
    *  A     The m x n matrix
-   *  X     the vector of dim (n)
+   *  X     the std::vector of dim (n)
    *  Y     (output) the result
    *
    *--------------------------------------------------------------------*/
