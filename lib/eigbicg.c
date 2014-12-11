@@ -161,7 +161,7 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb, float to
 
 
    
-  v_size =0;   /* counts vectors in the eignvector search spaces */
+  v_size =0;   /* counts vectors in the eignstd::vector search spaces */
   it=0;        /* iteration counter*/
 
   while( it < maxit-1 ){      /*main bicg loop*/
@@ -352,7 +352,7 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb, float to
              for(i=0; i<2*nev; i++)
                {
                   
-                  //temprarily use Ap_prev to store the eigenvalue residual vector.
+                  //temprarily use Ap_prev to store the eigenvalue residual std::vector.
                   //Ap_prev is not needed at this point till next restart when it will be
                   //recomputed.
                   CcomputeResNorm(&VR[i*LDVR],&VL[i*LDVL],&lambda,&ernorm,n,Ap_prev, 
@@ -374,7 +374,7 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb, float to
 
       /* continue bicg from that point on */
       
-      // add a new vector to the basis
+      // add a new std::vector to the basis
 
       if(nev > 0)
         {     
@@ -519,7 +519,7 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb, float to
            for(i=0; i<nev; i++)
               {
            
-                  //again, use Ap_prev to store the residual vector of the eigenvalue since
+                  //again, use Ap_prev to store the residual std::vector of the eigenvalue since
                   //Ap_prev space is no longer needed.
 
                   CcomputeResNorm(&VR[i*LDVR],&VL[i*LDVL],&lambda,&ernorm,n,Ap_prev, 
@@ -682,7 +682,7 @@ void Ceigbicg_ver2(int n, int lde, Complex_C *x, Complex_C *b, float *normb, flo
 
 
    
-  v_size =0;   /* counts vectors in the eignvector search spaces */
+  v_size =0;   /* counts vectors in the eignstd::vector search spaces */
   it=0;        /* iteration counter*/
 
   while( it < maxit-1 ){      /*main bicg loop*/
@@ -879,7 +879,7 @@ void Ceigbicg_ver2(int n, int lde, Complex_C *x, Complex_C *b, float *normb, flo
              for(i=0; i<2*nev; i++)
                {
                   
-                  //temprarily use Ap_prev to store the eigenvalue residual vector.
+                  //temprarily use Ap_prev to store the eigenvalue residual std::vector.
                   //Ap_prev is not needed at this point till next restart when it will be
                   //recomputed.
                   ZcomputeResNorm(&VR[i*LDVR],&VL[i*LDVL],&lambda,&ernorm,n,Ap_prev, 
@@ -901,7 +901,7 @@ void Ceigbicg_ver2(int n, int lde, Complex_C *x, Complex_C *b, float *normb, flo
 
       /* continue bicg from that point on */
       
-      // add a new vector to the basis
+      // add a new std::vector to the basis
 
            
       for(i=0; i<n; i++) {
@@ -1039,7 +1039,7 @@ void Ceigbicg_ver2(int n, int lde, Complex_C *x, Complex_C *b, float *normb, flo
     for(i=0; i<nev; i++)
         {
            
-           //again, use Ap_prev to store the residual vector of the eigenvalue since
+           //again, use Ap_prev to store the residual std::vector of the eigenvalue since
            //Ap_prev space is no longer needed.
 
            ZcomputeResNorm(&VR[i*LDVR],&VL[i*LDVL],&lambda,&ernorm,n,Ap_prev, 
@@ -1199,7 +1199,7 @@ void Zeigbicg(int n, int lde, Complex_Z *x, Complex_Z *b, double *normb, double 
 
 
    
-  v_size =0;   /* counts vectors in the eignvector search spaces */
+  v_size =0;   /* counts vectors in the eignstd::vector search spaces */
   it=0;        /* iteration counter*/
 
   while( it < maxit-1 ){      /*main bicg loop*/
@@ -1361,7 +1361,7 @@ void Zeigbicg(int n, int lde, Complex_Z *x, Complex_Z *b, double *normb, double 
              for(i=0; i<2*nev; i++)
                {
                   
-                  //temprarily use Ap_prev to store the eigenvalue residual vector.
+                  //temprarily use Ap_prev to store the eigenvalue residual std::vector.
                   //Ap_prev is not needed at this point till next restart when it will be
                   //recomputed.
                   ZcomputeResNorm(&VR[i*LDVR],&VL[i*LDVL],&lambda,&ernorm,n,Ap_prev, 
@@ -1383,7 +1383,7 @@ void Zeigbicg(int n, int lde, Complex_Z *x, Complex_Z *b, double *normb, double 
 
       /* continue bicg from that point on */
       
-      // add a new vector to the basis
+      // add a new std::vector to the basis
 
       if(nev>0)
         {     
@@ -1522,7 +1522,7 @@ void Zeigbicg(int n, int lde, Complex_Z *x, Complex_Z *b, double *normb, double 
          for(i=0; i<nev; i++)
             {
            
-                //again, use Ap_prev to store the residual vector of the eigenvalue since
+                //again, use Ap_prev to store the residual std::vector of the eigenvalue since
                 //Ap_prev space is no longer needed.
 
                 ZcomputeResNorm(&VR[i*LDVR],&VL[i*LDVL],&lambda,&ernorm,n,Ap_prev, 
@@ -1565,7 +1565,7 @@ void CcomputeResNorm( Complex_C *xr, Complex_C *xl, Complex_C *lambda, float *rn
    Complex_C tempc,tempc1,tpone={1.000e+00,0.0000e+00};
    float normx2;
    
-   /* Norm of left eigenvector */
+   /* Norm of left eigenstd::vector */
    tempc = wrap_zsum_cdot(&n, xl, &ONE, xl, &ONE, params);
    (*xlnorm) = sqrt(tempc.r);
 
@@ -1574,7 +1574,7 @@ void CcomputeResNorm( Complex_C *xr, Complex_C *xl, Complex_C *lambda, float *rn
    (*xrnorm) = sqrt(tempc1.r);
    normx2 = tempc1.r; 
 
-   /* cos of the angle between left and right eigenvector given by cangle= (xl'*xr) / (norm(xl)*norm(xr)) */
+   /* cos of the angle between left and right eigenstd::vector given by cangle= (xl'*xr) / (norm(xl)*norm(xr)) */
    tempc = wrap_zsum_cdot(&n, xl, &ONE, xr, &ONE, params);
    (*cangle).r = tempc.r/(*xlnorm)/(*xrnorm);
    (*cangle).i = tempc.i/(*xlnorm)/(*xrnorm);
@@ -1608,7 +1608,7 @@ void ZcomputeResNorm( Complex_Z *xr, Complex_Z *xl, Complex_Z *lambda, double *r
    Complex_Z tempc,tempc1,tpone={1.000e+00,0.0000e+00};
    double normx2;
    
-   /* Norm of left eigenvector */
+   /* Norm of left eigenstd::vector */
    tempc = wrap_zdot(&n, xl, &ONE, xl, &ONE, params);
    (*xlnorm) = sqrt(tempc.r);
 
@@ -1617,7 +1617,7 @@ void ZcomputeResNorm( Complex_Z *xr, Complex_Z *xl, Complex_Z *lambda, double *r
    (*xrnorm) = sqrt(tempc1.r);
    normx2 = tempc1.r; 
 
-   /* cos of the angle between left and right eigenvector given by cangle= (xl'*xr) / (norm(xl)*norm(xr)) */
+   /* cos of the angle between left and right eigenstd::vector given by cangle= (xl'*xr) / (norm(xl)*norm(xr)) */
    tempc = wrap_zdot(&n, xl, &ONE, xr, &ONE, params);
    (*cangle).r = tempc.r/(*xlnorm)/(*xrnorm);
    (*cangle).i = tempc.i/(*xlnorm)/(*xrnorm);

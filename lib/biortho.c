@@ -4,10 +4,10 @@
  * full set using Gram-Shmidt procedure. 
  * VL (IN/OUT) array of dimension ldvl*nf of the left eigenvectors stored 
  *             column by column such that VL[i*ldvl] is the first element
- *             of the left (i+1)th vector.
+ *             of the left (i+1)th std::vector.
  * VR (IN/OUT) array of dimension ldvr*nf of the right eigenvectors stored 
  *             column by column such that VR[i*ldvr] is the first element
- *             of the right (i+1)th vector.
+ *             of the right (i+1)th std::vector.
  *
  * biortho_global does similar things for single precision complex vectors
  * that are distributed over nodes.

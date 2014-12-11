@@ -83,7 +83,7 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb,
   work      (IN/OUT) work array. Must be of size 6*lde >= 6*n
   matvec    function that performs multiplication with matrix A
   mathvec   function that performs multiplication with matrix A^H
-  params    (IN) parameters needed to do matrix-vector multiplications.
+  params    (IN) parameters needed to do matrix-std::vector multiplications.
   AnormEst  (IN/OUT) input estimate of norm(A). If the absolute value 
                      largest eigenvalue of the v_max eigenvalues computed 
                      while restarting is larger, it will be replaced on output. 
@@ -95,11 +95,11 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb,
   v_max    (IN) maximum number of basis vectors used to approximate eigenvalues. 
   rnorms   (OUT)residual norms of the nev returned eigenpairs computed using:
                  rnorms[i] = norm(A*VR_i - evals_i*VR_i)/norm(VR_i).
-  VR	   (OUT) the first (LDVR \times nev) contain the right Ritz vectors, vector by 
-   	         vector. Users may then copy them to the desired data structure
+  VR	   (OUT) the first (LDVR \times nev) contain the right Ritz vectors, std::vector by 
+   	         std::vector. Users may then copy them to the desired data structure
   LDVR     (IN)  Leading dimesnion of right Ritz vectors.
-  VL	   (OUT) the first (LDVL \times nev) contain the left Ritz vectors, vector by 
-   	         vector. Users may then copy them to the desired data structure.
+  VL	   (OUT) the first (LDVL \times nev) contain the left Ritz vectors, std::vector by 
+   	         std::vector. Users may then copy them to the desired data structure.
   LDVL     (IN) Leading dimension of left Ritz vectors.
 
   esize	   (IN) size of ework, the eigenwork space: 
@@ -122,10 +122,10 @@ void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb,
    	 >=1 prints BICG linear system info on exit (num its/ flag)
 	 >=2 prints linear system residuals at every iteration 
 	 >=3 prints final eigenvalues and their residual norm as well as
-             the norm of the left eigenvector and the cos of the angle between left and
+             the norm of the left eigenstd::vector and the cos of the angle between left and
              right eigenvectors "cangle=vl'*vr/norm(vl)/norm(vr)". 
 	 >=4 prints eigenvalues at every restart and their residual norm as well as
-             the norm of the left eigenvector and the cos of the angle between left and
+             the norm of the left eigenstd::vector and the cos of the angle between left and
              right eigenvectors "cangle=vl'*vr/norm(vl)/norm(vr)". 
 
 *****************************************************************************************************/
@@ -179,19 +179,19 @@ void CcomputeResNorm( Complex_C *xr, Complex_C *xl, Complex_C *lambda, float *rn
 
 
 
-/* computeResNorm- Given a right eigenvector xr, it computes its Ritz value lambda=xr'*A*xr/norm(xr), its
+/* computeResNorm- Given a right eigenstd::vector xr, it computes its Ritz value lambda=xr'*A*xr/norm(xr), its
    residual Res=Axr-lambda*xr, and its residual norm rnorm.
    Requires matvec and the parameters it uses params .
 
-   xr (IN): right eigenvector
-   xl (IN): corresponding left eigenvector.
+   xr (IN): right eigenstd::vector
+   xl (IN): corresponding left eigenstd::vector.
    lambda (OUT): Ritz value xr'*A*xr /(xr'*xr).
    rnorm  (OUT): norm(A*xr-lambda*xr).
    Res    (OUT): eigenvalue residual A*xr-lambda*xr.
    xlnorm (OUT): norm(xl)
    xrnorm (OUT): norm(xr)
    cangle (OUT): angle between left and right eigenvectors cangle=xl'*xr/norm(xl)/norm(xr).
-   matvec (IN) : function that performs matrix vector product.
+   matvec (IN) : function that performs matrix std::vector product.
    params (IN) : parameters needed by matvec.
 -------------------------------------------------------------------------------------------------------------------*/
 void ZcomputeResNorm( Complex_Z *xr, Complex_Z *xl, Complex_Z *lambda, double *rnorm, int n, Complex_Z *Res, 

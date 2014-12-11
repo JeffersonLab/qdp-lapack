@@ -41,8 +41,8 @@
   EVALS    (OUT) nev Ritz values from smallest to largest
   RNORMS   (OUT) residual norms of the nev returned eigenpairs
   V	   (IN) the basis vectors  (N \times v_max)
-           (OUT) the first (N\times nev) contain the Ritz vectors, vector by 
-   	         vector. Users may then copy them to the desired data structure
+           (OUT) the first (N\times nev) contain the Ritz vectors, std::vector by 
+   	         std::vector. Users may then copy them to the desired data structure
   ESIZE	   (IN) size of ework, the eigenwork space: the more the better
   		N+2*nev <= esize <= (2*nev+1)*N
   EWORK    temp work space of size esize
@@ -138,7 +138,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
 	 alphaprev;     /* remember the previous iterations scalars */
   int v_size;		/* tracks the size of V */
   int lwork = 2*v_max;  /* the size of zwork */
-  Complex_C *Ap_prev;	/* ptr to first ework vector for storing Ap */
+  Complex_C *Ap_prev;	/* ptr to first ework std::vector for storing Ap */
   Complex_C *tmp_work;  /* ptr to ework(N) for use in restarting */
   Complex_C *Coef;      /* single precision copy of restart coefs (v_max*2nev)*/
   Complex_Z *H;         /* the V'AV projection matrix */
@@ -279,7 +279,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
     			/* Note: I must also use the easy way to 
 			 * obtain ev residual norms */
     if (nev > 0) {
-       /* record the diagonal vAv for the previous vector */
+       /* record the diagonal vAv for the previous std::vector */
        if (it > 0) {
 	  H[(v_size-1)*v_max+v_size-1].r = 1.0/alpha + betaprev/alphaprev;
 	  H[(v_size-1)*v_max+v_size-1].i = 0.0;
@@ -439,7 +439,7 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
 
   if (nev > 0) {
      /* Restart V, compute and return most recent nev Ritz pairs */
-     v_size--;   /* last vector not projected yet */
+     v_size--;   /* last std::vector not projected yet */
      computeFinalEvecs(V, n, Hevals, H, v_max, v_size, nev, Coef, 
 		     tmp_work, tmpsize, zwork, lwork, rwork);
      /* Compute actual residual norms -- Uses matvecs */
@@ -463,8 +463,8 @@ void eigpcg(int n, int lde, Complex_C *x, Complex_C *b,
 /* Some other functions */
 
 /* ResNorm *******************************************************************/
-/* Given a vector x, it normalizes it and computes and returns the
- * its residual vector in Res, its norm in rnorm, and its Ritz value in lambda.
+/* Given a std::vector x, it normalizes it and computes and returns the
+ * its residual std::vector in Res, its norm in rnorm, and its Ritz value in lambda.
  * Requires matvec() and whatever params are needed in matvec */
 void computeResNorm
     (Complex_C *x, float *lambda, float *rnorm, Complex_C *Res, int n, 

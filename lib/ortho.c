@@ -13,7 +13,7 @@
  * OrthogonalVecs  Coefficient vectors from the current iteration to 
  *    be orthogonalized against.
  *
- * length          The dimension of each vector
+ * length          The dimension of each std::vector
  *
  * numVectors      The number of current vectors
  * 
@@ -46,8 +46,8 @@ int ortho_new_vectors (Complex_C *OrthogonalVecs, int ldV, int length,
 
    int i;       /* Loop counter                                     */
    int tmpsize;
-   int nOrths;  /* Number of times a vector has been orthogonalized */
-   int zeroed;  /* True if the vector norm was reduced below 1e-14  */
+   int nOrths;  /* Number of times a std::vector has been orthogonalized */
+   int zeroed;  /* True if the std::vector norm was reduced below 1e-14  */
    int ONE = 1;
    double norm; /* Vector norm.                                     */
    Complex_C ztmp;/* Temp accumulation var  			    */
@@ -66,7 +66,7 @@ int ortho_new_vectors (Complex_C *OrthogonalVecs, int ldV, int length,
    while (i < numNew) {
       zeroed = 0;
 
-      /* Orthogonalize each vector twice to ensure numerical stability */
+      /* Orthogonalize each std::vector twice to ensure numerical stability */
       /* Still I believe orthogonalizing only once may be ok ???????*/
 
       for (nOrths = 0; nOrths < numReorthos; nOrths++) {

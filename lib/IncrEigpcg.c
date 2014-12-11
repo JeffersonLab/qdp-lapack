@@ -66,7 +66,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 	Complex_C *B,   	/* The nrhs right hand sides */
 	int *ncurEvals,		/* Num of eigenpairs already in evecs,evals */
 	int ldh,  		/* Max eigenpairs that can be stored in evecs */
-	Complex_C *evecs, 	/* The eigenvector basis augmented by eigpcg */
+	Complex_C *evecs, 	/* The eigenstd::vector basis augmented by eigpcg */
 	float *evals, 		/* The eigenvalues augmented by eigpcg */
 	Complex_C *H,		/* The ncurEvals^2 matrix: H=evecs'*A*evecs; */
 	Complex_C *HU,  	/* The Cholesky factorization of the H = U'U */
@@ -77,7 +77,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 				/* ---------------------------------------- */
 			/* Work arrays will be allocated if null on input */
 	Complex_C *work,        /* work array for CG etc (max(4lde,nev*ldh) */
-	Complex_C *V, 		/* work array for eigenvector search basis */
+	Complex_C *V, 		/* work array for eigenstd::vector search basis */
 	Complex_C *ework, 	/* work array. If esize < N+2*nev allocate */
 	int esize, 		/* N+2*nev <= esize <= (2*nev+1)*N */
 				/* ---------------------------------------- */

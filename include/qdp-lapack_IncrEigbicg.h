@@ -31,8 +31,8 @@ void IncrEigbicg_C(
 	int ldh,  		/* (IN) Max eigenpairs that can be stored in evecs */
                     
                                 /* evecsl(ldvl*ldh), evecsr(ldvr*ldh), and H(ldh*ldh) has to be allocated by the calling program*/
-	Complex_C *evecsl, 	/* (IN/OUT) The left eigenvector basis augmented by eigbicg with ldvl leading dimension */
-        Complex_C *evecsr, 	/* (IN/OUT) The right eigenvector basis augmented by eigbicg with ldvr leading dimension */
+	Complex_C *evecsl, 	/* (IN/OUT) The left eigenstd::vector basis augmented by eigbicg with ldvl leading dimension */
+        Complex_C *evecsr, 	/* (IN/OUT) The right eigenstd::vector basis augmented by eigbicg with ldvr leading dimension */
 	Complex_C *evals,       /* (OUT) The eigenvalues augmented by eigbicg */
 	Complex_C *H,		/* (IN/OUT) The ncurEvals^2 matrix: H=evecsl'*A*evecsr; 
                                    H has ldh^2 storage space with ncurEvals^2 active part with ldh leading dimension*/
@@ -45,9 +45,9 @@ void IncrEigbicg_C(
 				
 			        /* arrays work,VL,VR and ework will be allocated inside IncrEigbicg*/
 	Complex_C *work,        /* work array for BICGCG etc of dimension  6*lde */
-	Complex_C *VL, 		/*  (IN)work array for left  eigenvector search basis of dimension ldvl*v_max */
+	Complex_C *VL, 		/*  (IN)work array for left  eigenstd::vector search basis of dimension ldvl*v_max */
         int       ldvl,         /* (IN) Leading dimension of left vectors */
-	Complex_C *VR, 		/* (IN) work array for right eigenvector search basis of dimension ldvr*v_max */
+	Complex_C *VR, 		/* (IN) work array for right eigenstd::vector search basis of dimension ldvr*v_max */
         int       ldvr,         /* (IN) Leading dimension of right vectors*/
 	Complex_C *ework, 	/* (IN) work array. If esize < 2*lde+2*nev allocate with appropriate esize*/
 	int esize, 		/* (IN) 2*lde+2*nev <= esize <= 2*(nev+1)*lde */
@@ -98,7 +98,7 @@ void init_BICG_C(
                int ldH,          /*(IN) leading dimension of H */
                int *IPIV,        /*(IN/OUT) nvecs dimension integer array used by the lapack linear solver */
                Complex_C *work,  /*(IN/OUT) work array of dimension lde+nvecs */
-               void (*matvec) (void *, void *, void *), /* (IN) matrix vector operator */
+               void (*matvec) (void *, void *, void *), /* (IN) matrix std::vector operator */
                void *params,     /*(IN) paramters needed by matvec */
                int *info         /*(OUT) output status of LAPACK CGESV linear solver :
                                          0 means sucessful exit
@@ -129,7 +129,7 @@ void LRD_BICGSTAB_C(
                int ldH,          /*(IN) leading dimension of H */
                int *IPIV,        /*(IN/OUT) permutations used in LU factorization */
                Complex_C *work,  /*(IN/OUT) work array of dimension 6*lde*/
-               void (*matvec) (void *, void *, void *), /* (IN) matrix vector operator */
+               void (*matvec) (void *, void *, void *), /* (IN) matrix std::vector operator */
                void *params,     /*(IN) paramters needed by matvec */
                float AnormEst,   /* (IN) estimate value of the norm of A */
                int maxiter,      /*maximum number of iterations that could be used in bicgstab*/
@@ -179,7 +179,7 @@ void ComputeFinalEvecs_C
    xlnorms(OUT): norms of left eigenvectors.
    xrnorms(OUT): norms of right eigenvectors.
    angles(OUT) : vl'*vr / norm(vl)/norm(vr).
-   matvec (IN) : function that performs matrix vector product.
+   matvec (IN) : function that performs matrix std::vector product.
    params (IN) : parameters needed by matvec.
 -------------------------------------------------------------------------------------------------------------------*/
 
@@ -196,8 +196,8 @@ void IncrEigbicg_Z(
 	int ldh,  		/* (IN) Max eigenpairs that can be stored in evecs */
                     
                                 /* evecsl(ldvl*ldh), evecsr(ldvr*ldh), and H(ldh*ldh) has to be allocated by the calling program*/
-	Complex_Z *evecsl, 	/* (IN/OUT) The left eigenvector basis augmented by eigbicg with ldvl leading dimension */
-        Complex_Z *evecsr, 	/* (IN/OUT) The right eigenvector basis augmented by eigbicg with ldvr leading dimension */
+	Complex_Z *evecsl, 	/* (IN/OUT) The left eigenstd::vector basis augmented by eigbicg with ldvl leading dimension */
+        Complex_Z *evecsr, 	/* (IN/OUT) The right eigenstd::vector basis augmented by eigbicg with ldvr leading dimension */
 	Complex_Z *evals,       /* (OUT) The eigenvalues augmented by eigbicg */
 	Complex_Z *H,		/* (IN/OUT) The ncurEvals^2 matrix: H=evecsl'*A*evecsr; 
                                    H has ldh^2 storage space with ncurEvals^2 active part with ldh leading dimension*/
@@ -210,9 +210,9 @@ void IncrEigbicg_Z(
 				
 			        /* arrays work,VL,VR and ework will be allocated inside IncrEigbicg*/
 	Complex_Z *work,        /* work array for BICGCG etc of dimension  6*lde */
-	Complex_Z *VL, 		/*  (IN)work array for left  eigenvector search basis of dimension ldvl*v_max */
+	Complex_Z *VL, 		/*  (IN)work array for left  eigenstd::vector search basis of dimension ldvl*v_max */
         int       ldvl,         /* (IN) Leading dimension of left vectors */
-	Complex_Z *VR, 		/* (IN) work array for right eigenvector search basis of dimension ldvr*v_max */
+	Complex_Z *VR, 		/* (IN) work array for right eigenstd::vector search basis of dimension ldvr*v_max */
         int       ldvr,         /* (IN) Leading dimension of right vectors*/
 	Complex_Z *ework, 	/* (IN) work array. If esize < 2*lde+2*nev allocate with appropriate esize*/
 	int esize, 		/* (IN) 2*lde+2*nev <= esize <= 2*(nev+1)*lde */
@@ -264,7 +264,7 @@ void init_BICG_Z(
                int ldH,          /*(IN) leading dimension of H */
                int *IPIV,        /*(IN/OUT) nvecs dimension integer array used by the lapack linear solver */
                Complex_Z *work,  /*(IN/OUT) work array of dimension lde+nvecs */
-               void (*matvec) (void *, void *, void *), /* (IN) matrix vector operator */
+               void (*matvec) (void *, void *, void *), /* (IN) matrix std::vector operator */
                void *params,     /*(IN) paramters needed by matvec */
                int *info         /*(OUT) output status of LAPACK CGESV linear solver :
                                          0 means sucessful exit
@@ -295,7 +295,7 @@ void LRD_BICGSTAB_Z(
                int ldH,          /*(IN) leading dimension of H */
                int *IPIV,        /*(IN/OUT) permutations used in LU factorization */
                Complex_Z *work,  /*(IN/OUT) work array of dimension 6*lde*/
-               void (*matvec) (void *, void *, void *), /* (IN) matrix vector operator */
+               void (*matvec) (void *, void *, void *), /* (IN) matrix std::vector operator */
                void *params,     /*(IN) paramters needed by matvec */
                double AnormEst,   /* (IN) estimate value of the norm of A */
                int maxiter,      /*maximum number of iterations that could be used in bicgstab*/
@@ -345,7 +345,7 @@ void ComputeFinalEvecs_Z
    xlnorms(OUT): norms of left eigenvectors.
    xrnorms(OUT): norms of right eigenvectors.
    angles(OUT) : vl'*vr / norm(vl)/norm(vr).
-   matvec (IN) : function that performs matrix vector product.
+   matvec (IN) : function that performs matrix std::vector product.
    params (IN) : parameters needed by matvec.
 -------------------------------------------------------------------------------------------------------------------*/
                  
