@@ -217,7 +217,6 @@ void IncrEigbicg_C( int n, int lde,int nrhs, Complex_C *X, Complex_C *B, int *nc
                    fprintf(outputFile,"%-d  %-22.15E\n",i,reshist[i]);
               }  
 
-             
             if (flag != 0) {
                fprintf(outputFile, "Error: eigbicg returned with nonzero exit status\n");
             return;}
