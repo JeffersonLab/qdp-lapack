@@ -1,8 +1,15 @@
 #include "qdp-lapack_config_internal.h"
 #ifdef USE_QMP
 #include <qmp.h>
-#define fprintf if(QMP_get_node_number()==0)fprintf
-#define printf  if(QMP_get_node_number()==0)printf
+
+#ifdef __cplusplus
+#include <cstdio>
+#define fprintf if(QMP_get_node_number()==0) std::fprintf
+#define printf  if(QMP_get_node_number()==0) std::printf
+#else
+#define fprintf if(QMP_get_node_number()==0) fprintf
+#define printf  if(QMP_get_node_number()==0) printf
+#endif
 #endif
 
 void wrap_cgemv(char *transa, int *m, int *n, Complex_C *alpha, Complex_C *a,
