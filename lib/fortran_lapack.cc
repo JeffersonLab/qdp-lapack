@@ -518,6 +518,36 @@ namespace QDPLapack
   }
 
 
+  /*--------------------------------------------------------------------
+   * ZGEMV  	** this is a BLAS not a Lapack function **
+   * 		double precision interface for 
+   * 			y=A*x
+   *  
+   *  TRANS   'N' y := A*x,   'T' y := A'*x,   'C' y := conjg( A' )*x 
+   *  M     rows of A
+   *  N     columns of A
+   *  A     The m x n matrix
+   *  X     the std::vector of dim (n)
+   *  Y     (output) the result
+   *
+   *--------------------------------------------------------------------*/
+  int zgemv(char &trans, 
+	    const int& m, const int& n,
+	    multi2d<Complex64>& A, 
+	    int lda,
+	    multi1d<Complex64>& x,
+	    multi1d<Complex64>& y
+	    )
+  {
+    int incx(1), incy(1);
+    Complex64 alpha(1.0), beta(0.0);
+    return zgemv_(&trans, (int *) &m, (int *) &n, &alpha, 
+		    (Complex64 *) &A(0,0), &lda, 
+		    &x[0], &incx, &beta, 
+		    &y[0], &incy);
+  }
+
+
   int zpotrf(char &uplo, int N,  multi2d<Complex64>& A, int LDA, int& info){
     
     return zpotrf_(&uplo, &N, 
@@ -638,6 +668,96 @@ namespace QDPLapack
   void dlartg(double& F, double& G, double& CS, double& SN, double& R)
   {
     dlartg_(&F,&G,&CS,&SN,&R);
+  }
+
+
+  // ZGETRF
+  int zgetrf(int M, int N, multi2d<Complex64>& A, int LDA,
+	      multi1d<int>& ipiv, int& info)
+  {
+    int r = zgetrf_(&M, &N, (Complex64*)&A(0,0), &LDA, &ipiv[0], &info);
+
+    if( info != 0 ) { 
+      if( info < 0 ) {
+	QDPIO::cout << "ZGETRF: argument"<< (-info) << " has illegal value" << std::endl;
+	QDP_abort(1);
+      }
+      if( info > 0 ) { 
+	QDPIO::cout << "ZGETRF: U(" << info <<","<< info <<") is exactly zero making U singular" << std::endl;
+	QDP_abort(1);
+      }
+    }
+
+    return r;
+  }
+  // ZGETRS
+  
+  void zgetrs(char &trans, int n, int nrhs,
+	     multi2d<Complex64>& A, int lda, 
+	     multi1d<int>& ipiv,  
+	     multi1d<Complex64>& B,
+	     int ldb, int& info) 
+  {
+    zgetrs_(&trans,
+	    &n,
+	    &nrhs,
+	    &A(0,0),
+	    &lda,
+	    &ipiv[0],
+	    &B[0],
+	    &ldb,
+	    &info);
+    
+    if (info) {
+      QDPIO::cerr << "qdp_lapack: Linear system solve by ZGETRS failed.\n" << std::endl;
+    }
+  }  
+
+  int zgeev(int n,
+	    multi2d<DComplex>& A, 
+	    multi1d<DComplex>& evals,
+	    multi2d<DComplex>& evecs)
+  {
+    char jobvl='N';
+    char jobvr='V';
+    int lda = A.size1();
+    int ldvr= n;
+
+    int lwork=4*n;
+    multi2d<Complex64> vl(n,n);
+  
+    multi1d<Complex64> work(lwork); // Work array
+    multi1d<double> rwork(2*n);
+    int info;
+
+    zgeev_(&jobvl,
+	   &jobvr,
+	   &n,
+	   &A(0,0),
+	   &lda,
+	   &evals[0],
+	   &vl(0,0), 
+	   &n, 
+	   &evecs(0,0),
+	   &ldvr,
+	   &work[0],
+	   &lwork,
+	   &rwork[0],
+	   &info);
+
+    if ( info ) { 
+      if( info < 0 ) { 
+	QDPIO::cerr << "QDPLapack::zgeev: argument "<< (-info) << " to LAPACK ZGEEV had illegal value" << std::endl;
+      }
+      else { 
+	QDPIO::cerr << "QDPLapack::zgeev: LAPACK ZGEEV Eigensolver failed" << std::endl;
+      }
+      QDP_abort(1);
+    }
+
+
+      
+
   }
 
   

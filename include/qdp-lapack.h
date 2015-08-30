@@ -51,6 +51,11 @@ namespace QDPLapack
 	     multi1d<DComplex>& TAU // some strange LAPACK beast
     );
 
+  int zgeev(int n,
+	    multi2d<DComplex>& A, 
+	    multi1d<DComplex>& evals,
+	    multi2d<DComplex>& evecs);
+
   //! Applies the Q part of a QR factorization 
   /*!
    *  Purpose
@@ -220,6 +225,28 @@ namespace QDPLapack
 	    multi1d<Complex>& y
 	    );
 
+  /*--------------------------------------------------------------------
+   * CGEMV  	** this is a BLAS not a Lapack function **
+   * 		double precision interface for 
+   * 			y=A*x
+   *  
+   *  TRANS   'N' y := A*x,   'T' y := A'*x,   'C' y := conjg( A' )*x 
+   *  M     rows of A
+   *  N     columns of A
+   *  A     The m x n matrix
+   *  X     the std::vector of dim (n)
+   *  Y     (output) the result
+   *
+   *--------------------------------------------------------------------*/
+  int zgemv(char &trans, 
+	    const int& m, const int& n,
+	    multi2d<Complex>& A, 
+	    int lda,
+	    multi1d<Complex>& x,
+	    multi1d<Complex>& y
+	    );
+
+
   /**
      SUBROUTINE ZPOTRF( UPLO, N, A, LDA, INFO )
      *
@@ -380,6 +407,20 @@ namespace QDPLapack
   //for Justin
   void dlartg(double& F, double& G, double& CS, double& SN, double& R);
 
+  // LU Factorize a GENERAL DComplex Matrix
+  //  M is the number of rows
+  //  N is the number of columns
+  //  LDA is the leading dimension of A
+  //  IPIV is the Integer array of pivots
+  //  Info is a return value
+  int zgetrf(int M, int N, multi2d<Complex64>& A, int LDA,
+	     multi1d<int>& ipiv, int& info);
+
+  void zgetrs(char& trans, int n, int rhs,
+	     multi2d<Complex64>& A, int lda, 
+	     multi1d<int>& ipiv, 
+	     multi1d<Complex64>& B,
+	     int ldb, int& info);
 
 } // namespace QDPLapack
 

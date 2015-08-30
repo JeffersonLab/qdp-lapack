@@ -33,10 +33,22 @@ extern "C" {
   int zhetrf_(char *uplo, int *n, Complex64 *a, 
 	      int *lda, int *ipiv, Complex64 *work, int *lwork, 
 	      int *info);
- 
+
+  int zgetrf_(int* M, int *N, Complex64* a, int* lda, int *ipiv, int *info);
+
   int zhetrs_(char *uplo, int *n, int *nrhs, 
 	      Complex64 *a, int *lda, int *ipiv, Complex64 *b, 
 	      int *ldb, int *info);
+
+  void zgetrs_(char *TRANS,
+	      int* N,
+	      int* nrhs,
+	      Complex64* A,
+	      int* lda,
+	      int* ipiv,
+	      Complex64* B,
+	      int* ldb,
+	      int* info);
 
   // Cholesky factorization
   int zpotrf_(char *uplo, int *n, Complex64 *a, int *lda, int *info);
@@ -83,5 +95,20 @@ extern "C" {
 
   /* Fort Justin */
   void dlartg_(double* F, double* G, double* CS, double* SN, double* R);
+
+  int zgeev_(char *jobvl, 
+	    char *jobvr,
+	    int  *n,
+	    Complex64* A,
+	    int* lda,
+	    Complex64* w,
+	    Complex64* vl,
+	    int* ldvl,
+	    Complex64* vr,
+	    int* ldvr,
+	    Complex64* work,
+	    int* lwork,
+	    double* rwork,
+	    int* info);
 }
 
