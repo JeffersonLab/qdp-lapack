@@ -325,10 +325,10 @@ namespace QDPLapack
    *--------------------------------------------------------------------*/
   int zgemv(char &trans, 
 	    const int& m, const int& n,
-	    multi2d<Complex>& A, 
+	    multi2d<DComplex>& A, 
 	    int lda,
-	    multi1d<Complex>& x,
-	    multi1d<Complex>& y
+	    multi1d<DComplex>& x,
+	    multi1d<DComplex>& y
 	    );
 
 
