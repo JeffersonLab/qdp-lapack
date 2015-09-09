@@ -66,9 +66,44 @@ namespace QDPLapack
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
     return 0;
   }
-
-
   
+  int zunmqr2(char& side,
+	      char& trans,
+	      const int M,
+	      const int N,
+	      const int K,
+	      multi2d<Complex64>& A, //input
+	      multi1d<Complex64>& TAU, // some strange LAPACK beast
+	      multi2d<Complex64>& C //input/output
+	      )
+  {
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
+  }
+  
+  int zunmqrv(char& side,
+	      char& trans,
+	      const int M,
+	      const int K,
+	      multi2d<Complex64>& A, //input
+	      multi1d<Complex64>& TAU, // some strange LAPACK beast
+	      multi1d<Complex64>& C //input/output
+	      )
+  {
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
+  }
+  
+  int zungqr(const int M, // The number of rows in Q
+	     const int N,  // The number of columns in Q
+	     const int K, // The number of reflections in Tau
+	     multi2d<DComplex>& A, //input MxN matrix
+	     multi1d<DComplex>& TAU // some strange LAPACK beast
+	     )
+  {
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
+  }
   
   int zpotrf(char &uplo, int N,  multi2d<DComplex>& A, int LDA, int& info){
     
@@ -158,6 +193,67 @@ namespace QDPLapack
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
   }
   
+    // ZGETRF
+  int zgetrf(int M, int N, multi2d<Complex64>& A, int LDA,
+	      multi1d<int>& ipiv, int& info)
+  {
+    // Stub function
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+  }
+
+  void zgetrs(char &trans, int n, int nrhs,
+	     multi2d<Complex64>& A, int lda, 
+	     multi1d<int>& ipiv,  
+	     multi1d<Complex64>& B,
+	     int ldb, int& info) 
+  {
+    // Stub function
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+  }
+
+  int zgeev(int n,
+	    multi2d<DComplex>& A, 
+	    multi1d<DComplex>& evals,
+	    multi2d<DComplex>& evecs)
+  {
+    // Stub function
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+  }
+
+  // The following are BLAS stubs:
+
+  int zgemm(char &transa,
+	    char &transb,
+	    int m,
+	    int n,
+	    int k,
+	    Complex64 alpha,
+	    multi2d<Complex64>& A,  // input
+	    int lda,
+	    multi2d<Complex64>& B,  // input
+	    int ldb,
+	    Complex64 beta,
+	    multi2d<Complex64>& C,  //input/output
+	    int ldc   
+    )
+  {
+    // Stub function
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+  }
+
+  int zgemv(char &trans, 
+	    const int& m, const int& n,
+	    multi2d<Complex64>& A, 
+	    int lda,
+	    multi1d<Complex64>& x,
+	    multi1d<Complex64>& y
+	    )
+  {
+    // Stub function
+    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+  }
+
+
 } // namespace Lapack
 
 
