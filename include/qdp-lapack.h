@@ -85,6 +85,91 @@ namespace QDPLapack
 	     multi2d<DComplex>& C // input,output
     );    
 
+  int zunmqr2(char& side,//'L' or 'R': apply Q or Q^\dagger from the Left
+	     char& trans,//'N' or 'C':  apply Q or Q^\dagger
+	     const int M, // The std::vector length
+	     const int N,  // The number of vectors
+	     const int K, // how many vectors to apply from tau
+	     multi2d<DComplex>& A, //input MxN matrix
+	     multi1d<DComplex>& TAU, // some strange LAPACK beast
+	     multi2d<DComplex>& C // input,output
+    );    
+
+  int zunmqrv(char& side,//'L' or 'R': apply Q or Q^\dagger from the Left
+	     char& trans,//'N' or 'C':  apply Q or Q^\dagger
+	     const int M, // The std::vector length
+	     const int K, // how many vectors to apply from tau
+	     multi2d<DComplex>& A, //input MxN matrix
+	     multi1d<DComplex>& TAU, // some strange LAPACK beast
+	     multi1d<DComplex>& C // input,output
+    );    
+
+  /* Explicitly form the Q from the Q_R factorization */
+  /* Purpose
+   *  =======
+   *
+   *  ZUNGQR generates an M-by-N complex matrix Q with orthonormal columns,
+   *  which is defined as the first N columns of a product of K elementary
+   *  reflectors of order M
+   *
+   *        Q  =  H(1) H(2) . . . H(k)
+   *
+   *  as returned by ZGEQRF.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  M       (input) INTEGER
+   *          The number of rows of the matrix Q. M >= 0.
+   *
+   *  N       (input) INTEGER
+   *          The number of columns of the matrix Q. M >= N >= 0.
+   *
+   *  K       (input) INTEGER
+   *          The number of elementary reflectors whose product defines the
+   *          matrix Q. N >= K >= 0.
+   *
+   *  A       (input/output) COMPLEX*16 array, dimension (LDA,N)
+   *          On entry, the i-th column must contain the vector which
+   *          defines the elementary reflector H(i), for i = 1,2,...,k, as
+   *          returned by ZGEQRF in the first k columns of its array
+   *          argument A.
+   *          On exit, the M-by-N matrix Q.
+   *
+   *  LDA     (input) INTEGER
+   *          The first dimension of the array A. LDA >= max(1,M).
+   *
+   *  TAU     (input) COMPLEX*16 array, dimension (K)
+   *          TAU(i) must contain the scalar factor of the elementary
+   *          reflector H(i), as returned by ZGEQRF.
+   *
+   *  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
+   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+   *
+   *  LWORK   (input) INTEGER
+   *          The dimension of the array WORK. LWORK >= max(1,N).
+   *          For optimum performance LWORK >= N*NB, where NB is the
+   *          optimal blocksize.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument has an illegal value
+   */
+  int zungqr(const int M, // The number of rows in Q
+	     const int N,  // The number of columns in Q
+	     const int K, // The number of reflections in Tau
+	     multi2d<DComplex>& A, //input MxN matrix
+	     multi1d<DComplex>& TAU // some strange LAPACK beast
+	      );    
+  
+  
+
+
 
   /*--------------------------------------------------------------------
    *  ZHETRF( UPLO, N, A, IPIV)

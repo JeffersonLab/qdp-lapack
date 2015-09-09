@@ -30,6 +30,16 @@ extern "C" {
 	      int *, Complex64 *,
 	      int *, int *);
 
+  int zungqr_(const int*,        // M
+	      const int*,        // N
+	      const int*,        // K
+	      Complex64*,  // A
+	      const int*,        // LDA
+	      Complex64*,  // TAU
+	      Complex64*,  // WORK
+	      const int*,        // LWORK
+	      int*);       // INFO
+
   int zhetrf_(char *uplo, int *n, Complex64 *a, 
 	      int *lda, int *ipiv, Complex64 *work, int *lwork, 
 	      int *info);

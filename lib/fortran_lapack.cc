@@ -220,7 +220,209 @@ namespace QDPLapack
 
     return r ;
   }
+
+  int zunmqr2(char& side,
+	      char& trans,
+	      const int M,
+	      const int N,
+	      const int K,
+	      multi2d<Complex64>& A, //input
+	      multi1d<Complex64>& TAU, // some strange LAPACK beast
+	      multi2d<Complex64>& C //input/output
+	      )
+  {
+    /**
+       char c_side = *side ;
+       char c_trans = *trans ;
+    **/
+
+    int lda = A.size1();
+    int ldc = C.size1();
+    int LWork = -1 ;
+    if(side == 'R')
+      LWork = M ;
+    if(side == 'L')
+      LWork = N ;
+
+    /**
+       std::cout<<"ZUNMQR->side  : "<<side<<std::endl  ;
+       std::cout<<"ZUNMQR->trans : "<<trans<<std::endl ;
+       std::cout<<"ZUNMQR->M     : "<<M<<std::endl ;
+       std::cout<<"ZUNMQR->N     : "<<N<<std::endl ;
+       std::cout<<"ZUNMQR->K     : "<<K<<std::endl ;
+       std::cout<<"ZUNMQR->lda   : "<<lda<<std::endl ;
+       std::cout<<"ZUNMQR->ldc   : "<<ldc<<std::endl ;
+       std::cout<<"ZUNMQR->LWork : "<<LWork<<std::endl ;
+    **/
+
+    multi1d<Complex64> Work(LWork);
     
+    int info ;
+    int r = zunmqr_(&side, &trans,
+		    (int *)&M, 
+		    (int *)&N, 
+		    (int *)&K, 
+		    &A(0,0),
+		    &lda, 
+		    &TAU[0], 
+		    &C(0,0),
+		    &ldc,
+		    &Work[0],
+		    &LWork,
+		    &info);
+
+    if(info){
+      QDPIO::cerr<<"Lapack::zunmqr returned with exit code: "<<info<<std::endl ;
+      exit(1) ;
+    }
+
+    return r ;
+  }
+
+  int zunmqrv(char& side,
+	      char& trans,
+	      const int M,
+	      const int K,
+	      multi2d<Complex64>& A, //input
+	      multi1d<Complex64>& TAU, // some strange LAPACK beast
+	      multi1d<Complex64>& C //input/output
+	      )
+  {
+    /**
+       char c_side = *side ;
+       char c_trans = *trans ;
+    **/
+
+    int lda = A.size1();
+    int ldc = C.size();
+    int LWork = -1 ;
+    int N=1;
+    if(side == 'R')
+      LWork = M ;
+    if(side == 'L')
+      LWork = N ;
+
+    /**
+       std::cout<<"ZUNMQR->side  : "<<side<<std::endl  ;
+       std::cout<<"ZUNMQR->trans : "<<trans<<std::endl ;
+       std::cout<<"ZUNMQR->M     : "<<M<<std::endl ;
+       std::cout<<"ZUNMQR->N     : "<<N<<std::endl ;
+       std::cout<<"ZUNMQR->K     : "<<K<<std::endl ;
+       std::cout<<"ZUNMQR->lda   : "<<lda<<std::endl ;
+       std::cout<<"ZUNMQR->ldc   : "<<ldc<<std::endl ;
+       std::cout<<"ZUNMQR->LWork : "<<LWork<<std::endl ;
+    **/
+
+    multi1d<Complex64> Work(LWork);
+    
+    int info ;
+    int r = zunmqr_(&side, &trans,
+		    (int *)&M, 
+		    (int *)&N, 
+		    (int *)&K, 
+		    &A(0,0),
+		    &lda, 
+		    &TAU[0], 
+		    &C[0],
+		    &ldc,
+		    &Work[0],
+		    &LWork,
+		    &info);
+
+    if(info){
+      QDPIO::cerr<<"QDPLapack::zunmqrv returned with exit code: "<<info<<std::endl ;
+      exit(1) ;
+    }
+
+    return r ;
+  }
+    
+  /* Explicitly form the Q from the Q_R factorization */
+  /* Purpose
+   *  =======
+   *
+   *  ZUNGQR generates an M-by-N complex matrix Q with orthonormal columns,
+   *  which is defined as the first N columns of a product of K elementary
+   *  reflectors of order M
+   *
+   *        Q  =  H(1) H(2) . . . H(k)
+   *
+   *  as returned by ZGEQRF.
+   *
+   *  Arguments
+   *  =========
+   *
+   *  M       (input) INTEGER
+   *          The number of rows of the matrix Q. M >= 0.
+   *
+   *  N       (input) INTEGER
+   *          The number of columns of the matrix Q. M >= N >= 0.
+   *
+   *  K       (input) INTEGER
+   *          The number of elementary reflectors whose product defines the
+   *          matrix Q. N >= K >= 0.
+   *
+   *  A       (input/output) COMPLEX*16 array, dimension (LDA,N)
+   *          On entry, the i-th column must contain the vector which
+   *          defines the elementary reflector H(i), for i = 1,2,...,k, as
+   *          returned by ZGEQRF in the first k columns of its array
+   *          argument A.
+   *          On exit, the M-by-N matrix Q.
+   *
+   *  LDA     (input) INTEGER
+   *          The first dimension of the array A. LDA >= max(1,M).
+   *
+   *  TAU     (input) COMPLEX*16 array, dimension (K)
+   *          TAU(i) must contain the scalar factor of the elementary
+   *          reflector H(i), as returned by ZGEQRF.
+   *
+   *  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
+   *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+   *
+   *  LWORK   (input) INTEGER
+   *          The dimension of the array WORK. LWORK >= max(1,N).
+   *          For optimum performance LWORK >= N*NB, where NB is the
+   *          optimal blocksize.
+   *
+   *          If LWORK = -1, then a workspace query is assumed; the routine
+   *          only calculates the optimal size of the WORK array, returns
+   *          this value as the first entry of the WORK array, and no error
+   *          message related to LWORK is issued by XERBLA.
+   *
+   *  INFO    (output) INTEGER
+   *          = 0:  successful exit
+   *          < 0:  if INFO = -i, the i-th argument has an illegal value
+   */
+  int zungqr(const int M, // The number of rows in Q
+	     const int N,  // The number of columns in Q
+	     const int K, // The number of reflections in Tau
+	     multi2d<DComplex>& A, //input MxN matrix
+	     multi1d<DComplex>& TAU // some strange LAPACK beast
+	     )
+  {
+
+    int lda = A.size1();
+    int info;
+    multi1d<Complex64> work(1); 
+    int lwork=-1;
+    
+    // Query workspace
+    zungqr_(&M, &N, &K, &A(0,0), &lda, &TAU[0], &work[0],&lwork, &info);
+    if( info != 0) { 
+      QDPIO::cout << "Lapack failed; Info: argument " << (-info) << " has illegal value " <<std::endl;
+      QDP_abort(1);
+    }
+
+    lwork=toInt(real(work[0]));
+    work.resize(lwork);
+    // Do the work
+    zungqr_(&M, &N, &K, &A(0,0), &lda, &TAU[0], &work[0],&lwork, &info);
+    if( info != 0) { 
+      QDPIO::cout << "Lapack failed; Info: argument " << (-info) << " has illegal value " <<std::endl;
+      QDP_abort(1);
+    }
+
+  }   
 
   /*--------------------------------------------------------------------
    *  ZHETRF( UPLO, N, A, IPIV)
