@@ -149,8 +149,7 @@ namespace QDPLapack
     int LDB = B.size1() ; // second index is fast and its size is size1
     int nrhs = B.size2() ;
     
-    zpotrs(uplo,LDA,nrhs,A,LDA,B,LDB,info);
-    
+    return zpotrs(uplo,LDA,nrhs,A,LDA,B,LDB,info);
   }
 
  int zpotrs(char &uplo, int N, int nrhs,  
@@ -176,7 +175,7 @@ namespace QDPLapack
     int LDB = B.size1() ; // second index is fast and its size is size1
     int nrhs = B.size2() ;
     
-    cpotrs(uplo,LDA,nrhs,A,LDA,B,LDB,info);
+    return cpotrs(uplo,LDA,nrhs,A,LDA,B,LDB,info);
     
   }
   
@@ -184,7 +183,7 @@ namespace QDPLapack
   void dsteqr(char *, int *, double *, double *, double *, int *,
                double *, int *)
   {
-    QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    QDP_error_exit("QDPLapack: %s not implemented", __func__); 
   }
 
   void dlartg(Real64& F, Real64& G, Real64& CS, Real64& SN, Real64& R)
@@ -199,6 +198,7 @@ namespace QDPLapack
   {
     // Stub function
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
   }
 
   void zgetrs(char &trans, int n, int nrhs,
@@ -218,6 +218,7 @@ namespace QDPLapack
   {
     // Stub function
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
   }
 
   // The following are BLAS stubs:
@@ -239,6 +240,7 @@ namespace QDPLapack
   {
     // Stub function
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
   }
 
   int zgemv(char &trans, 
@@ -251,6 +253,7 @@ namespace QDPLapack
   {
     // Stub function
     QDP_error_exit("QDPLapack: %s not implemented", __func__);
+    return 0;
   }
 
 
