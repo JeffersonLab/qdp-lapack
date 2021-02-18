@@ -1,15 +1,20 @@
 cmake_minimum_required(VERSION 3.17)
 PROJECT(QDPLapack VERSION 1.0.0 LANGUAGES CXX C Fortran)
 
-include(FindLAPACK)
+if(NOT QDPLapack_BINDING)
+	set(QDPLapack_BINDING "dummy")
+endif()
+	
+set(QDPLapack_BINDING ${QDPLapack_BINDING} CACHE STRING "Lapack Binding. One of dummy or lapack (default is dummy")
 
-set(QDPLapack_BINDING "dummy" CACHE STRING "Lapack Binding. One of dummy or lapack (default is dummy")
+
 option(QDPLapack_BLAS_CDOT "Enable Blas CDOT" OFF)
 
 string(TOLOWER ${QDPLapack_BINDING} qdpLapackBinding)
 
 # Check Binding 
 if( qdpLapackBinding STREQUAL "lapack")
+  include(FindLAPACK)
   message(STATUS " QDPLapack: Building LAPACK Bindings")
   set(FORTRAN_LAPACK_BINDING 1)  # Header file substitution
   find_package(LAPACK REQUIRED)
