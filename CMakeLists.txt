@@ -9,27 +9,28 @@ set(QDPLapack_BINDING ${QDPLapack_BINDING} CACHE STRING "Lapack Binding. One of 
 
 
 option(QDPLapack_BLAS_CDOT "Enable Blas CDOT" OFF)
+option(QDPLapack_ENABLE_SANITIZERS "Enable address and undefined behaviour sanitizers" ON)
 
 string(TOLOWER ${QDPLapack_BINDING} qdpLapackBinding)
 
 # Check Binding 
 if( qdpLapackBinding STREQUAL "lapack")
   include(FindLAPACK)
-  message(STATUS " QDPLapack: Building LAPACK Bindings")
+  message(STATUS "QDPLapack: Building LAPACK Bindings")
   set(FORTRAN_LAPACK_BINDING 1)  # Header file substitution
   find_package(LAPACK REQUIRED)
 else() 
-  message(STATUS " QDPLapack: Building DUMMY Bindings")
+  message(STATUS "QDPLapack: Building DUMMY Bindings")
   set(DUMMY_LAPACK_BINDING 1)    # Header file substitution
 endif()
 
 if(QDPLapack_BLAS_CDOT)
-  message(STATUS " QDPLapack: Using BLAS CDOT")
+  message(STATUS "QDPLapack: Using BLAS CDOT")
   set(USE_BLAS_CDOT 1)   # Header file substitution
 endif()
 
 # QDP is required
-message(STATUS " QDPLapack: Looking for QDP++") 
+message(STATUS "QDPLapack: Looking for QDP++") 
 find_package(QDPXX REQUIRED)
 
 # If QDPXX is parallel in order to pass link test QMP must have been specified
@@ -50,6 +51,17 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/qdp-lapack_config_internal.h D
 
 # Install headers in include
 install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
+
+# Deal with Sanitizer
+if( QDPLapack_ENABLE_SANITIZERS )
+  if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
+       OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
+       message(STATUS "QDPLapack: Setting Sanitizer options")
+      set(QDPLapack_SANITIZER_OPTS "-fsanitize=address,undefined")
+  else()
+       message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
+  endif()
+endif()  
 
 add_subdirectory(lib)
 
