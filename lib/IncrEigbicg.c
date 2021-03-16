@@ -13,6 +13,7 @@
 #include "qdp-lapack_IncrEigbicg.h"
 #include "qdp-lapack_numerical.h"
 #include "qdp-lapack_numerical_private.h"
+#include "G_eval.h"
 
 
 /*****************SINGLE PRECISION VERSION*************************************/
@@ -283,7 +284,7 @@ void IncrEigbicg_C( int n, int lde,int nrhs, Complex_C *X, Complex_C *B, int *nc
       if (plvl) {
             fprintf(outputFile, "Update\n");
             fprintf(outputFile, "Added %d vecs\n",nAdded);
-            fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);
+            fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);}
       
    } /* if phase==1 */
 
@@ -880,7 +881,7 @@ void IncrEigbicg_Z(  int n, int lde,int nrhs, Complex_Z *X, Complex_Z *B, int *n
       if (plvl) {
             fprintf(outputFile, "Update\n");
             fprintf(outputFile, "Added %d vecs\n",nAdded);
-            fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);
+            fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);}
       
    } /* if phase==1 */
 
