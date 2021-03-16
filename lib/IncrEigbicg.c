@@ -29,7 +29,7 @@ void IncrEigbicg_C( int n, int lde,int nrhs, Complex_C *X, Complex_C *B, int *nc
 {
 
   /* Timing vars */
-  double wt1,wt2,ut1,ut2,st1,st2,wE,wI;
+  double wt1,wt2,wE,wI;
 
   /* Pointers */
   Complex_C tempc, tempc1, tempc2, *tmpH, *x, *resid, *b;
@@ -226,7 +226,6 @@ void IncrEigbicg_C( int n, int lde,int nrhs, Complex_C *X, Complex_C *B, int *nc
       /* Update the evecsl, evecsr,  and evecsl'*A*evecsr                               */
       /* ------------------------------------------------------------------- */
       wt1 = primme_get_wtime(); 
-      primme_get_time(&ut1,&st1);
 
 
       /* Append new Ritz pairs to evecs */
@@ -281,13 +280,10 @@ void IncrEigbicg_C( int n, int lde,int nrhs, Complex_C *X, Complex_C *B, int *nc
         
       /* Reporting */
       wt2 = primme_get_wtime();
-      primme_get_time(&ut2,&st2);
       if (plvl) {
             fprintf(outputFile, "Update\n");
             fprintf(outputFile, "Added %d vecs\n",nAdded);
             fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);
-            fprintf(outputFile, "U User Time  : %f seconds\n", ut2-ut1);
-            fprintf(outputFile, "U Syst Time  : %f seconds\n", st2-st1);}
       
    } /* if phase==1 */
 
@@ -630,7 +626,7 @@ void IncrEigbicg_Z(  int n, int lde,int nrhs, Complex_Z *X, Complex_Z *B, int *n
 {
 
   /* Timing vars */
-  double wt1,wt2,ut1,ut2,st1,st2,wE,wI;
+  double wt1,wt2,wE,wI;
 
   /* Pointers */
   Complex_Z  tempc, tempc1, tempc2, *tmpH, *x, *resid, *b;
@@ -827,7 +823,6 @@ void IncrEigbicg_Z(  int n, int lde,int nrhs, Complex_Z *X, Complex_Z *B, int *n
       /* Update the evecsl, evecsr,  and evecsl'*A*evecsr                               */
       /* ------------------------------------------------------------------- */
       wt1 = primme_get_wtime(); 
-      primme_get_time(&ut1,&st1);
 
 
       /* Append new Ritz pairs to evecs */
@@ -882,13 +877,10 @@ void IncrEigbicg_Z(  int n, int lde,int nrhs, Complex_Z *X, Complex_Z *B, int *n
         
       /* Reporting */
       wt2 = primme_get_wtime();
-      primme_get_time(&ut2,&st2);
       if (plvl) {
             fprintf(outputFile, "Update\n");
             fprintf(outputFile, "Added %d vecs\n",nAdded);
             fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);
-            fprintf(outputFile, "U User Time  : %f seconds\n", ut2-ut1);
-            fprintf(outputFile, "U Syst Time  : %f seconds\n", st2-st1);}
       
    } /* if phase==1 */
 

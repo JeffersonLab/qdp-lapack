@@ -22,9 +22,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-double primme_wTimer(int zeroTimer);
 extern double primme_get_wtime();
-void primme_get_time(double *, double *);
 #ifdef __cplusplus
 };
 #endif

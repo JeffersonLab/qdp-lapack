@@ -102,7 +102,7 @@ void IncrEigpcg(int n, int lde, /* n dim of matrix A, lde leading dim of vecs */
 {
 
   /* Timing vars */
-  double wt1,wt2,ut1,ut2,st1,st2,wE,wI;
+  double wt1,wt2,wE,wI;
 
   /* Pointers */
   Complex_C *oldEwork = ework;
@@ -342,7 +342,6 @@ printf("n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,normAestimate, updateResta
       /* Update the evecs and the factorization of evecs'*A*evecs            */
       /* ------------------------------------------------------------------- */
       wt1 = primme_get_wtime(); 
-      primme_get_time(&ut1,&st1);
 
       if (nev > 0) {
          /* Append new Ritz pairs to evecs */
@@ -424,13 +423,10 @@ printf("n, lde, nrhs,*ncurEvals,ldh,esize,*restartTol,normAestimate, updateResta
 
 	 /* Reporting */
          wt2 = primme_get_wtime();
-         primme_get_time(&ut2,&st2);
          if (plvl) {
             fprintf(outputFile, "Update\n");
             fprintf(outputFile, "Added %d vecs\n",nAdded);
             fprintf(outputFile, "U Wallclock : %-f\n", wt2-wt1);
-            fprintf(outputFile, "U User Time  : %f seconds\n", ut2-ut1);
-            fprintf(outputFile, "U Syst Time  : %f seconds\n", st2-st1);
 	    if (plvl >= 5 ) { 
 	       if (Cholesky) RayleighRitz(evecs,lde,n,*ncurEvals,H,ldh,
 			       		  outputFile,matvec,params);
