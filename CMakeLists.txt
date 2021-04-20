@@ -9,7 +9,7 @@ set(QDPLapack_BINDING ${QDPLapack_BINDING} CACHE STRING "Lapack Binding. One of 
 
 
 option(QDPLapack_BLAS_CDOT "Enable Blas CDOT" OFF)
-option(QDPLapack_ENABLE_SANITIZERS "Enable address and undefined behaviour sanitizers" ON)
+option(QDPLapack_ENABLE_SANITIZERS "Enable address and undefined behaviour sanitizers" OFF)
 
 string(TOLOWER ${QDPLapack_BINDING} qdpLapackBinding)
 
