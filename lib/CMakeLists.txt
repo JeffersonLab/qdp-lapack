@@ -29,6 +29,9 @@ else()
   target_link_libraries(qdp_lapack PUBLIC LAPACK::LAPACK)
 endif()
 
+set_target_properties( qdp_lapack PROPERTIES CXX_STANDARD 20 )
+
+
 target_link_libraries(qdp_lapack PUBLIC QDPXX::qdp)
 if( QDPLapack_SANITIZER_OPTS )  
 	target_compile_options(qdp_lapack PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${QDPLapack_SANITIZER_OPTS}>)
