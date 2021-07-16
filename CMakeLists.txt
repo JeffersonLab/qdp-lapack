@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17)
-PROJECT(QDPLapack VERSION 1.0.0 LANGUAGES CXX C Fortran)
+PROJECT(QDPLapack VERSION 1.0.0 LANGUAGES CXX C)
 
 if(NOT QDPLapack_BINDING)
 	set(QDPLapack_BINDING "dummy")
@@ -15,6 +15,7 @@ string(TOLOWER ${QDPLapack_BINDING} qdpLapackBinding)
 
 # Check Binding 
 if( qdpLapackBinding STREQUAL "lapack")
+  enable_language(Fortran)
   include(FindLAPACK)
   message(STATUS "QDPLapack: Building LAPACK Bindings")
   set(FORTRAN_LAPACK_BINDING 1)  # Header file substitution
