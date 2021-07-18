@@ -29,11 +29,9 @@ else()
   target_link_libraries(qdp_lapack PUBLIC LAPACK::LAPACK)
 endif()
 
-
 if (QDP_IS_QDPJIT)
-  set_target_properties( qdp_lapack PROPERTIES CXX_STANDARD 20 )
+  set_target_properties( qdp_lapack PROPERTIES CXX_STANDARD 14 )
 endif()
-
 
 target_link_libraries(qdp_lapack PUBLIC QDPXX::qdp)
 if( QDPLapack_SANITIZER_OPTS )  
