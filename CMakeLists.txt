@@ -70,12 +70,12 @@ configure_package_config_file(Config.cmake.in QDPLapackConfig.cmake
 # Make the version file
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    QDPLapackVersion.cmake
+    QDPLapackConfigVersion.cmake
     VERSION ${PACKAGE_VERSION}
     COMPATIBILITY AnyNewerVersion
     )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QDPLapackVersion.cmake
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/QDPLapackConfigVersion.cmake
               ${CMAKE_CURRENT_BINARY_DIR}/QDPLapackConfig.cmake
               DESTINATION lib/cmake/QDPLapack)
 		  
