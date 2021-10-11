@@ -39,8 +39,8 @@ endif()
 
 target_link_libraries(qdp_lapack PUBLIC QDPXX::qdp)
 if( QDPLapack_SANITIZER_OPTS )  
-	target_compile_options(qdp_lapack PUBLIC $<$<COMPILE_LANGUAGE:CXX>:${QDPLapack_SANITIZER_OPTS}>)
-        target_compile_options(qdp_lapack PUBLIC $<$<COMPILE_LANGUAGE:C>:${QDPLapack_SANITIZER_OPTS}>)
+	target_compile_options(qdp_lapack PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${QDPLapack_SANITIZER_OPTS}>)
+  target_compile_options(qdp_lapack PRIVATE $<$<COMPILE_LANGUAGE:C>:${QDPLapack_SANITIZER_OPTS}>)
 	target_link_options(qdp_lapack PUBLIC ${QDPLapack_SANITIZER_OPTS})
 endif()
 

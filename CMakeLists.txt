@@ -55,14 +55,10 @@ install(DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h")
 
 # Deal with Sanitizer
 if( QDPLapack_ENABLE_SANITIZERS )
-  if( ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.1)
-       OR ( CMAKE_CXX_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 4.8) )
-       message(STATUS "QDPLapack: Setting Sanitizer options")
-      set(QDPLapack_SANITIZER_OPTS "-fsanitize=address,undefined")
-  else()
-       message(STATUS "Don't know how to enable sanitizers for ${CMAKE_CXX_COMPILER_ID}... Ignoring")
-  endif()
-endif()  
+  include(cmake/CheckSanitizeOpts.cmake)
+  check_sanitizer_options( "${QDPLapack_ENABLE_SANITIZERS}" QDPLapack_SANITIZER_OPTS )
+  message(STATUS "QDPLapack: Setting Sanitizer options: ${QDPLapack_SANITIZER_OPTS}")
+endif()
 
 add_subdirectory(lib)
 
