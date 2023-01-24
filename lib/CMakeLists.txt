@@ -31,9 +31,7 @@ endif()
 
 
 if (QDP_IS_QDPJIT)
-  if(QDP_PROP_OPT)
-    set_target_properties( qdp_lapack PROPERTIES CXX_STANDARD 20 )
-  endif()
+  set_target_properties( qdp_lapack PROPERTIES CXX_STANDARD 20 )
 endif()
 
 
