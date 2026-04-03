@@ -7,6 +7,8 @@
 */
 
 #include "G_eval.h"
+#include "qdp-lapack_numerical.h"
+#include "conjugate.h"
 
 void ZG_eval(Complex_Z *A, int N, int LDA, Complex_Z *W, char SRT_OPT, double epsi, 
              Complex_Z *VL, int LDVL, Complex_Z *VR, int LDVR, int *info)

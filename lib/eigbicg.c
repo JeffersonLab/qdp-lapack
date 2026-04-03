@@ -21,7 +21,7 @@
 
 
 #include "qdp-lapack_eigbicg.h"
-
+#include "G_eval.h"
 
 /* EIGBICG *************************************************************************************/
 void Ceigbicg(int n, int lde, Complex_C *x, Complex_C *b, float *normb, float tol, int maxit, 
